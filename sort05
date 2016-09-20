@@ -1,0 +1,25 @@
+#include <stdio.h>
+#define SIZE 5
+int main(void)
+{
+	int num[SIZE] = {8,4,2,6,3};
+	int swTmp;
+	for(int i = 0; i < SIZE; i++)
+	{
+		for(int j = 0;j < SIZE - 1; j++)
+		{
+			if(num[j] > num[j+1])
+			{
+				swTmp = num[j];
+				num[j] = num[j+1];
+				num[j+1] = swTmp;
+			}
+		}
+	}
+	
+	// RESULT
+	
+	for(int i = 0; i < SIZE; i++) printf("%d ",num[i]);
+	
+	return 0;
+}
