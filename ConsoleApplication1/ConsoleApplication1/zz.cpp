@@ -4,7 +4,7 @@ int main()
 {
 	int a=0;
 
-	printf(" Á¤¼ö¸¦ ÀÔ·ÂÇÏ¿© ÁÖ¼¼¿ä : ");
+	printf(" ÃÂ¤Â¼Ã¶Â¸Â¦ Ã€Ã”Â·Ã‚Ã‡ÃÂ¿Â© ÃÃ–Â¼Â¼Â¿Ã¤ : ");
 	scanf("%d", &a);
 
 	if (a >0)
@@ -19,6 +19,7 @@ int main()
 	{
 		printf("0 is zero\n");
 	}
-
+	system("pause");
 	return 0;
+	
 }
