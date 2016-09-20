@@ -1,0 +1,24 @@
+/sort {
+    count 1 sub
+    /length exch def
+    {
+        /swapped false def
+        1 1 length
+        {
+            pop
+            /first 1 index def
+            /second 2 index def
+            second first gt
+                {
+                    exch
+                    /swapped true def
+                }
+            if
+            count 1 roll
+        } for
+        count 1 roll
+        swapped false eq
+            { exit }
+        if
+    } loop
+} def
