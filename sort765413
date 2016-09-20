@@ -1,0 +1,82 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <string.h>
+/* 
+stdio - biblioteca de entrada e saida
+	* http://www.cplusplus.com/reference/cstdio/
+stdlib - biblioteca geral de utilidades 
+	* http://www.cplusplus.com/reference/cstdlib/
+time - biblioteca de tempo 
+	* http://www.cplusplus.com/reference/ctime/	
+string - biblioteca de manipulação de vetor de caracteres
+	* http://www.cplusplus.com/reference/cstring/
+*/
+
+// define estrutura e menmônico
+typedef struct {
+	int num;
+	char str[6];
+} Dados;
+
+void insertSort(int, Dados[]);
+void printVec(int, Dados[]);
+Dados * generateStructVector();
+
+int main() {
+	
+	//modifica a semente randomica para o tempo em secundos da execução do programa
+	srand(time(NULL));
+	
+	//gera vetor de 10 posições valores randomicos
+	Dados * dt = generateStructVector();
+	
+	int n = 10;
+	
+	// vetor antes de ordenar
+	printVec(n, dt);
+	
+	//ordenação por metodo da inserção
+	insertSort(n, dt);
+	
+	//vetor apos ordenação
+	printVec(n, dt);
+	return 0;
+}
+void insertSort(int n, Dados x[]) {
+	int i, k;
+	Dados y;
+	for(k=1;k<n;k++) {
+		y = x[k];
+		//compara os campos str da struct através da função strcmp
+		for(i=k-1; i>=0 && strcmp(x[i].str, y.str) > 0;i--)
+			x[i+1] = x[i];
+		x[i+1] = y;
+	}
+}
+void printVec(int n, Dados x[]) {
+	int i;
+	for(i=0; i < n; i++){
+		printf("%d\t", x[i].num);
+		printf("%s\n", x[i].str);
+	}
+	printf("\n");
+}
+Dados * generateStructVector() {
+	// aloca espaço na memoria para um vetor de estrutura Dados de 10 posi
+	Dados * vec = (Dados*)malloc(10 * sizeof(Dados));
+	int i, k;
+	for( i=0; i < 10; i++ ){
+		
+		//gera valores aleatorios entre 0 99
+		vec[i].num = rand() % 100;
+		
+		// gera string aleatorio de 5 caracteres
+		for(k = 0; k < 6; k++)
+			vec[i].str[k] = rand() % ('Z' - 'A' + 1) + 'A';
+		vec[i].str[5] = '\0';
+	}
+	//retorna o ponteiro do vetor de inteiros 
+	return vec;
+}
