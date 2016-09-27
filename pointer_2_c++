@@ -1,7 +1,9 @@
 #include <iostream>
 #include <string>
+
 using namespace std;
 string str = "Hello World";
+
 int main() {
 	cout << "str: " << str << endl;
 	string *str_pointer;
@@ -9,7 +11,7 @@ int main() {
 	*str_pointer += " Add";
 	cout << "str_pointer: " << *str_pointer << endl;
 	cout << "str after: " << str << endl;
-	//str_pointer = NULL;
+	str_pointer = NULL;
 	delete str_pointer;
 	return 0;
 }
