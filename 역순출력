@@ -1,0 +1,27 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <Windows.h>
+
+#define N 10000
+
+int main(void)
+{
+	char c[N];
+	char temp;
+	int i, leng = 0;
+
+	printf("문자를 입력하세요 : ");
+	gets(c);
+
+	while (c[leng] != '\0')
+		leng++;
+
+	for (i = 0; i < leng / 2; i++)
+	{
+		temp = c[i];
+		c[i] = c[leng - i - 1];
+		c[leng - i - 1] = temp;
+	}
+	printf("변경된 문자 : %s\n", c);
+	system("pause");
+}
