@@ -124,7 +124,7 @@ void ins()
         tmp->val=v;
         tmp->next=head;
         head=tmp;
-        printlist();
+        printlist(); 
     }
     else if( n == 2 )
     {
