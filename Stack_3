@@ -1,0 +1,64 @@
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+
+using namespace std;
+
+struct elem
+{
+    int data;
+    elem* next;
+};
+
+void push (int a, elem* &head)
+{
+    elem* newElem = new elem;
+    newElem -> data = a;
+    newElem -> next = head;
+    head = newElem;
+}
+
+int pop (elem* &head)
+{
+    elem t = *head;
+    delete head;
+    head = t.next;
+    return t.data;
+}
+
+int main()
+{
+    elem* head = 0;
+    int c;
+    while (true)
+    {
+        cout <<"What do you want to do?" <<endl;
+        cout <<"1 - push" <<endl <<"2 - pop" <<endl <<"3 - exit" <<endl;
+        cin >>c;
+        switch (c)
+        {
+        case 1:
+        {
+            cout <<"data is - ";
+            int data;
+            cin >>data;
+            push(data, head);
+            break;
+        }
+        case 2:
+        {
+            if (head == 0)
+            {
+                cout <<"Warning!" <<endl;
+                break;
+            }
+            int out = pop(head);
+            cout <<out <<endl;
+            break;
+        }
+        case 3:
+            return 0;
+        }
+    }
+    return 0;
+}
