@@ -1,0 +1,26 @@
+#include <stdio.h>
+
+struct struct_tag_profile{
+  char name[32];
+  int age; 
+  char address[128];
+};
+
+int main(void){
+
+  struct struct_tag_profile prof;
+
+
+  printf("prof.name: ");
+  scanf("%s", prof.name); 
+  printf("prof.age: "); 
+  scanf("%d", &prof.age);
+
+  printf("prof.address: ");
+  scanf("%s", prof.address); 
+
+  printf("prof.name = %s, prof.age = %d, prof.address = %s\n", prof.name, prof.age, prof.address);
+
+  return 0;
+
+}
