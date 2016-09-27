@@ -1,0 +1,25 @@
+#include <stdio.h> 
+
+int main(void){
+
+  int n;
+  int m; 
+  int x = 0;
+  int i; 
+
+  printf("n( <= m): ");
+  scanf("%d", &n); 
+  printf("m( >= n): ");
+  scanf("%d", &m); 
+
+  
+  for (i = n; i <= m; i++)
+  {
+    x = x + i;
+  }
+
+  printf("sum(n, ..., m) = %d\n", x);
+
+  return 0;
+
+}
