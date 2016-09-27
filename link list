@@ -49,7 +49,7 @@ void search( )
             k=1;
         tmp=tmp->next;
     }
-    if( k )
+    if( k ) 
         printf("Yes\n");
     else
         printf("No\n");
