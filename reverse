@@ -1,0 +1,71 @@
+#include <stdio.h>
+#include <string.h>
+
+#define is_space(x) (\
+        (x) == ' ' ||\
+        (x) == '\f' ||\
+        (x) == '\n' ||\
+        (x) == '\r' ||\
+        (x) == '\t' ||\
+        (x) == '\v'\
+        )
+
+void spaces_only(char *str, int cap) {
+    for (int i = 0; i < cap; i++) {
+        if (is_space(str[i])) {
+            str[i] = ' ';
+        }
+    }
+}
+
+void reverse(char *str, int head, int tail) {
+    while (head < tail) {
+        str[head] ^= str[tail];
+        str[tail] ^= str[head];
+        str[head] ^= str[tail];
+        head++;
+        tail--;
+    }
+}
+
+int next_space(char *str, int index, int cap) {
+    while(index < cap && !is_space(str[index])) {
+        index++;
+    }
+    return index;
+}
+
+int next_word(char *str, int index, int cap) {
+    while(index < cap && is_space(str[index])) {
+        index++;
+    }
+    return index;
+}
+
+int remove_leading_whitespace(char *str, int cap) {
+    int head = next_word(str, 0, cap);
+    if (head == 0) {
+        return cap;
+    }
+    for (int i = head; i < cap; i++) {
+        str[i - head] = str[i];
+    }
+    str[cap - head] = '\0';
+    return cap - head;
+}
+
+void reverseWords(char *str) {
+    int cap = strlen(str);
+    spaces_only(str, cap);
+    cap = remove_leading_whitespace(str, cap);
+    reverse(str, 0, cap - 1);
+    int head = 0, tail = 0;
+    while(head < cap) {
+        /* remove leading whitespace in current word */
+        cap = remove_leading_whitespace(str + head, cap);
+        head = next_word(str, tail, cap);
+        tail = next_space(str, head, cap);
+        reverse(str, head, tail - 1);
+        head = tail + 1;
+    }
+}
