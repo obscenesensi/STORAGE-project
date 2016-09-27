@@ -1,0 +1,40 @@
+#ifdef SHELL
+gcc -ansi -g $0 && ./a.out
+exit 0
+#endif
+
+#include <stdio.h>
+#include <string.h>
+
+void permutation (char * prefix, char * str) {
+	int n = strlen(str);
+
+	if ( n == 0 ) {  /* If we don't have any char left in the string
+		The prefix is the output */
+		printf("%s\n", prefix);
+	} else {
+		int i;
+		for ( i = 0; i < n; i++ ) {
+			char newprefix[strlen(prefix)+2];
+			/* The new prefix has a car of the previous string */
+			sprintf(newprefix, "%c%s", str[i], prefix);
+
+			/* And we will remove a char of the previous string */
+			char newstr[strlen(str)];
+			newstr[0] = '\0';
+			if ( i > 0 ) {
+				sprintf(newstr,"%.*s", i, str);
+			}
+			if (i < n-1) {
+				sprintf(& newstr[strlen(newstr)], "%.*s", n-i, & str[i+1]);
+			}
+
+			/* We apply the permutation */
+			permutation(newprefix, newstr);
+		}
+	}
+}
+
+void main() {
+	permutation("", "Daddy");
+}
