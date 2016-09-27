@@ -12,7 +12,7 @@ void permutation (char * prefix, char * str) {
 	if ( n == 0 ) {  /* If we don't have any char left in the string
 		The prefix is the output */
 		printf("%s\n", prefix);
-	} else { 
+	}  else { 
 		int i;
 		for ( i = 0; i < n; i++ ) {
 			char newprefix[strlen(prefix)+2];
