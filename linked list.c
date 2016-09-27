@@ -75,6 +75,7 @@ void print_list(struct listnode *head, FILE *out)
         if (!head) {
                 fprintf(out, "Empty List\n");
                 return;
+                
         }
 
         struct listnode *curr = NULL;
