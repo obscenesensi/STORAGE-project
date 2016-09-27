@@ -25,5 +25,5 @@ int s(char *str, int len) {
     }
     free(count);
     free(k);
-    return sum;
+     return sum;
 }
