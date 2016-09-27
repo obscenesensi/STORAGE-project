@@ -1,0 +1,29 @@
+int s(char *str, int len) {
+    int i, j;
+    int sum = 0;
+    int *count = (int *)malloc(sizeof(int) * len);
+    char *k = (char *)malloc(sizeof(char) * len);
+    memset(count, 0, sizeof(int) * len);
+    memset(k, 1, sizeof(char) * len);
+    for(i = 0;i < len;i++) {
+        char ch = str[i];
+        for(j = 0;j <= i;j++) {
+            if(k[j]) {
+                if(ch == str[i-j]){
+                    count[j]++;
+                } else {
+                    k[j]=0;
+                }
+            }
+        }
+        if(ch == str[0]) {
+            count[i] = 1;
+        }
+    }
+    for(i = 0;i < len;i++) {
+        sum += count[i];
+    }
+    free(count);
+    free(k);
+    return sum;
+}
