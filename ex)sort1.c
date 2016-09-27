@@ -13,7 +13,7 @@
           } 
           a[j+1] = tmp; 
       } 
-  } 
+  }  
    
   int 
   main(int argc, char *argv[]) 
