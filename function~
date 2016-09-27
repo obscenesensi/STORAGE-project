@@ -1,0 +1,24 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+void print_one_number(int a)
+{
+    printf("a = %d\n", a);
+}
+
+void print_two_numbers(int a, int b)
+{
+    printf("a = %d, b = %d\n", a, b);
+}
+
+void call_func(void (*func)(int, int), int a, int b)
+{
+    func(a, b);
+}
+
+int main()
+{
+    call_func((void (*)(int, int))print_one_number, 1, 2);
+    call_func(print_two_numbers, 2, 3);
+    return 0;
+}
