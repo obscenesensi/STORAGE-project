@@ -35,7 +35,7 @@ void bubbleSort(int * Array,int Length)
         if(swapped = 0)
             break;
         swapped = 0;
-    }
+    } 
 }
 //function to print the array
 void printArray(int * Array,int Length)
