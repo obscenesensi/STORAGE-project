@@ -1,0 +1,25 @@
+#include<stdio.h>
+int main()
+{
+ 
+ int n, i, j, k, a;
+
+ printf("정수 n을 입력받아 별을 출력하는 프로그램 입니다.\n\n");
+ printf("정수를 입력하시오. : ");
+ scanf("%d", &n);
+
+
+ for (j = n; j>0; j--){
+  for (i =0; i <n-j; i++)
+  {
+   printf(" ");
+  }
+  for (a = 0; a <n-i;a++)
+  {
+   printf("*");
+  }
+  
+  printf("\n");
+  return 0;
+ }
+ 

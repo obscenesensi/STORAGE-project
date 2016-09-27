@@ -1,0 +1,29 @@
+
+#include<stdio.h>
+int main()
+{
+	char in[5];
+	int n[5],top=-1,num;
+	while(scanf("%s",in)!=EOF)
+	{
+		if(!(strcmp("push",in)))
+		{	
+			scanf("%d",&num);
+			if(top>=4)
+				puts("full");
+			else 
+			{
+				n[++top]=num;
+				printf("push %d\n",n[top]);
+			}
+		}
+		else if(!(strcmp("pop",in)))
+		{
+			if(top==-1)
+				puts("empty");
+			else 
+				printf("pop %d\n",n[top--]);
+		}
+	}
+	return 0;
+}

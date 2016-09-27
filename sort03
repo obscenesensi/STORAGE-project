@@ -1,0 +1,44 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+void merge(int*, int, int, int);
+
+void merge_sort(int a[], int low, int high)
+{
+
+	if (high - low < 1)
+		return;
+
+	int mid = (low + high) / 2;
+
+	merge_sort(a, low, mid);
+	merge_sort(a, mid + 1, high);
+
+	merge(a, low, high, mid);
+
+}
+
+void merge(int a[], int low, int high, int mid)
+{
+	int left = low;
+	int right = mid + 1;
+
+	int *temp = (int*)malloc(sizeof(int)*((high - low) + 1));
+
+	int i = 0;
+	while (left <= mid && right <= high) 
+		temp[i++] = a[left] < a[right] ? a[left++] : a[right++];
+
+	while (left <= mid)	temp[i++] = a[left++];
+	while (right <= high) temp[i++] = a[right++];
+
+	memcpy(a + low, temp, (high - low + 1) * sizeof(a[0]));
+	free(temp);
+}
+
+int main()
+{
+	int a[] = { 1, 3, 5, 7, 9, 8, 6, 4, 2 };
+	merge_sort(a, 0, sizeof(a) / sizeof(a[0]) - 1);
+}
