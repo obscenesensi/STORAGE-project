@@ -1,0 +1,22 @@
+#include <stdio.h>
+
+int factorial(int a);
+
+int main(int argc, char** argv)
+{
+    int x;
+    scanf("%d",&x);
+    printf("%d", factorial(x));
+    return 0;
+}
+
+int factorial(int a)
+{
+    int x = 1;
+	while(a > 0)
+	{
+		x = x*a;
+		--a;
+	}
+	return x;
+}
