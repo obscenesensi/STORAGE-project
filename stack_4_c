@@ -1,0 +1,61 @@
+#include <stdio.h>
+int S[10], top;
+void awal();
+void push();
+void pop();
+void tampil();
+void main()
+{
+	int pil, kondisi=1;
+	awal();
+	while (kondisi) {
+		printf("\n1. Push");
+		printf("\n2. Pop");
+		printf("\n3. Tampil");
+		printf("\n4. Reset");
+		printf("\n5. Keluar");
+
+		printf("\nMasukkan pilihan (1-5) : ");
+		scanf("%i", &pil);
+
+		switch(pil) {
+			case 1 : push(); break;
+			case 2 : pop(); break;
+			case 3 : tampil(); break;
+			case 4 : awal(); break;
+			case 5 : kondisi=0; break;
+		}
+	}
+}
+void awal()
+{
+	top = -1;
+}
+void push()
+{	int X;
+	printf("\nMasukkan X = ");
+	scanf("%i", &X);
+	if (top < 9) {
+		top++;
+		S[top] = X;
+	} else {
+		printf("\nSTACK PENUH");
+	}
+}
+void pop()
+{  int X;
+	if (top > -1) {
+		X = S[top];
+		S[top] = 0;
+		top--;
+		printf("\nNilai %i sudah di-pop",X);
+	} else {
+		printf("\nSTACK KOSONG");
+	}
+}
+void tampil()
+{  int i;
+	for (i=0; i<10; i++) {
+		printf("%3i", S[i]);
+	}
+}
