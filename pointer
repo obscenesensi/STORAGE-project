@@ -1,0 +1,29 @@
+#include<stdio.h> //for printf
+#include<stdlib.h> //for system("pause")
+
+int main(int argc, char* argv[])
+{
+        int ages[] = {30, 28, 31, 35};
+	char *names[] = {"Dexter", "Debra", "Hannah", "Masuka"}; 
+	int count = sizeof(ages)/sizeof(int);
+	
+	//setup pointers
+	int *cur_age = ages;
+	char **cur_name = names; //a pointer to (pointer to a char)
+	
+	int i=0
+	//looping with index i
+	for(i=0; i<count; i++) 
+	{
+		printf("%s is %d years old.\n", names[i], ages[i]);
+	}
+	
+	//looping with pointers
+	for(i=0; i<count; i++) 
+	{
+		printf("%s is alive for %d years.\n", *(cur_name+i), *(cur_age+i) )
+	}
+
+	system("pause");
+	return 0;
+}
