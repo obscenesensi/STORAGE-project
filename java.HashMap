@@ -1,0 +1,21 @@
+import java.util.*;
+public class HashMapTest {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		HashMap<String,String> dic = new HashMap<String,String>();
+		dic.put("apple", "사과");
+		dic.put("banana", "바나나");
+		dic.put("grape", "포도");
+		
+		System.out.println(dic.get("banana"));
+		
+		Set<String> keySet = dic.keySet();
+		Iterator<String> itr = keySet.iterator();
+		while(itr.hasNext())
+		{
+			System.out.println(itr.next());
+		}
+	}
+
+}
