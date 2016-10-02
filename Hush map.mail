@@ -1,0 +1,77 @@
+import java.util.*;
+
+public class StudentTest 
+{
+   public static void main(String[] args) 
+   {
+      // TODO Auto-generated method stub
+      HashMap<String, Student> dept = new HashMap<String, Student>();
+      
+      int i = 0;
+      String name;
+      String major;
+      String St_Num;
+      double Avg_grade;
+      Scanner in = new Scanner(System.in);
+      
+      while(i < 5)
+      {
+         Student std = new Student();
+         
+         System.out.println("이름 : ");
+         name = in.next();
+         std.setName(name);
+         
+         System.out.println("학과 : ");
+         major = in.next();
+         std.setMajor(major);
+         
+         System.out.println("학번 : ");
+         St_Num = in.next();
+         std.setSt_Num(St_Num);
+         
+         System.out.println("평균 학점 : ");
+         Avg_grade = in.nextDouble();
+         std.setAvg_grade(Avg_grade);
+         
+         if(dept.containsKey(St_Num))
+         {
+            System.out.println("===========================================");
+            System.out.println("이미 존재하는 학번입니다.");
+         }
+         else
+         {
+            System.out.println("===========================================");
+            dept.put(St_Num, std);
+            i++;
+         }
+      }
+      
+      while(true)
+      {
+         System.out.println("검색할 학생의 학번을 입력 하세요(Q) : ");
+         St_Num = in.next();
+         if(St_Num.equals("Q"))
+         {
+            break;
+         }
+         else
+         {
+            Iterator<Student> ItDept = dept.values().iterator(); 
+            while(ItDept.hasNext())
+            {
+               Student student = ItDept.next();
+               if(student.getSt_Num().equals(St_Num))
+               {
+                  System.out.println("===========================================");
+                  System.out.println("이름 : " + student.getName());
+                  System.out.println("학과 : " + student.getMajor());
+                  System.out.println("학번 : " + student.getSt_Num());
+                  System.out.println("평균 학점 : " + student.getAvg_grade());
+               }
+            }
+         }
+      }
+   }
+
+}
