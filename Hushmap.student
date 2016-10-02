@@ -1,0 +1,43 @@
+public class Student 
+{
+   private String name;
+   private String major;
+   private String St_Num;
+   private double Avg_grade;
+   
+   public String getName() 
+   {
+      return name;
+   }
+   public void setName(String name) 
+   {
+      this.name = name;
+   }
+   
+   public String getMajor() 
+   {
+      return major;
+   }
+   public void setMajor(String major) 
+   {
+      this.major = major;
+   }
+   
+   public String getSt_Num() 
+   {
+      return St_Num;
+   }
+   public void setSt_Num(String St_Num) 
+   {
+      this.St_Num = St_Num;
+   }
+   
+   public double getAvg_grade() 
+   {
+      return Avg_grade;
+   }
+   public void setAvg_grade(double Avg_grade) 
+   {
+      this.Avg_grade = Avg_grade;
+   }
+}
