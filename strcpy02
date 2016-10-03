@@ -1,0 +1,24 @@
+#include <stdio.h>
+#include <string.h>
+
+int main()
+{
+	/* code */
+  char str1[20] = {'H','e','l','l','o',' ','W','o','r','l','d', '!'};
+
+  char str2[20] = "Goodbye World!";
+
+  printf("String 1 is: %s\n", str1);
+  printf("String 2 is: %s\n", str2);
+
+  /* Overwrite string 1 with the contents of string 2 */
+  strcpy(str1, str2);
+
+  /* display them again */
+  printf("String 1 is: %s\n", str1);
+  printf("String 2 is: %s\n", str2);
+
+
+
+	return 0;
+}
