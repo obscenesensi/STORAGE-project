@@ -19,3 +19,4 @@ int main(void)
     strcpy(str1, "pyo");
     printf("%s\n", str1);
 }
+  
