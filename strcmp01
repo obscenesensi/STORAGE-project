@@ -1,0 +1,21 @@
+// Função strcmp - comparação de strings
+
+#include <stdio.h>
+#include <string.h>
+
+int main(int argc, char *argv[])
+{
+	char s1[] = "python";
+	char s2[] = "python";
+	
+	if(strcmp(s1, s2) == 0)
+	{
+		printf("s1 igual a s2");
+	}
+	else
+	{
+		printf("s1 diferente a s2");
+	}
+	
+	return 0;
+}
