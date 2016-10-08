@@ -1,0 +1,43 @@
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+
+void theTest();
+
+int main() {
+	printf("Be you robot? Or human?\n");
+
+	char* passwd;
+	scanf("%s", passwd);
+
+	if (strcmp(passwd, "human") == 0) {
+		for (;;) {
+			printf("GET THE HUMANOID\n");
+		}
+	} else if (strcmp(passwd, "robot") == 0) {
+		printf("\nADMINISTER THE TEST.\n");
+		sleep(3);
+		theTest();
+	}
+
+	return 0;
+}
+
+void theTest() {
+	printf("\nWhich of the following would you most prefer?\n");
+	printf("A) a puppy,\n");
+	printf("B) a pretty flower,\n");
+	printf("Or C), a large, properly formatted, data file?\n");
+
+	char choice[1];
+	scanf("%s", choice);
+
+	if (strcmp(choice, "A") == 0) {
+		for (;;) {
+			printf("GET THE HUMANOID\n");
+		}
+	} else if (strcmp(choice, "B") == 0) {
+		printf("\nAcceptable, you may enter.\n");
+	} else if (strcmp(choice, "C") == 0) {
+		printf("\nCorrect, you may enter.\n");
+	}
