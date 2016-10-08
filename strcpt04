@@ -1,0 +1,30 @@
+#include <unistd.h>
+#include <stdio.h>
+#include <time.h>
+#include <stdlib.h>
+#include <string.h>
+
+char *foo2 ()
+{
+	return "FOO";
+}
+
+char *foo1 ()
+{
+	char *bar = malloc(sizeof(char)*4);
+	strcpy(bar, foo2());
+	return bar;
+}
+
+int main (int argc, char *argv[])
+{
+	char *str;
+	while (1) {
+		str = malloc(sizeof(char)*4);
+		char *temp = foo1();
+		strcpy(str, temp);
+		free(temp);
+		free(str);
+	}
+	return 0;
+}
