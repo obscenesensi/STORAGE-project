@@ -1,0 +1,20 @@
+#include <stdio.h>
+int main(int argc, char const *argv[])
+{
+	int i = 10, *ptr;
+
+	ptr = &i;
+
+	printf("%d\n", i);
+	printf("%d\n", *ptr);
+	printf("%ld\n", (long)ptr);
+	printf("\n");
+
+	i++; 
+	(*ptr)++;
+	printf("%d\n", i);
+	printf("%d\n", *ptr);
+	printf("%ld\n", (long)ptr);
+	printf("\n");
+	return 0;
+}
