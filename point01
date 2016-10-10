@@ -1,0 +1,34 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct useless {
+    char *str;
+};
+
+struct useful {
+    char str[100];
+};
+
+int main(int argc, const char *argv[]) {
+    
+    void *vptr = NULL;
+    struct useless *ptr = malloc(sizeof(struct useless));
+    struct useful *rtp = NULL;
+
+    printf("Pekere har en fast størrelse uansett hva de peker på:\n");
+    printf("%d\n", (int) sizeof(ptr));
+    printf("%d\n", (int) sizeof(rtp));
+
+    printf("Størrelsen på de to typene (struktene) er forskjellige "
+            "fordi en peker tar %d bytes, men det ene arrayet tar 100 bytes:\n"
+            , sizeof(vptr));
+    printf("%d\n", (int) sizeof(struct useless));
+    printf("%d\n", (int) sizeof(struct useful));
+
+    printf("Enda en distinksjon mellom pekere og arrays:\n");
+    char n[] = "Herman";
+    char *N = "Herman";
+    printf("%d\n", (int) sizeof(n));
+    printf("%d\n", (int) sizeof(N));
+    return 0;
+}
