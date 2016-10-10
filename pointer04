@@ -1,0 +1,27 @@
+#include<stdio.h>
+int main( void )
+{
+	int i,elm;
+	int *ptr; 
+	int month[ 12 ] = {0,1,2,3,4,5,6,7,8,9,10,11};
+	for (i = 0; i<12; i++)
+		printf("%d,",i);
+	printf("\n");
+	ptr = month; // month[0] adresini atar
+	printf("&month[3]-->%p\n",&month[3]);
+	elm = ptr[ 3 ]; // elm = month[ 3 ] degerini atar 
+	printf("elm--->%d\n",elm);
+	ptr = month + 3; // month[ 3 ] adresini atar
+	printf("ptr--->%p\n",ptr);
+	ptr = &month[ 3 ]; // month[ 3 ] adresini atar
+	printf("ptr--->%p\n",ptr);
+	elm = ( ptr+2 )[ 2 ]; // elm = ptr[ 4 ] ( = month[ 7 ] )degeri atanır. 
+	printf("elm--->%d, ptr+2[2]-->%d\n", elm, ( ptr+2 )[ 2 ]);
+	elm = *( month + 3 );
+	printf("*(month+3)-->%d,elm--->%d\n",*(month+3),elm);
+	ptr = month;
+	elm = *( ptr + 2 ); // elm = month[ 3 ] degerini atar
+	elm = *( month + 1 ); // elm = month[ 1 ] degerini atar 
+
+	return 0;
+}
