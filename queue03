@@ -1,0 +1,120 @@
+#include<stdio.h>
+#define QueueType int
+#define MAX 10
+
+/*******************/
+/*
+	队列的结构
+*/
+
+typedef struct 
+{
+	QueueType data[MAX];
+	int front;
+	int rear;
+}Queue;
+/******************/
+Queue Squeue;
+/*******************/
+/*
+	初始化队列
+*/
+
+int init(Queue *Q)
+{
+	Q->front = 0;
+	Q->rear = 0;
+	return 1;
+}
+/********************/
+/*
+	判断队满
+*/
+int isFull(Queue *Q)
+{
+	return( (Q->rear+1) % MAX == Q->front);
+}
+/*******************/
+/*
+	判断队空
+*/
+int isEmpty(Queue *Q)
+{
+	return(Q->rear == Q->front);
+}
+/*********************/
+/*
+	入队
+*/
+int add(Queue *Q,QueueType value)
+{
+	if(isFull(Q))
+	{
+		printf("It's full!!\n");
+		return 0;
+	}
+	Q->data[Q->rear] = value;
+	Q->rear = ( Q->rear+1 ) % MAX;
+	return 1;
+}
+/***********************/
+/*
+	出队
+*/
+int out(Queue *Q,QueueType *temp)
+{
+	if(isEmpty(Q))
+	{
+		printf("It's empty!!!\n");
+		return 0;
+	}
+	*temp = Q->data[Q->front];
+	Q->front = (Q->front + 1) % MAX;
+	return 1;
+}
+/*************************/
+/*
+	遍历队列并打印
+*/
+void print(Queue Q)
+{
+	while(Q.front != Q.rear)
+	{
+		printf("%d  ",Q.data[Q.front]);
+		Q.front += 1;
+	}
+	printf("\n");
+
+}
+/*************************/
+int main(void)
+{
+	QueueType e;
+
+	init(&Squeue);
+	add(&Squeue,2);
+	add(&Squeue,4);
+	add(&Squeue,6);
+	add(&Squeue,8);
+	add(&Squeue,10);
+	print(Squeue);
+	out(&Squeue,&e);
+	printf("%d\n",e);
+
+	out(&Squeue,&e);
+	printf("%d\n",e);
+
+	out(&Squeue,&e);
+	printf("%d\n",e);
+
+	out(&Squeue,&e);
+	printf("%d\n",e);
+
+	out(&Squeue,&e);
+	printf("%d\n",e);
+	
+//	out(&Squeue,&e);
+//	printf("%d\n",e);
+
+}
+/*************************/
