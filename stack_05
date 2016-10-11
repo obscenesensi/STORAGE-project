@@ -1,0 +1,142 @@
+#include <iostream>
+#include <stack>
+
+using namespace std;
+
+struct TreeNode {
+    int data;
+    TreeNode* left;
+    TreeNode* right;
+};
+
+TreeNode* getNewNode(int val = 0) {
+    TreeNode* Node = new TreeNode;
+    Node->data = val;
+    Node->left = NULL;
+    Node->right = NULL;
+
+    return Node;
+}
+
+TreeNode* insertNode(TreeNode* root, int val = 0)
+{
+
+    if(root == NULL)
+    {
+        root = getNewNode(val);
+        return root;
+    }
+    else if(val > root->data)
+    {
+        root->right = insertNode(root->right,val);
+        return root;
+    }
+    else
+    {
+        root->left = insertNode(root->left,val);
+        return root;
+    }
+
+}
+
+void preOrderBST_OddSum(TreeNode* root, int* x)
+{
+    if(root != NULL)
+    {
+        preOrderBST_OddSum(root->left,x);
+
+        if(root->data % 2 != 0)
+        {
+            //cout<<root->data<<endl;
+            *x = *x + root->data;
+        }
+
+        preOrderBST_OddSum(root->right,x);
+    }
+    else return;
+
+}
+
+
+stack<TreeNode*> inOrderStack(TreeNode* root)
+{
+    stack<TreeNode*> myStack;
+
+    while(root != NULL)
+    {
+        myStack.push(root);
+        root = root->left;
+    }
+
+    while( root == NULL && !myStack.empty() )
+    {
+        root = myStack.top();
+        myStack.pop();
+
+        cout<<root->data<<endl;
+
+        root = root->right;
+
+        while(root != NULL)
+        {
+        myStack.push(root);
+        root = root->left;
+        }
+    }
+
+    return myStack;
+}
+
+
+
+void preOrderBST(TreeNode* root)
+{
+    if(root != NULL)
+    {
+        preOrderBST(root->left);
+
+        cout<<root->data<<endl;
+
+        preOrderBST(root->right);
+    }
+    else return;
+
+}
+
+int main()
+{
+    TreeNode* root = NULL;
+
+/*
+    for(int i = 1; i<=5; i++)
+    {
+        root = insertNode(root,i);
+    }
+*/
+
+        root = insertNode(root,25);
+        root = insertNode(root,20);
+        root = insertNode(root,35);
+        root = insertNode(root,18);
+        root = insertNode(root,24);
+        root = insertNode(root,30);
+        root = insertNode(root,48);
+        root = insertNode(root,40);
+        root = insertNode(root,50);
+
+    int oddSum = 0;
+
+    preOrderBST(root);
+
+    cout<<"DSKLDFJSPDJSK"<<endl;
+
+    inOrderStack(root);
+
+
+
+
+    cout<<"The sum is: "<<oddSum<<endl;
+
+
+    return 0;
+}
