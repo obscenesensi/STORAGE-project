@@ -1,0 +1,69 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+/*Queue에 사용할 Node*/
+typedef struct _node *nodeptr;
+typedef struct _node{
+	int data;
+	nodeptr link;
+}node;
+
+/*Queue의 Front와 Back을 포인터를 이용해 표시한다.*/
+nodeptr Head,Tail;
+
+void Enqueue(int);
+void Dequeue();
+
+int main(void){
+	int n,i,temp;
+
+	printf("Input the number of data : ");
+	scanf("%d",&n);
+
+	i=0;
+
+	while(i!=n){
+		scanf("%d",&temp);
+		
+		Enqueue(temp);
+
+		i++;
+	}
+	i++;
+	while(i){
+		Dequeue();
+		i--;
+	}
+
+	return 0;
+}
+
+/*Queue에 새로운 데이터를 Back에 추가*/
+void Enqueue(int data){
+	nodeptr tempnode;
+
+	tempnode=(nodeptr)malloc(sizeof(node));
+	tempnode->data=data;
+	tempnode->link=NULL;
+	
+	if(!Head) Head=tempnode;
+	if(Tail) Tail->link=tempnode;
+	Tail=tempnode;
+
+	return;
+}
+
+/*Queue의 Front가 비어있지 않다면, Front의 node를 삭제*/
+void Dequeue(){
+	nodeptr temp;
+
+	if(Head){
+		temp=Head->link;
+		free(Head);
+		Head=temp;
+	}
+	else{
+		printf("Queue is Empty!\n");
+	}
+	return;
+}
