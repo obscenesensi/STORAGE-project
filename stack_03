@@ -1,0 +1,62 @@
+
+#include <cassert>
+#include <iostream>
+#include <set>
+#include <queue>
+#include <cstdio>
+#include <string>
+#include <utility>
+#include <algorithm>
+
+using namespace std;
+
+queue<int> q;
+set<int> good;
+
+void build(int k)
+{
+    //q = new queue<int>();
+    //good = new set<int>();
+    for(int i = 1; i <= k; i++)
+    {
+        q.push(i);
+    }
+}
+
+void toButtom(int p)
+{
+    for(int i = 1; i <= p; i++)
+    {
+
+        q.push(q.front());
+        q.pop();
+    }
+}
+
+
+
+int main()
+{
+    int n, p, k;
+    cin >> n >> k >> p;
+    build(k);
+    int c = 0;
+    while(q.size() != 0)
+    {
+        int temp = q.front();
+        q.pop();
+        toButtom(p);
+        if(++c % n == 0)
+        {
+            good.insert(temp);
+        }
+    }
+
+    for(set<int>::iterator si = good.begin(); si != good.end(); si++)
+    {
+        cout << *si << endl;
+    }
+
+    //system("PAUSE");
+    return 0;
+}
