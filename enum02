@@ -1,0 +1,27 @@
+struct enum_type
+{
+  enum type
+  {
+    one,
+    two,
+    three,
+  };
+};
+
+void do_something(enum_type::type enum_value)
+{
+  switch(enum_value)
+  {
+  case enum_type::one:
+    // ONE
+    break;
+  case enum_type::two:
+    // TWO
+    break;
+  case enum_type::three:
+    // THREE
+    break;
+  default:
+    break;
+  }
+}
