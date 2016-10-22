@@ -1,0 +1,26 @@
+#include <stdio.h>
+
+union foo {
+	int a;
+	char b;
+	long double c;
+};
+
+struct bar {
+	int a;
+	char b;
+	long double c;
+};
+
+main() {
+
+	printf("size of int:          %d\n", sizeof(int));
+	printf("size of char:         %d\n", sizeof('a'));
+	printf("size of long double: %d\n", sizeof(long double));
+
+	union foo x;
+	printf("size of union:       %d\n", sizeof(x));
+
+	struct bar y;
+	printf("size of struct:      %d\n", sizeof(y));
+}
