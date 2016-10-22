@@ -1,0 +1,46 @@
+#include <stdio.h>
+
+struct float4 {
+        union {
+                struct { float r, g, b, a; };
+                struct { float x, y, z, w; };
+                float at[4];
+        };
+};
+
+inline void float4_copy(struct float4 *const dst,
+                        struct float4 const *const src) {
+
+}
+
+inline void float4_zero(struct float4 *const val) {
+        val->x = val->y = val->z = val->w = 0.0;
+}
+
+inline void float4_dot() {
+
+}
+
+inline void float4_norm() {
+
+}
+
+int main(int argc, char* argv[]) {
+
+        struct float4 col;
+        float4_set(&col, 0.666, 0.666, 0.666, 0.666);
+
+        printf("%f %f %f %f\n", col.r, col.g, col.b, col.a);
+
+        float4_zero(&col);
+
+        col.a = 0.666;
+        col.at[2] = 1.112;
+
+        float* p = &col.r;
+        p[1] = 0.4242;
+
+        printf("%f %f %f %f\n", col.r, col.g, col.b, col.a);
+
+        return 0;
+}
