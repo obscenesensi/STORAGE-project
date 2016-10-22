@@ -1,0 +1,22 @@
+// apple xcode
+// paulogp
+#include <stdio.h>
+
+enum the_week_days {segunda, terca, quarta, quinta, sexta, sabado, domingo};
+
+int main (int argc, const char * argv[])
+{
+    int the_day_a = segunda;
+
+    the_day_a++;
+
+    if (the_day_a == terca)
+        printf("terca-feira\n");
+
+    the_day_a++;
+
+    if (the_day_a == quarta)
+        printf("quarta-feira\n");
+
+    return 0;
+}
