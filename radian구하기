@@ -1,0 +1,1 @@
+#include "stdafx.h"#include "stdlib.h"#define PI 3.14void get_radian(int degree, float *rad);int main(){ int d = 0; float r = 0; printf(" 0 ~ 360사이 각을 입력받아 radian을 구하는 프로그램\n"); printf(" 0 ~ 360사이 각을 입력하세요 : "); scanf("%d", &d); get_radian(d,&r); printf("\n radian은 : %f", r); return 0;}void get_radian(int degree, float *rad){ *rad = (float)degree / 180 * PI;}
