@@ -1,0 +1,1 @@
+import org.omg.CORBA.Object;public class point {  private int x; private int y;  public point (int x, int y) {  this.x=y;  this.y=y; } public boolean equals(point obj) {  if((this.x == obj.x) && (this.y == obj.y))      return true;  else   return false; }}
