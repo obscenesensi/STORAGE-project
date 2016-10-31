@@ -1,0 +1,1 @@
+public class Test { public static void main(String[] args) {  // TODO Auto-generated method stub  point a = new point(2,3);  point b = new point(2,3);    System.out.println(a == b);  System.out.println(a.equals(b)); }}
