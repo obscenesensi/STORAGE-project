@@ -1,0 +1,1 @@
+import java.io.*;public class MyStack<T> { public Object[] data = new Object[10]; private int top;   public MyStack() {  top = 0;  data = new Object[10]; }  public void push(T e) {  data[top] = e;  top++; } public T pop() {  if(top == 0)   return null;  return (T) data[--top]; }} 
