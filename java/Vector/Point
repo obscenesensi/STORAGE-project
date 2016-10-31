@@ -1,0 +1,1 @@
+import java.util.Vector;public class PointVectorTest { public static void main(String[] args) {  // TODO Auto-generated method stub  Vector<Point> pv = new Vector<Point>();    pv.add(new Point(1, 2));  pv.add(new Point(2, 3));  pv.add(new Point(2, 3));    for(int i = 0; i < pv.size(); i++)  {   Point temp = pv.get(i);   System.out.println(temp);  } }}
