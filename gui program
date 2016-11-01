@@ -1,0 +1,1 @@
+import javax.swing.JFrame;public class FirstGUIprogram { public static void main(String[] args) {  // TODO Auto-generated method stub  JFrame myFrame = new JFrame();  myFrame.setTitle("박세원");  myFrame.setSize(300,300);  myFrame.setVisible(true); }}
