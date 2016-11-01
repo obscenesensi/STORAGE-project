@@ -1,0 +1,165 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+/* Simple Tic Tac Toe Game - Chaitanya Palaka
+ *
+ * logic:
+ * first, intro : select who is X and 0
+ * then gameloop:
+ *   -read input
+ *   -update board
+ *	 -draw board
+ * 	 -every game loop check for winning condition
+ *
+ *	player 1 = X
+ *	player 2 = 0
+ *
+ */
+#define BOARDSIZE 3
+
+char gameboard[BOARDSIZE][BOARDSIZE];//number for empty, X and O
+int gamemode; // 1 - vsAI(to implement) 2 - 1v1
+int currentturn = 0;//0 - X, 1 - O
+int scores[8] = {0};//r1 r2 r3 c1 c2 c3 lrdiagonal rldiagonal
+
+void initializeGame();
+void gameloop();
+void drawBoard();
+void gameTurn();
+int isGameOver();
+
+void initializeGame()
+{
+	//select game mode
+	int i=0,j=0;
+	do {
+		printf("Are you ready to play a quick game of Tic Tac Toe?\n"
+			    "1.1 Player Game\n"
+			    "2.2 Player Game\n");
+		if (i>0) printf("Please press 1 or 2.\n");
+		printf(">");
+		scanf("%d", &gamemode);
+		i++;
+	} while ( gamemode != 1 && gamemode != 2 );
+
+	//remove later
+	if(gamemode == 1) {
+		printf("Sorry, this hasn't been implemented yet!\n");
+		exit(1);
+	}
+	//set up game board
+	int count = 1;
+	for(i=0; i<BOARDSIZE; ++i) {
+		for(j=0; j<BOARDSIZE; ++j) {
+			gameboard[i][j] = count + '0';
+			count++;
+		}
+	}
+}
+
+//main game loop
+void gameloop()
+{
+	int winner=-1;
+	do {
+		//each turn prompts user and updates board
+		drawBoard();
+		gameTurn();
+	} while((winner=isGameOver())==-1);
+
+	system("clear");
+	if(winner==-2) {
+		printf("It's a draw! Thanks for playing!\n");
+		sleep(2);
+		exit(1);
+	}
+	if(winner==1) {
+		printf("Player 1 wins! Thanks for playing!\n");
+		sleep(2);
+		exit(1);
+	}
+	if(winner==2) {
+		printf("Player 2 wins! Thanks for playing!\n");
+		sleep(2);
+		exit(1);
+	}
+}
+
+void drawBoard()
+{
+	system("clear");
+	int i,j;
+
+	for(i=0; i<BOARDSIZE; ++i) {
+		for(j=0; j<BOARDSIZE; ++j) {
+			printf("%c ",gameboard[i][j]);
+		}
+		printf("\n");
+	}
+	printf("\n");
+}
+
+void gameTurn() {
+	int n=0,i,j,cnt=0;
+	if(currentturn==0) printf("Player 1 (X), make your move:\n");
+	else 			   printf("Player 2 (O), make your move:\n");
+
+	do {
+		if(cnt>0) printf("Please select a number from 1-9.\n");
+		printf(">");
+		scanf("%d", &n);
+		cnt++;
+	} while( n < 1 || n > 9);
+
+	char c = n + '0';
+	int found = 0;
+	for(i=0;i<BOARDSIZE;++i) {
+		for(j=0;j<BOARDSIZE;++j) {
+			if(gameboard[i][j] == c) {
+				gameboard[i][j] = (currentturn==0) ? 'X' : 'O';
+				found = 1;
+
+				//set score array
+				scores[i] += (currentturn==0) ? 1 : -1;
+				scores[BOARDSIZE + j] += (currentturn==0) ? 1 : -1;
+				if(i==j) scores[2*BOARDSIZE] += (currentturn==0) ? 1 : -1;
+				if(BOARDSIZE-1-j == i) scores[2*BOARDSIZE+1] += (currentturn==0) ? 1 : -1;
+			}
+		}
+	}
+
+	if(found==0) {
+		printf("That location has been taken. Play again.\n");
+		sleep(1);
+	} else {
+		currentturn = (currentturn==0) ? 1 : 0;
+	}
+}
+
+//checks gameboard for winning configuration
+int isGameOver() {
+	int i,j,cnt=0;
+	int winner = -1;
+
+	for(i=0;i<8;++i) {
+		if(scores[i]==3) return 1;//X wins!
+		else if(scores[i]==-3) return 2;//O wins!
+	}
+
+	for(i=0;i<BOARDSIZE;++i) {
+		for(j=0;j<BOARDSIZE;++j) {
+			if(gameboard[i][j]=='X' || gameboard[i][j]=='O') cnt++;
+		}
+	}
+
+	if(cnt==9) return -2;//draw
+
+	return -1;//game not over
+}
+
+int main(int argc, char * argv[])
+{
+	initializeGame();
+	gameloop();
+	return 0;
+}
