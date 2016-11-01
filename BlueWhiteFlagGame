@@ -1,0 +1,39 @@
+청기백기 게임 명령문 Generator.
+
+So far implemented in ...
+- Python 2.5 : 3 lines
+- Python 3.0 : 3 lines
+- Ruby       : 2 lines
+- Java       : 9 lines
+- Perl       : 3 lines
+
+
+To be implemented in ...
+- C
+- haskell
+- lisp (maybe clojure?)
+- objective c
+- C#
+- D
+- Lua
+
+
+Q&A
+---
+Q: What is this?
+A: All the programs here outputs list of randomly generated Korean flag game commands.
+
+Q: Why?
+A: Because I needed it for my church picnic.
+
+Q: I mean, why so many languages?
+A: Why not? It's kinda fun.
+
+Q: Can I suggest a language?
+A: Sure.
+
+Q: Can I implement it in a language?
+A: Sure.
+
+Q: This Q&A seems pretty pointless.
+A: That's not a question.
