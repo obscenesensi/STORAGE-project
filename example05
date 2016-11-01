@@ -1,0 +1,26 @@
+#include <stdio.h>
+ 
+char *mystrcpy_s(char *dest, size_t dsize, const char *src);
+int main(void)
+{
+    char source[100] = "Hello World";
+    char dest[100];
+   
+    printf("원본 문자열:%s\n", source);
+    mystrcpy_s(dest, sizeof(dest), source);
+    printf("복사 결과 문자열: %s\n", dest);
+ 
+    return 0;
+}
+ 
+char *mystrcpy_s(char *dest, size_t dsize, const char *src)
+{
+    char *origin;
+ 
+    dsize--;//맨 마지막에 종료 문자('\0')를 추가해야 하므로 버퍼 길이를 1 감소
+ 
+    //dsize가 0이 아니고 복사한 문자가 참이면 반복
+    for (origin = dest; (dsize) && (*dest = *src); dest++, src++, dsize--);
+    *dest = 0;//종료 문자 복사
+    return origin;
+}
