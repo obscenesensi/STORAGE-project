@@ -1,0 +1,848 @@
+#include <stdio.h>
+#include <conio.h>
+#include <windows.h>
+#include <time.h>
+#include <string.h>
+typedef struct bug_body *bugptr;
+typedef struct al *alptr;
+
+//벌레 노드
+struct bug_body{
+	char ch1, ch2; //벌레 노드를 찍어줄때 쓰는값
+	int x, y;	  //벌레 노드의 위치
+	bugptr next;  //벌레 노드의 다음 위치
+};
+
+//알 노드 
+struct al{
+	char ch1, ch2;//알 노드를 찍어줄때 쓰는 값(콘솔에서는 모양으로 나온다)
+	int x, y;	 //알 노드의 위치
+	int score;	 //알 노드가 가진 점수
+	int shape;	 //알 노드의 모양
+	alptr fnext; //알 노드의 앞 노드
+	alptr bnext; //알 노드의 뒤 노드
+};
+
+int menu_display();
+//--------------------------------------------------------
+void game_start();
+void gotoxy(int x, int y);
+void make_bug(bugptr *p);
+void make_al(int x, int x2);
+int del_al(alptr p2, alptr q2);
+void del_all_bug();
+//--------------------------------------------------------
+int search_al_XY(int x, int y);
+int search_putXY(int x, int y, alptr *p2, alptr*q2);
+//--------------------------------------------------------
+int gameover(int x, int y);
+void put_score(int score);
+//--------------------------------------------------------
+void free_al_memory(alptr p);
+void free_bug_memory(bugptr p);
+bugptr head, get_bug_memory(), bug_head;
+alptr head2, get_al_memory(), al_end;
+//--------------------------------------------------------
+void explain_game();
+//--------------------------------------------------------
+void gotoxy(int x, int y);
+void print_border();
+//--------------------------------------------------------
+
+
+
+int main(void)
+{
+	int c, i;
+	while ((c = menu_display()) != 3)
+	{
+		switch (c)
+		{
+		case 1: game_start();
+			break;
+		case 2: explain_game();
+			break;
+		default: break;
+		}
+	}
+
+	for (i = 3; i>0; i--){
+		gotoxy(25, 16);
+		printf("%d초후 프로그램이 종료 됩니다.", i);
+		Sleep(1000);
+	}
+	return 0;
+}
+//메뉴를 디스플레이 해주는 함수.
+int menu_display()
+{
+	int select = 0;
+	int i = 0;
+	char menu[4][50] = { "1. Start", "2. See about Bug Game", "3. End" };
+	system("cls");
+	gotoxy(30, 10);
+	puts("Bug game");
+	for (i = 0; i<4; i++)
+	{
+		gotoxy(25, 11 + i);
+		puts(menu[i]);
+	}
+	gotoxy(25, 15);
+	do
+	{
+		select = _getch() - '0';
+	} while (select<0 || select>5);
+
+	return select;
+}
+
+//게임을 설명해주는 함수.
+void explain_game()
+{
+	int i = 0;
+	char menu[17][200] = { "이 게임 이름은 <지렁이 게임> 입니다", "지렁이는 앞으로만가고 가는방향의 반대방향으로 못갑니다", "지렁이가 각종 알을 먹으면 지렁이의 몸은 점점 커집니다", "처음시작은 레벨1에서 시작하고 레벨이 올라갈수록", "지렁이는 점점 빨라집니다", "지렁이가 화면에 부딪히거나 자기몸에 부딪히면 게임오버입니다.",
+		"<지렁이가 먹는 알 종류>     ", "☆ : 점수 1점을 얻고 지렁이의 몸이 1개 늘어납니다.", "★ : 점수 3점을 얻고 지렁이의 몸이 1개 늘어납니다.", "○ : 지렁이가 얻은 몸을 전부 잃습니다.", "◆ : 레벨하나가 올라가고 점수 10점얻습니다", "□ : 점수 5점을 얻고 지렁이의 몸이 1개 늘어납니다.", "지렁이가먹은 알이 25개이상이면 점수는 더블로올라갑니다",
+		"<조작법>    ", "→:오른쪽, ←:왼쪽 ↑:위, ↓:아래", "Space Bar : 멈춤", "다시 -Space Bar-를 누르면 게임재개 -Esc-를 누르면 종료" };
+	system("cls");
+	gotoxy(30, 3);
+	puts("게임설명");
+	for (i = 0; i<16; i++)
+	{
+		gotoxy(10, 5 + i);
+		puts(menu[i]);
+	}
+
+	gotoxy(15, 24);
+	printf("아무키나 누르면 메뉴로 돌아갑니다");
+	_getch();
+
+}
+
+//Bug메모리 하나를 할당 받는함수
+bugptr get_bug_memory()
+{
+	bugptr p1;
+	p1 = (bugptr)malloc(sizeof(struct bug_body));
+	p1->next = NULL;
+	return (p1);
+}
+
+//AL메모리 하나를 할당 받는 함수
+alptr get_al_memory()
+{
+	alptr p;
+	p = (alptr)malloc(sizeof(struct al));
+	p->fnext = NULL;
+	p->bnext = NULL;
+	return (p);
+}
+
+//Bug메모리 하나를 제거하는 함수
+void free_memory2(bugptr p)
+{
+	free(p);
+}
+
+//AL메모리 하나를 제거하는 함수
+void free_al_memory(alptr p)
+{
+	free(p);
+}
+
+//Bug Body 하나를 만들어주는 함수
+void make_bug(bugptr *p)
+{
+	bugptr b;
+	b = get_bug_memory();
+
+	//메모리할당이 성공하면
+	if (b){
+		head->next = b;
+		//최초생성시 벌레의 머리를 만들어준다.
+		if (*p == NULL){
+			bug_head = b;
+			bug_head->ch1 = 0xa1, bug_head->ch2 = 0xdd;
+			bug_head->x = 3, bug_head->y = 3;//벌레 머리의 시작 X,Y 위치
+			bug_head->next = head;
+		}
+		else
+			//벌레의 몸통을 만들준다.
+		{
+			b->ch1 = 0xa1, b->ch2 = 0xdc;
+			b->next = *p;
+		}
+		*p = b;//벌레몸이 생길때마다 변수"p" 에 그 위치를 저장(다음생성시 이용하기 위해서)
+	}
+	else{
+		gotoxy(1, 1);
+		printf("벌레를 더이상 만들수가 없습니다.");
+	}
+
+}
+
+//AL하나를 만들어주는 함수
+void make_al(int x, int x2)
+{
+	int al_x = 0, al_y = 0;
+	alptr d;
+
+	//알 메모리를 하나 할당 받는 함수를 호출한다.
+	d = get_al_memory();
+
+
+	/**
+	* time 함수는 1970년 1월 1일 이후의 경과된 시간을 초 단위로 반환하는 함수이다.
+	* srand함수는 rand()함수 실행시 매번 랜덤값이 다르게 시드값을 넣어주는 함수다.
+	*/
+	srand(time(NULL));
+
+
+	//알모양 결정[랜덤하게 알 모양을 설정해준다]
+	if (x == 0)
+		d->shape = rand() % 3;
+	else if (x == 1)
+		d->shape = 3;
+	else if (x == 2)
+		d->shape = 4;
+
+
+	//다시 랜덤함수의 시드값을 변경해준다.
+	srand(time(NULL));
+	do
+	{
+		//bug와 좌표를 맞추어 주기 위해서
+		do{
+			d->x = rand() % 77;
+		} while (d->x % 2);
+
+		d->x += 1;
+		d->y = rand() % 21;
+		d->y += 1;
+		if (d->x == 1)
+			d->x += 2;
+		if (d->y == 1)
+			d->y += 1;
+	} while (search_al_XY(d->x, d->y));//버그노드와 겹치지 않는곳에 프린트하기 위해서
+
+	//알 노드의 모양을 설정하고 알노드의 점수를 넣어준다.
+	switch (d->shape){
+	case 0://☆ -> +1
+		d->ch1 = 0xa1, d->ch2 = 0xd9;
+		if (x2<25)
+			d->score = 1;
+		else//알의 갯수가 25개 이상이면 더블 !
+			d->score = 2;
+		break;
+	case 1://★ -> +3
+		d->ch1 = 0xa1, d->ch2 = 0xda;
+		if (x2<25)
+			d->score = 3;
+		else
+			d->score = 6;
+		break;
+	case 2://□ -> +5 
+		d->ch1 = 0xa1, d->ch2 = 0xe0;
+		if (x2<25)
+			d->score = 5;
+		else
+			d->score = 10;
+		break;
+	case 3://◆ -> 레벨업 score +10		
+		d->ch1 = 0xa1, d->ch2 = 0xdf;
+		d->score = 10;
+		break;
+	case 4://○ -> 몸을 모두 잃음.
+		d->ch1 = 0xa1, d->ch2 = 0xdb;
+		d->score = 0;
+		break;
+	}
+
+	if (al_end == NULL){//최초생성시 head2와 연결
+		head2->fnext = d; //헤드 다음에 알노드를 연결
+		d->bnext = head2; //알노드 뒤에 헤드를 연결
+	}
+	else{//마지막 알노드와 새로생긴 알노드를 연결
+		(al_end)->fnext = d; //마지막 알 노드 앞에 새로운 노드를 연결
+		d->bnext = al_end;   //알 노드 뒤와 마지막을 연결.
+	}
+
+	//원형으로 연결
+	head2->bnext = d; //헤드의 뒤노드는 지금 생성된 노드
+	d->fnext = head2; //지금 생성된 노드의 앞노드는 헤드
+
+	al_end = d;//새로생긴 알노드를 마지막노드값으로 저장
+
+	gotoxy(d->x, d->y);
+	printf("%c%c", d->ch1, d->ch2);//출력
+}
+
+
+//AL하나를 삭제해주는함수
+int del_al(alptr p2, alptr q2)//p2는 삭제될 AL뒤d의 것의 주소, q2는 삭제될 AL
+{
+	int score;
+	if (p2 == NULL){//head2앞의 AL이 삭제될경우
+		if (q2 == al_end){//삭제후 리스트에 AL이 없는 경우
+			head2->fnext = NULL;
+			head2->bnext = NULL;
+			al_end = NULL;
+		}
+		else//삭제후 리스트에 AL이 있는경우
+			head2->fnext = q2->fnext;
+		q2->fnext->bnext = head2;
+	}
+	else{
+		if (q2 == al_end){//리스트에서 마지막 AL이 삭제 될경우
+			p2->fnext = head2;
+			head2->bnext = p2;
+			al_end = p2;
+		}
+		else{//중간 AL이 삭제될경우
+			p2->fnext = q2->fnext;
+			p2->fnext->bnext = p2;
+		}
+	}
+	score = q2->score;
+	free_al_memory(q2);
+	return score;
+}
+
+//bug_head만 남기고 Bug_body를 모두 삭제해주는 함수
+void del_all_bug()
+{
+	bugptr temp;
+	temp = head->next;
+	while (temp != bug_head)
+	{
+		head->next = temp->next;
+		gotoxy(temp->x, temp->y);
+		printf("  ");
+		free(temp);
+		temp = head->next;
+	}
+}
+
+
+
+//AL이 들어갈 좌표를 검색
+//벌레노드와 알노드에서 겹치는것이 있는지 판단한다.
+int search_al_XY(int x, int y)
+{
+	int val = 0;
+	bugptr temp1;
+	alptr temp2;
+	//벌레노드의 머리 다
+	temp1 = head->next;
+	//알 노드의 머리 다음.
+	temp2 = head2->fnext;
+
+
+	//Bug에 겹치는것이 있는지
+	while (temp1 != head)
+	{
+		if ((temp1->x == x) && (temp1->y == y))//같을경우
+		{
+			val = 1;
+			temp1 = head;//루프를 빠져나오기 위해서
+		}
+		else
+		{
+			val = 0;
+			temp1 = temp1->next;//다음으로 이동
+		}
+	}
+
+	if (val == 1)//만약 이미 겹치는것이 있으면 함수를 빠져나온다.
+		return val;
+
+	//AL 리스트에 겹치는것이 있는지
+	if (temp2 != NULL)
+	{
+		while (temp2 != head2)
+		{
+			if ((temp2->x == x) && (temp2->y == y))//값이 일치할경우
+			{
+				val = 1;
+				temp2 = head2;//루프를 빠져나오기위해서
+			}
+			else
+			{
+				val = 0;
+				temp2 = temp2->fnext;//다음으로 이동
+			}
+		}
+	}
+	return val;
+}
+
+//Bug가 자신의 몸에 부딪힌경우 (game over 구현)
+int gameover(int x, int y)
+{
+	int val = 0;
+	bugptr temp;
+	temp = head->next;
+
+	while (temp != bug_head)
+	{
+		if ((temp->x == x) && (temp->y == y))//일치할경우
+		{
+			val = 1;
+			temp = bug_head;//루프를 빠져나오기 위해서
+		}
+		else
+		{
+			val = 0;
+			temp = temp->next;//다음으로 이동
+		}
+	}
+	return val;
+
+}
+
+
+//bug_head가 알을 먹었는지를 검색하는 함수
+int search_putXY(int x, int y, alptr *p2, alptr*q2)//만약 알을 먹었으면 업데이트된p2,q2는 알삭제함수로 넘겨진다.
+{
+	int val = 0;
+	alptr temp;
+	temp = head2->fnext;
+	if (temp == NULL)
+		return 0;
+
+	while (temp != head2)
+	{
+		if ((temp->x == x) && (temp->y == y))//값이 일치할경우
+		{
+			val = 1;
+			*q2 = temp;//삭제할 AL
+			*p2 = temp->bnext;//삭제할 AL의 뒤 AL
+			if (*p2 == head2)
+				*p2 = NULL;//뒷AL이 head2면 NULL값으로 
+			temp = head2;//루프를 빠져나오기위해서
+		}
+		else
+		{
+			val = 0;
+			temp = temp->fnext;//다음 AL로 이동
+		}
+	}
+	return val;
+
+}
+
+
+void game_start()
+{
+	int j = 0, score = 0, total_score = 0;
+	int block = 1, temp_x = 0, temp_y = 0, level = 100, level_code = 0, temp_key = 0, i = 0;
+	int start1 = 0, start2 = 0, start3 = 0, end = 0;
+	double ptr1 = 0, ptr2 = 0, ptr3 = 0;
+	char key1 = 0, key2 = 0;
+	bugptr p = NULL, r = NULL;
+	alptr p1 = NULL, q1 = NULL;
+	al_end = NULL;
+	head = get_bug_memory();
+	head2 = get_al_memory();
+	make_bug(&p);
+	system("cls");
+
+	print_border();
+	//게임시작시 별노드 5개를 화면에 뿌려준다
+	for (j = 0; j<5; j++)	{
+		make_al(0, i);
+		Sleep(1000);
+	}
+
+	key1 = _getch();
+	key2 = _getch();
+	if (key2 != 77)//게임시작시 사용자가 아무키를 누르면 벌레가 앞으로 가면서 시작
+		key2 = 77;
+
+	start1 = time(NULL);//시작시간
+	start2 = time(NULL);
+	start3 = time(NULL);
+	while (block){
+		end = time(NULL);//끝난시간
+		ptr1 = difftime(end, start1); //시간을 계산해준다.(알노드 생성 시간)
+		ptr2 = difftime(end, start2); //시간을 계산해준다.(레벨업)
+		ptr3 = difftime(end, start3); //시간을 계산해준다.( ○의 알 생성시간)
+
+		if (ptr1>1){//1초마다 ☆,★,□의 알을 만들어준다.
+			make_al(0, i);
+			start1 = time(NULL);//시작시간 초기화
+		}
+
+		if (ptr2>10 && level>0){//10초마다 레벨을 올린다.
+			level -= 3;
+			if (level<0)
+				level = 1;
+			else
+				++level_code;//레벨을 증가시켜준다
+			gotoxy(2, 24);
+			printf("먹은 알의 수 : %d,   score : %d,   Total score : %d         Level : %d ", i, score, total_score, level_code);
+			make_al(1, i);//10초마다 ◆을 만들어준다
+			start2 = time(NULL);
+		}
+
+		if (ptr3>60){//1분마다 ○의 알을 만들어준다.
+			make_al(2, i);
+			start3 = time(NULL);
+		}
+
+
+
+		switch (key2){
+		case 77:                                                                    //오른쪽으로 가는경우
+			temp_key = key2;
+			do{
+				r = head->next;//첫bug_body의 주소를 변수 r에 대입
+				temp_x = p->x; temp_y = p->y; //임시좌표에 마지막Bug_body의좌표를 저장(bug_body는 앞으로 이동하기때문에)
+
+				while (r != head)
+				{
+					if (r->next != head)
+					{
+						//버그노드의 좌표를 앞버그노드의 좌표로 이동
+						r->x = r->next->x;
+						r->y = r->next->y;
+					}
+					else{
+						//전부 이동했으면 앞으로 이동후 생긴 빈공간에 bug_body를 출력
+						gotoxy(r->x, r->y);
+						printf("%c%c", 0xa1, 0xdc);
+					}
+					r = r->next;//다음Bug_body로 이동
+				}
+				bug_head->x += 2;//bug_head를 앞으로 이동
+				gotoxy(bug_head->x, bug_head->y);
+				printf("%c%c", bug_head->ch1, bug_head->ch2);//bug_head를 출력
+
+
+				if (bug_head->x>77 || gameover(bug_head->x, bug_head->y)){//bug_head가 벽에 부딛히거나 자기몸에 부딛히면
+					block = 0;//루프종료
+					break;
+				}
+
+
+				if (search_putXY(bug_head->x, bug_head->y, &p1, &q1)){//bug_head가 al을 먹으면
+					if (q1->shape == 0 || q1->shape == 1 || q1->shape == 2)//먹은 al이 ★, ☆, ■ 인경우
+					{
+						make_bug(&p);//bug_body를 하나 만들어준다.
+						p->x = temp_x;//마지막bug_body가 있던곳의 좌표를 준다.
+						p->y = temp_y;
+						i++;//알의 갯수
+					}
+					else if (q1->shape == 3)//먹은 포인트가 ◆인경우
+					{
+						gotoxy(temp_x, temp_y);
+						printf("  ");//마지막 bug_body가 이동후 남긴곳을 지워준다.
+						level -= 3;//속도를증가시켜준다
+						if (level<0)
+							level = 1;
+						else
+							++level_code;//레벨을 증가시켜준다
+					}
+					else if (q1->shape == 4)//먹은 포인트가 ○인경우
+					{
+						gotoxy(temp_x, temp_y);
+						printf("  ");//마지막 bug_body가 이동후 남긴곳을 지워준다.
+						del_all_bug();//bug_body를 모두 삭제해준다.
+						p = bug_head;
+						i = 0;
+					}
+					score = del_al(p1, q1);//먹힌 al 하나를 삭제해준다. 
+					total_score += score;
+					gotoxy(2, 24);
+					printf("먹은 알의 수 : %d,   score : %d,   Total score : %d         Level : %d ", i, score, total_score, level_code);
+					q1 = NULL;//삭제됬으니 NULL로 바꾸어줌
+					Sleep(level);
+				}
+				else{//마지막 bug_body가 이동후 남긴곳을 지워준다.
+					gotoxy(temp_x, temp_y);
+					printf("  ");
+					Sleep(level);
+				}
+			} while (!_kbhit());
+			if (block != 0){
+				key1 = _getch();
+				key2 = _getch();
+				if (key2 == 75){//반대방향으로 갈시 이를 억제
+					key2 = 77;
+				}
+			}
+			break;
+
+		case 75:                                                                   //왼쪽으로 이동시
+			temp_key = key2;
+			do{
+				r = head->next;
+				temp_x = p->x; temp_y = p->y;
+
+				while (r != head)
+				{
+					if (r->next != head)
+					{
+						r->x = r->next->x;
+						r->y = r->next->y;
+					}
+					else{
+						gotoxy(r->x, r->y);
+						printf("%c%c", 0xa1, 0xdc);
+					}
+					r = r->next;
+				}
+				bug_head->x -= 2;
+				gotoxy(bug_head->x, bug_head->y);
+				printf("%c%c", bug_head->ch1, bug_head->ch2);
+
+
+				if (bug_head->x<3 || gameover(bug_head->x, bug_head->y)){
+					block = 0;
+					break;
+				}
+
+
+				if (search_putXY(bug_head->x, bug_head->y, &p1, &q1)){
+					if (q1->shape == 0 || q1->shape == 1 || q1->shape == 2)
+					{
+						make_bug(&p);
+						p->x = temp_x;
+						p->y = temp_y;
+						i++;
+					}
+					else if (q1->shape == 3)
+					{
+						gotoxy(temp_x, temp_y);
+						printf("  ");
+						level -= 3;
+						if (level<0)
+							level = 1;
+						else
+							++level_code;//레벨을 증가시켜준다
+					}
+					else if (q1->shape == 4)
+					{
+						gotoxy(temp_x, temp_y);
+						printf("  ");
+						del_all_bug();
+						p = bug_head;
+						i = 0;
+					}
+					score = del_al(p1, q1);
+					total_score += score;
+					gotoxy(2, 24);
+					printf("먹은 알의 수 : %d,   score : %d,   Total score : %d         Level : %d ", i, score, total_score, level_code);
+					Sleep(level);
+				}
+				else{
+					gotoxy(temp_x, temp_y);
+					printf("  ");
+					Sleep(level);
+				}
+			} while (!_kbhit());
+			if (block != 0){
+				key1 = _getch();
+				key2 = _getch();
+				if (key2 == 77){//반대방향으로 갈시 이를 억제
+					key2 = 75;
+				}
+			}
+			break;
+
+		case 72:                                                                 //위로 이동시
+			temp_key = key2;
+			do{
+				r = head->next;
+				temp_x = p->x; temp_y = p->y;
+
+				while (r != head)
+				{
+					if (r->next != head)
+					{
+						r->x = r->next->x;
+						r->y = r->next->y;
+					}
+					else{
+						gotoxy(r->x, r->y);
+						printf("%c%c", 0xa1, 0xdc);
+					}
+					r = r->next;
+				}
+				bug_head->y -= 1;
+				gotoxy(bug_head->x, bug_head->y);
+				printf("%c%c", bug_head->ch1, bug_head->ch2);
+
+
+				if (bug_head->y<2 || gameover(bug_head->x, bug_head->y)){
+					block = 0;
+					break;
+				}
+
+				if (search_putXY(bug_head->x, bug_head->y, &p1, &q1)){
+					if (q1->shape == 0 || q1->shape == 1 || q1->shape == 2)
+					{
+						make_bug(&p);
+						p->x = temp_x;
+						p->y = temp_y;
+						i++;
+					}
+					else if (q1->shape == 3)
+					{
+						gotoxy(temp_x, temp_y);
+						printf("  ");
+						level -= 3;
+						if (level<0)
+							level = 1;
+						else
+							++level_code;//레벨을 증가시켜준다
+
+					}
+					else if (q1->shape == 4)
+					{
+						gotoxy(temp_x, temp_y);
+						printf("  ");
+						del_all_bug();
+						p = bug_head;
+						i = 0;
+					}
+					score = del_al(p1, q1);
+					total_score += score;
+					gotoxy(2, 24);
+					printf("먹은 알의 수 : %d,   score : %d,   Total score : %d         Level : %d ", i, score, total_score, level_code);
+					Sleep(level);
+				}
+				else{
+					gotoxy(temp_x, temp_y);
+					printf("  ");
+					Sleep(level);
+				}
+			} while (!_kbhit());
+			if (block != 0){
+				key1 = _getch();
+				key2 = _getch();
+				if (key2 == 80){//반대방향으로 갈시 이를 억제
+					key2 = 72;
+				}
+			}
+			break;
+
+		case 80:                                                              //아래로 이동시
+			temp_key = key2;
+			do{
+				r = head->next;
+				temp_x = p->x; temp_y = p->y;
+				while (r != head)
+				{
+					if (r->next != head)
+					{
+						r->x = r->next->x;
+						r->y = r->next->y;
+					}
+					else{
+						gotoxy(r->x, r->y);
+						printf("%c%c", 0xa1, 0xdc);
+					}
+					r = r->next;
+				}
+				bug_head->y += 1;
+				gotoxy(bug_head->x, bug_head->y);
+				printf("%c%c", bug_head->ch1, bug_head->ch2);
+
+
+				if (bug_head->y>22 || gameover(bug_head->x, bug_head->y)){
+					block = 0;
+					break;
+				}
+
+
+				if (search_putXY(bug_head->x, bug_head->y, &p1, &q1)){
+					if (q1->shape == 0 || q1->shape == 1 || q1->shape == 2)
+					{
+						make_bug(&p);
+						p->x = temp_x;
+						p->y = temp_y;
+						i++;
+					}
+					else if (q1->shape == 3)
+					{
+						gotoxy(temp_x, temp_y);
+						printf("  ");
+						level -= 3;
+						if (level<0)
+							level = 1;
+						else
+							++level_code;//레벨을 증가시켜준다
+					}
+					else if (q1->shape == 4)
+					{
+						gotoxy(temp_x, temp_y);
+						printf("  ");
+						del_all_bug();
+						p = bug_head;
+						i = 0;
+					}
+					score = del_al(p1, q1);
+					total_score += score;
+					gotoxy(2, 24);
+					printf("먹은 알의 수 : %d,   score : %d,   Total score : %d         Level : %d ", i, score, total_score, level_code);
+					Sleep(level);
+				}
+				else{
+					gotoxy(temp_x, temp_y);
+					printf("  ");
+					Sleep(level);
+				}
+			} while (!_kbhit());
+			if (block != 0){
+				key1 = _getch();
+				key2 = _getch();
+				if (key2 == 72){//반대방향으로 갈시 이를 억제
+					key2 = 80;
+				}
+			}
+			break;
+
+		case 27:
+			block = 0;
+
+		default:
+			key2 = temp_key;
+			break;
+		}
+	}
+	gotoxy(35, 10);
+	printf("GAME OVER");
+	Sleep(1000);
+	gotoxy(25, 15);
+	printf("아무키나 누르면 메뉴로 넘어갑니다\n");
+	_getch();
+
+}
+
+void gotoxy(int x, int y)
+{
+	COORD Pos = { x - 1, y - 1 };
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Pos);
+}
+
+void print_border()
+{
+	int i, j;
+	char ch1 = 0xa1, ch2 = 0xe1;
+
+	for (i = 0; i<40; i++)
+		printf("%c%c", ch1, ch2);
+
+	for (i = 0; i<21; i++){
+		for (j = 0; j<40; j++)
+		{
+			if (j == 0) printf("%c%c", ch1, ch2);
+			else if (j == 39) printf("%c%c", ch1, ch2);
+			else printf("  ");
+		}
+	}
+
+	for (i = 0; i<40; i++)
+		printf("%c%c", ch1, ch2);
+
+}
