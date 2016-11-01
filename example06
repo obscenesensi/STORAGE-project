@@ -1,0 +1,22 @@
+#include <stdio.h>
+ 
+char *mystrncpy(char *dest, const char *src, size_t n);
+int main(void)
+{
+    char source[100] = "Hello World";
+    char dest[100] = "abcde Yahoo";
+ 
+    printf("원본 문자열:%s 의 5개 문자 복사\n", source);
+    printf("복사 전 현재 결과 문자열:%s\n", dest);
+    mystrncpy(dest, source, 5);
+    printf("복사 후 결과 문자열: %s\n", dest);
+ 
+    return 0;
+}
+ 
+char *mystrncpy(char *dest, const char *src, size_t n)
+{
+    char *origin;
+    for (origin = dest; n && (*dest = *src); dest++, src++, n--);//n이 참이고 복사한 문자가 참이면 반복
+    return origin;
+}
