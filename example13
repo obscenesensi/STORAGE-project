@@ -1,0 +1,194 @@
+#include <stdio.h>
+#include <memory.h>
+#include <stdlib.h>
+#include <string.h>
+ 
+#define MAX_NLEN    20 //최대 이름 길이
+#define MAX_SUBJECT 3 //과목 수
+typedef struct Student{//학생 구조체 정의
+    char name[MAX_NLEN+1];//이름
+    int num; //번호
+    int scores[MAX_SUBJECT];//국,영,수 성적
+    struct Student *next;
+    struct Student *prev;
+}Student;
+ 
+ 
+const char *stitles[MAX_SUBJECT]={"국어","영어","수학"};
+ 
+ 
+Student *head, *tail;
+ 
+void Initialize();//초기화
+void Run();
+void Exit();//종료하기 전에 할당한 메모리 해제
+int main(void)
+{    
+    Initialize();//초기화
+    Run();
+    Exit();//종료하기 전에 할당한 메모리 해제
+    return 0;
+}
+ 
+ 
+void Initialize()
+{
+    head = (Student *)malloc(sizeof(Student));//더미 노드 생성
+    tail = (Student *)malloc(sizeof(Student));//더미 노드 생성
+    head->next = tail;//맨 앞 더미노드 next를 tail로 설정
+    tail->prev = head;//맨 뒤 더미노드 prev를 head로 설정
+    head->prev = tail->next = NULL;
+}
+ 
+int SelectMenu();//메뉴 출력 및 선택
+void AddStudent();//학생 데이터 입력
+void RemoveStudent();//학생 데이터 삭제
+void FindStudent();//학생 검색
+void ListStudent();//목록 보기
+void Run()
+{
+    int key = 0;
+    while((key = SelectMenu())!=0)//선택한 메뉴가 0이 아니면 반복
+    {
+        switch(key)//선택한 키에 따라 기능 수행
+        {
+        case 1: AddStudent(); break;
+        case 2: RemoveStudent(); break;
+        case 3: FindStudent(); break;
+        case 4: ListStudent(); break;
+        default: printf("잘못 선택하였습니다.\n"); break;
+        }        
+    }
+    printf("프로그램 종료\n");
+}
+ 
+int SelectMenu()
+{    
+    int key=0;
+    printf("성적 관리 프로그램 0:종료\n");
+    printf("1: 학생 데이터 입력 2: 학생 데이터 삭제 3: 학생 검색 4: 목록 보기 \n");
+    scanf_s("%d",&key);
+    return key;
+}
+ 
+int IsAvailNum(int num);//유효한 번호인지 판별
+int IsAvailScore(int score);//유효한 성적인지 판별
+void AddStudent()
+{
+    int num=0;
+    Student *stu=0;
+    int s=0;
+    
+    printf("추가할 학생 번호: ");
+    scanf_s("%d",&num);
+ 
+        
+    stu = (Student *)malloc(sizeof(Student));//학생 구조체 동적 메모리 할당    
+    stu->num = num;
+    printf("이름: ");
+    scanf_s("%s",stu->name,sizeof(stu->name));
+ 
+    for(s=0;s<MAX_SUBJECT;s++)
+    {
+        printf("%s 성적:",stitles[s]);
+        scanf_s("%d",stu->scores+s);
+ 
+        if(IsAvailScore(stu->scores[s])==0)//유효한 성적이 아닐 때
+        {
+            stu->scores[s]=-1;
+            printf("입력한 성적이 유효하지 않아서 %s 성적은 입력 처리하지 않았습니다.\n",stitles[s]);
+        }
+    }
+ 
+    //새로 생성한 노드를 tail 앞에 매달기
+    stu->next = tail;
+    stu->prev = tail->prev;
+    tail->prev->next = stu;
+    tail->prev = stu;
+}
+ 
+int IsAvailScore(int score)
+{
+    return (score>=0)&&(score<=100);
+}
+void RemoveStudent()
+{
+    int num;
+    Student *seek;
+    printf("삭제할 학생 번호: ");
+    scanf_s("%d",&num);
+ 
+    for(seek=head->next; seek != tail; seek =seek->next)
+    {
+        if(seek->num == num)
+        {
+            //연결리스트에서 링크 조절
+            seek->prev->next = seek->next;
+            seek->next->prev = seek->prev;
+            free(seek);//메모리 해제
+            printf("삭제하였습니다.\n");
+            return;
+        }
+    }
+    printf("데이터가 없습니다.\n");
+    
+}
+void ViewStuData(Student *stu);
+void FindStudent()
+{
+    int num=0;    
+    Student *seek=0;
+    printf("검색할 학생 번호: ");
+    scanf_s("%d",&num);
+ 
+    for(seek=head->next; seek != tail; seek =seek->next)
+    {
+        if(seek->num == num)
+        {
+            ViewStuData(seek);
+            return;
+        }
+    }
+    printf("데이터가 없습니다.\n");
+    
+}
+void ViewStuData(Student *stu)
+{
+    int i = 0;        
+    int s = 0;
+ 
+    printf("%4d %10s ",stu->num,stu->name);
+    for(s=0;s<MAX_SUBJECT;s++)
+    {
+        printf("%4d ",stu->scores[s]);
+    }
+    printf("\n");
+}
+void ListStudent()
+{         
+    int s = 0;
+    Student *seek=0;
+ 
+    printf("%4s %10s ","번호","이름");
+    for(s=0;s<MAX_SUBJECT;s++)
+    {
+        printf("%4s ",stitles[s]);
+    }
+    printf("성적이 -1인 곳은 미입력\n");        
+ 
+    for(seek=head->next; seek != tail; seek =seek->next)
+    {
+        ViewStuData(seek);
+    }
+}
+void Exit()
+{    
+    Student *seek=head;
+ 
+    while(seek->next)
+    {
+        seek = seek->next;
+        free(seek->prev);
+    }
+    free(seek);
+}
