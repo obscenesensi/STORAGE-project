@@ -1,0 +1,35 @@
+package net.raj.test;
+
+
+import java.util.LinkedList;
+
+import java.util.List;
+
+public class LinkedListImpl {
+
+   
+
+    public static void main(String[] args) {
+
+        // Declare an LinkedList
+
+        List<String> list = new LinkedList<>();
+
+
+        list.add("one");
+
+        list.add("two");
+
+        list.add("three");
+
+        list.add("four");
+
+        list.add("five");
+
+
+        System.out.println("Original LinkedList :: " + list.toString());
+
+    }
+
+
+}
