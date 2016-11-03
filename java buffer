@@ -1,0 +1,27 @@
+import java.io.*;
+
+public class BufferTest {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		try {					
+			BufferedOutputStream outF = new BufferedOutputStream(System.out, 20);						
+			FileReader inF = new FileReader("c:\\windows\\system.ini");	
+			
+			int c;
+			
+			while((c = inF.read()) != -1)
+			{
+				outF.write((char)c);
+			}
+			
+			inF.close();
+			outF.close();
+			} 
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.println("오류 발생!");;
+		}
+	}
+
+}
