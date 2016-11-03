@@ -1,0 +1,36 @@
+import java.awt.*;
+import javax.swing.*;
+
+public class MyFrame extends JFrame {
+	public MyFrame()
+	{
+		this.setTitle("김태현");
+		this.setSize(300, 180);
+		Container contentPane = this.getContentPane();
+		contentPane.setBackground(Color.YELLOW);
+		
+		 JButton b1 = new JButton("선문대");
+		 JButton b2 = new JButton("컴공");
+		 JButton b3 = new JButton("OK");
+		 
+		 contentPane.setLayout(new FlowLayout());
+		 
+		 contentPane.add(b1);
+		 contentPane.add(b2);
+		 contentPane.add(b3);
+		 
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setVisible(true);
+	}
+}
+ ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+ 
+public class MyFrameTest {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		MyFrame myFrame = new MyFrame();
+		
+	}
+
+}
