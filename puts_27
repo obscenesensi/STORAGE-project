@@ -1,0 +1,97 @@
+#include <string>
+#include <cstdio>
+
+using namespace std;
+
+class TestA{
+public:
+    TestA(){
+        puts("TestA::TestA()");
+    }
+    virtual ~TestA(){
+        puts("TestA::~TestA()");
+    }
+    virtual void dosomething(){
+        puts("void TestA::dosomething()");
+    }
+};
+
+class TestB1: virtual public TestA{
+public:
+    TestB1(){
+        puts("TestB1::TestB1()");
+    }
+    virtual ~TestB1(){
+        puts("TestB1::~TestB1()");
+    }
+    virtual void dosomething(){
+        puts("void TestB1::dosomething()");
+    }
+    void TestB1func(){
+        puts("void TestB1::TestB1func()");
+    }
+};
+
+class TestB2: virtual public TestA{
+public:
+    TestB2(){
+        puts("TestB2::TestB2()");
+    }
+    virtual ~TestB2(){
+        puts("TestB2::~TestB2()");
+    }
+    virtual void dosomething(){
+        puts("void TestB2::dosomething()");
+    }
+    void TestB2func(){
+        puts("void TestB2::TestB2func()");
+    }
+};
+
+class TestC1: public TestB1, public TestB2{
+public:
+    TestC1(){
+        puts("TestC1::TestC1()");
+    }
+    virtual ~TestC1(){
+        puts("TestC1::~TestC1()");
+    }
+    virtual void dosomething(){
+        puts("void TestC1::dosomething()");
+    }
+    void TestC1func(){
+        puts("void TestC1::TestC1func()");
+    }
+};
+
+void calldosomething(TestA &ta){
+    ta.dosomething();
+    if(TestB1 *p = dynamic_cast<TestB1*>(&ta)){
+        p->TestB1func();
+    }
+    if(TestB2 *p = dynamic_cast<TestB2*>(&ta)){
+        p->TestB2func();
+    }
+    if(TestC1 *p = dynamic_cast<TestC1*>(&ta)){
+        p->TestC1func();
+    }
+}
+
+int main(int argc, char **argv){
+    {
+        TestA ta;
+        calldosomething(ta);
+    }
+    {
+        TestB1 ta;
+        calldosomething(ta);
+    }
+    {
+        TestB2 ta;
+        calldosomething(ta);
+    }
+    {
+        TestC1 ta;
+        calldosomething(ta);
+    }
+}
