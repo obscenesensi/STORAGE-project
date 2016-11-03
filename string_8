@@ -1,0 +1,39 @@
+#include <algorithm>
+#include <iostream>
+#include <vector>
+#include <string>
+
+void findLinks(std::string line, std::vector<std::string> &links);
+
+int main() {
+	std::vector<std::string> links;
+	std::string line;
+
+	while (std::cin >> line) {
+		findLinks(line, links);
+	}
+	
+	std::sort(links.begin(), links.end(), std::less_equal<std::string>());
+	links.erase( std::unique(links.begin(), links.end()), links.end() ); 
+
+	for (std::vector<std::string>::const_iterator i = links.begin(); i != links.end(); ++i) {
+		std::cout << *i << std::endl;
+	}
+
+	return 0;
+}
+
+void findLinks(std::string line, std::vector<std::string> &links) {
+	int pos1, pos2;
+	std::string link;
+
+	if ((line.find("http://")) && line.find("http://") != std::string::npos) {
+		pos1 = line.find("http://");
+		pos2 = (line.find_first_of("\"", pos1) - pos1);
+		
+		link = line.substr(pos1, pos2);
+		if (((link.find("http://") == 0) && link.find("http://") != std::string::npos) && link.find_first_of(".", pos1) != std::string::npos) {
+			links.push_back(link);
+		}
+	}
+}
