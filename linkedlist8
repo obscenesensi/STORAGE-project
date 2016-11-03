@@ -1,0 +1,127 @@
+import java.util.Iterator;
+
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+import lombok.val;
+
+@ToString
+public class LinkedList<T> implements Iterable<T> {
+
+	Node<T> head;
+
+	public void add(T value) {
+		if (this.head == null) {
+			this.head = new Node<>(value);
+			return;
+		}
+		this.head.add(new Node<>(value));
+	}
+
+	public void reverse() {
+		Node<T> current = this.head;
+		Node<T> previous = null;
+		Node<T> next = null;
+		while (current != null) {
+			next = current.next;
+			current.next = previous;
+			previous = current;
+			current = next;
+		}
+		this.head = previous;
+	}
+
+	public void reverseRecursively() {
+		this.head = reverse(this.head);
+	}
+
+	private Node<T> reverse(Node<T> node) {
+		if (node == null || node.next == null)
+			return node;
+		val remaining = reverse(node.next);
+		node.next.next = node;
+		node.next = null;
+		return remaining;
+	}
+
+	public T last() {
+		Node<T> last = this.head;
+		while (last.next != null)
+			last = last.next;
+		return last.content;
+	}
+
+	@Override
+	public Iterator<T> iterator() {
+		return new LinkedListIterator<>(this.head);
+	}
+
+	@AllArgsConstructor
+	@SuppressWarnings("hiding")
+	private final class LinkedListIterator<T> implements Iterator<T> {
+
+		private Node<T> next;
+
+		@Override
+		public boolean hasNext() {
+			return this.next != null && this.next.content != null;
+		}
+
+		@Override
+		public T next() {
+			val next = this.next.content;
+			this.next = this.next.next;
+			return next;
+		}
+
+	}
+
+	@SuppressWarnings("hiding")
+	@RequiredArgsConstructor
+	@ToString
+	private class Node<T> {
+		private final T content;
+		private Node<T> next;
+
+		public void add(Node<T> node) {
+			if (this.next == null) {
+				this.next = node;
+				return;
+			}
+			this.next.add(node);
+		}
+	}
+
+	public static void main(String[] args) {
+
+		val list = new LinkedList<String>();
+
+		list.add("01");
+		list.add("02");
+		list.add("03");
+		list.add("04");
+
+		for (val item : list)
+			System.out.println(item);
+
+		System.out.println();
+
+		list.reverse();
+		for (val item : list)
+			System.out.println(item);
+
+		System.out.println();
+
+		list.reverse();
+		for (val item : list)
+			System.out.println(item);
+		
+		System.out.println();
+		
+		list.reverseRecursively();
+		for (val item : list)
+			System.out.println(item);
+
+	}
+
+}
