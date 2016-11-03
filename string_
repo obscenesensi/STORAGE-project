@@ -1,0 +1,105 @@
+#include <cstdio>
+#include <cstring>
+#include <algorithm>
+#include <queue>
+using namespace std;
+queue <int> que;
+double p[26],g[50][50],f[1 << 9][50];
+int i,j,k,l,m,n,L,t,cl,top,st,T,len;
+int nex[50][26],fail[50],vis[50];
+int done[50],sing[50];
+
+char A[10][20];
+
+void init() {
+	top = 1; cl = 0;
+	memset(vis,-1,sizeof(vis));
+	memset(nex,0,sizeof(nex));
+	memset(fail,0,sizeof(fail));
+	memset(f,0,sizeof(f));
+	memset(A,0,sizeof(A));
+	memset(p,0,sizeof(p));
+}
+
+void build(char *A,int u) {
+	if (!*A) { vis[u] = cl++; return; }
+	if (!nex[u][*A - 'a']) nex[u][*A - 'a'] = ++ top;
+	build(A + 1,nex[u][*A - 'a']);
+}
+
+void get_fail() {
+	int u,v,k;
+	que.push(1); fail[1] = 1;
+	while (!que.empty()) {
+		u = que.front(); que.pop();
+		for (v = 0; v < t; v++) {
+			if (!nex[u][v]) continue;
+			que.push(nex[u][v]);
+			if (u == 1) { fail[nex[u][v]] = 1; continue; }
+			for (k = fail[u]; k != 1 && !nex[k][v]; k = fail[k]);
+			if (nex[k][v]) k = nex[k][v];
+			fail[nex[u][v]] = k;
+		}
+	}
+}
+
+int trans(int u,int v) {
+	if (nex[u][v]) return nex[u][v];
+	if (u == 1) return 1;
+	return (trans(fail[u],v));
+}
+
+void gauss() {
+	int u,v,i,j,pas,cnt = 0;
+	memset(g,0,sizeof(g));
+	memset(sing,0,sizeof(sing));
+	for (u = 1; u <= top; u++) {
+		if (vis[u] != -1 && !(st >> vis[u] & 1)) continue;
+		g[++cnt][u] = 1;
+		for (j = 0; j < t; j++) {
+			v = trans(u,j);
+			if (vis[v] != -1 && !(st >> vis[v] & 1))
+				g[cnt][top + 1] += (f[st | (1 << vis[v])][v] + 1.0) * p[j];
+			else g[cnt][v] += -p[j], g[cnt][top + 1] += p[j];
+		}
+	}
+
+	double js;
+	for (u = pas = 1; u <= top; u++) {
+		for (i = pas; i <= cnt && (g[i][u] == 0); i++);
+		if (i > cnt) continue;
+		for (j = 0; j <= top + 1; j++) swap(g[i][j],g[pas][j]);
+		for (i++; i <= cnt; i++) {
+			if (g[i][u] == 0) continue;
+			js = g[pas][u] / g[i][u];
+			for (j = 1; j <= top + 1; j++) (g[i][j] *= js) -= g[pas][j];
+		}
+		sing[pas++] = u;
+	}
+	for (i = cnt; i; i--) {
+		if (!sing[i]) continue;
+		for (j = sing[i] + 1; j <= top; j++) f[st][sing[i]] -= f[st][j] * g[i][j];
+		f[st][sing[i]] += g[i][top + 1];
+		f[st][sing[i]] /= g[i][sing[i]];
+	}
+}
+
+int main() {
+	freopen("string.in","r",stdin);
+	freopen("string.out","w",stdout);
+	for (scanf("%d",&T); T; T--) {
+		init();
+		scanf("%d %d %d",&n,&len,&t);
+		for (i = 1; i <= n; i++) {
+			scanf("%s",A[i] + 1);
+			for (j = 1; j < i; j++) if (memcpy(A[i] + 1,A[j] + 1,L) == 0) break;
+			if (j < i) continue;
+			build(A[i] + 1,1);
+		}
+		get_fail();
+		for (i = 0; i < t; i++) scanf("%lf",&p[i]), p[i] /= 10000.0;
+		for (st = (1 << cl) - 2; st >= 0; st--) gauss();
+		printf("%.10lf\n",f[0][1]);
+	}
+	return 0;
+}
