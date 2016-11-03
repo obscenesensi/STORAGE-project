@@ -1,0 +1,23 @@
+#include <cstdio> // scanf e printf
+#include <cstring> // strlen e strcmp
+
+int main(){
+	
+	char frase1[110], frase2[110]; // declaro as strings frase1 e frase2
+	
+	scanf("%s %s", frase1, frase2); // salvo as duas palavras da entrada em frase1 e frase2
+	
+	int compara=strcmp(frase1, frase2); // vou salvar o valor de strcmp(frase1, frase2) na variável inteira "compara"
+	
+	if(compara==0) printf("palavras iguais\n"); // se ela for zero, as palavras são iguais
+	else{ // se não
+		
+		if(compara<0) printf("estao em ordem alfabetica\n"); // se for negativo, estão em ordem alfabética
+		else printf("nao estao em ordem alfabetica\n"); // se não, não estão
+		
+		if(strlen(frase1) <= strlen(frase2)) printf("estao em ordem de tamanho\n"); // checo se frase1 é mais curta que frase2
+		else printf("nao estao em ordem de tamanho\n"); // se não for, então elas estão em ordem de tamanho trocada
+	}
+	
+	return 0;
+}
