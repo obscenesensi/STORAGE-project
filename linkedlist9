@@ -1,0 +1,183 @@
+#include <stdio.h>
+#include <stdlib.h>
+typedef struct record {
+    int number;
+    struct record *next;
+}Record;
+               
+Record *phead;
+
+               
+Record *creat(int);
+void printLinkedList(Record*);
+void insert(int,int);
+void link(int);
+void deletelink(int);
+
+int main(){
+    
+    char op;
+    int a,b;
+    Record *ptr;
+    
+
+    phead = creat(0);        
+    ptr = phead;
+      
+
+    printf("\n'l':Link a node.\n'i':Insert a node.\n'd':Delete a node.\n'p':Print this linked list.\nwhat do you want to do?");
+    scanf("%c",&op);
+    
+    while(op=='i'||op=='d'||op=='l'||op=='p'){
+                               
+    switch(op)
+    {
+        case'l':
+            printf("you can add a number to this link:");
+            scanf("%d",&a);
+            link(a);
+            printf("\n=============result=============\n");
+            printLinkedList(phead);
+            printf("================================\n");                
+            break;
+        case'i':
+            printf("input x,y you can insert a number x after y:");
+            scanf("%d%d",&a,&b);
+            insert(a,b);
+            printf("\n=============result=============\n");
+            printLinkedList(phead);
+            printf("================================\n");  
+            break;
+        case'd':
+            printf("delete a number from this link:");
+            scanf("%d",&a);
+            deletelink(a);
+            printf("\n=============result=============\n");
+            printLinkedList(phead);
+            printf("================================\n"); 
+            break;
+        case'p':
+            printf("\n=============result=============\n");
+            printLinkedList(phead);
+            printf("================================\n"); 
+            break;
+           
+    }
+    
+    getchar();
+    printf("\n'l':Link a node.\n'i':Insert a node.\n'd':Delete a node.\n'p':Print this linked list.\nwhat do you want to do?");
+    scanf("%c",&op);
+    
+    }
+    
+              
+    system("PAUSE");
+    return 0;
+}
+
+           
+Record *creat(int i){
+    Record* p;
+    p = (Record *)malloc(sizeof(Record));
+    p->number = i;
+    p->next = NULL;
+    return p;
+}
+
+
+void link(int i){//....i,j
+    Record* tmp;
+    tmp = phead;
+    if(!tmp){
+        printf("Link list init fail.\n");
+        return;
+    }
+    while(tmp->next){
+        tmp = tmp->next;
+    }
+    Record* p;
+    p = creat(i);
+    tmp->next = p;
+    return;
+}
+
+void insert(int i,int j){
+    Record* p;
+    p = phead;
+    while(p){
+        if (p->number == j)
+        {
+            break;
+        }
+        p = p->next;
+    }
+    if(!p){
+        printf("Not found %d\n", j);
+        return;
+    }
+    if(p->next){
+        Record* tmp;
+        tmp = creat(i);
+        tmp->next = p->next;
+        p->next = tmp;
+    }
+    else{
+        Record* tmp;
+        tmp = creat(i);
+        p->next = tmp;
+    }
+    return;
+}
+
+
+void deletelink(int i){
+    Record* p;
+    Record* pre;
+    pre = phead;
+    p = phead->next;
+    while(p){
+        if (p->number == i)
+        {
+            break;
+        }
+        pre = p;
+        p = p->next;
+    }
+    if(!p){
+        printf("Not found %d\n", i);
+        return;
+    }
+    if(p->next){
+        if(pre == phead){
+            phead->next = p->next;
+            free(p);
+        }
+        else{
+            pre->next = p->next;
+            free(p);
+        }
+    }
+    else{
+        if(pre == phead){
+            phead->next = NULL;
+            free(p);
+        }
+        else{
+            pre->next = NULL;
+            free(p);
+        }
+
+    } 
+
+
+}
+
+void printLinkedList(Record *i){
+    Record* p;
+    p = phead;
+    while(p){
+        printf("==>%d  address:%p\n", p->number, p);
+        p = p->next;
+    }
+    return;
+}
