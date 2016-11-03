@@ -1,0 +1,50 @@
+import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+public class ArrayTest {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Scanner sc = new Scanner(System.in);
+		ArrayList<Double> al = new ArrayList<Double>(10);
+		
+		double big = 0;		
+		
+		/*for(int i = 0; i < 10; i++)
+		{
+			System.out.println((i+1)+". 실수를 입력하시오");
+			al.add(sc.nextFloat());	
+			if(big < al.get(i))
+			{
+				big = al.get(i);
+			}
+		}*/
+		
+		for(int i = 0; i < 10; i++)
+		{
+			System.out.println((i+1)+". 실수를 입력하시오");
+			al.add(sc.nextDouble());	
+		}
+		
+		Iterator<Double> itr = al.iterator();
+		while(itr.hasNext())
+		{
+			double nextE = itr.next();
+			if(big < nextE)
+			{
+				big = nextE;
+			}
+		}
+		itr.remove();
+		itr.remove();
+		
+		System.out.println("가장 큰 값 = "+big);
+		Iterator<Double> it = al.iterator();
+		while(it.hasNext())
+		{
+			System.out.println(it.next());			
+		}
+	}
+	
+	}
