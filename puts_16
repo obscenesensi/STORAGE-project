@@ -1,0 +1,25 @@
+#include <cstdio>
+#include <cmath>
+int main() {
+  int n;
+  puts("PERFECTION OUTPUT");
+  while (scanf("%d", &n) != EOF && n) {
+    int sum = 1, sq = sqrt(n);
+    for (int i = 2; i <= sq; ++i) {
+      if (n % i == 0) {
+        sum = sum + i + (n / i);
+      }
+    }
+    if (sq * sq == n) sum = sum - sq;
+    printf("%5d  ", n);
+    if (sum == n) {
+      puts("PERFECT");
+    } else if (sum < n) {
+      puts("DEFICIENT");
+    } else {
+      puts("ABUNDANT");
+    }
+  }
+  puts("END OF OUTPUT");
+  return 0;
+}
