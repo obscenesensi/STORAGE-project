@@ -1,0 +1,28 @@
+import java.util.*;
+
+public class Main {
+
+	public static void main(String[] args) {
+		Scanner scn = new Scanner(System.in);
+		int n = Integer.parseInt(scn.nextLine());
+		for (int c = 1; c <= n; c++) {
+			String str = scn.nextLine();
+			StringTokenizer st = new StringTokenizer(str, "0123456789");
+			StringTokenizer st2 = new StringTokenizer(str, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+			String arr[] = new String[st.countTokens()], ary[] = new String[st2.countTokens()];
+			int i = 0;
+			while (st.hasMoreTokens()) {
+				arr[i] = String.valueOf(st.nextToken());
+				ary[i++] = String.valueOf(st2.nextToken());
+			}
+			System.out.printf("Case %d: ", c);
+			for (i = 0; i < arr.length; i++) {
+				for (int j = Integer.parseInt(ary[i]); j > 0; j--) {
+					System.out.print(arr[i]);
+				}
+			}
+			System.out.println();
+		}
+	}
+
+}
