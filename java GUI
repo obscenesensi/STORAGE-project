@@ -1,0 +1,13 @@
+import javax.swing.*;
+
+public class FirstGUIProgram {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		JFrame myFrame = new JFrame();
+		myFrame.setTitle("김태현");
+		myFrame.setSize(300, 300);
+		myFrame.setVisible(true);
+	}
+
+}
