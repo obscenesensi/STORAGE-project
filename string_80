@@ -1,0 +1,44 @@
+#include <iostream>
+
+
+using namespace std;
+
+int main(int argc, char **argv)
+{
+	cout << "LSB first MSB last" << endl;
+	//Declare array: LSB first MSB last: end with \0 for variable length
+	char testbinstring[] = {'0', '1', '1', '0', '1', '1', '\0'};
+	char *tostr = testbinstring;
+	int iTotal = 0;
+	int iBitVal = 1;
+	while(*tostr != '\0')
+	{
+		if(*tostr == '1')
+		{
+			iTotal += iBitVal;
+		}
+		iBitVal *= 2;
+		//cout << *tostr << endl;
+		tostr++;
+	}
+	cout << "Total: " << iTotal << endl;
+	
+	cout << "MSB first LSB last" << endl;
+	//Declare array: MSB first LSB last: \0 not needed because of sizeof
+	char testbinstring2[] = {'1', '1', '0', '1', '1', '0'};
+	int size = sizeof(testbinstring2)/sizeof(char);
+	//cout << "Array size: " << size << endl;
+	iTotal = 0;
+	iBitVal = 1;
+	for(int i = size-1; i >= 0; i--)
+	{
+		if(testbinstring2[i] == '1')
+		{
+			iTotal += iBitVal;
+		}
+		//cout << testbinstring2[i];
+		iBitVal *= 2;
+	}
+	cout << "Total: " << iTotal << endl;
+	return 0;
+}
