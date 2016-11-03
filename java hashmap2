@@ -1,0 +1,57 @@
+
+import java.util.*;
+
+public class HashMapTest {
+
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Scanner sc = new Scanner(System.in);
+		HashMap<String, Student> dept = new HashMap<String, Student>();
+		
+		for(int i = 0; i<5;i++)//반복문을 통해 hashmap에 저장
+		{
+			System.out.println("이름 을 입력하시오");//이름 입력
+			String name = sc.next();
+			System.out.println("학과를 입력하시오");//학과 입력
+			String major = sc.next();
+			System.out.println("이학번을 입력하시오");//학번 ㅇ비력
+			String stnum = sc.next();
+			System.out.println("학점 평균을 입력하시오");//학점 ㅇ비력
+			float grade = sc.nextFloat();
+			dept.put(stnum, new Student(name, major, stnum, grade));//저장
+		}
+		
+		Set<String> keys = dept.keySet();
+		Iterator<String> itr = keys.iterator();
+		
+		while(itr.hasNext())//학생 검색 반복 이터럴
+		{			
+			System.out.println("찾고 싶은 학생의 학번을 입력하시오 ");
+			String search = sc.next();
+			if(dept.containsKey(search))//학생 유뮤 판다
+			{			
+				Student st = dept.get(search);
+				System.out.println(st.name + " " + st.major + " " + st.stnum + " " + st.grade);
+			}
+			else
+				System.out.println("그런 학생은 없습니다.");
+		}
+		
+	}
+  ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+
+public class Student {
+	String name, major, stnum;
+	float grade;
+
+	public Student(String name, String major, String stnum, float grade)//생성자
+	{
+		this.name = name;
+		this.major = major;
+		this.stnum = stnum;
+		this.grade = grade;
+	}
+}
+
+  
