@@ -1,0 +1,240 @@
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map.Entry;
+import java.util.Scanner;
+import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.TreeSet;
+
+public class CandidateCode {
+
+	private static LinkedHashMap<String, Integer> diffMatrix = new LinkedHashMap<>();
+	private static LinkedHashMap<String, Integer> nextPath = new LinkedHashMap<>();
+	private static Integer input2IndexI, input2IndexJ, currTemp;
+	private static StringTokenizer strInput1;
+
+	public static String[] RatsPostions(String[] input1, String[] input2, int input3) {
+		Scanner sc = new Scanner(System.in);
+		String[] output = new String[50];
+
+		input1[0] = new String("1#1");
+		input1[1] = new String("2#5");
+		input1[2] = new String("3#3");
+		input1[3] = new String("6#3");
+
+		input2[0] = new String("2#6#8#6#-7");
+		input2[1] = new String("2#5#-5#-5#0");
+		input2[2] = new String("-1#-5#-8#-5#7");
+		input2[3] = new String("3#2#-5#6#9");
+		input2[4] = new String("2#1#-4#5#8");
+		input2[5] = new String("-5#6#7#4#7");
+
+		input3 = 3;
+
+		// main Logic
+
+		for (int i = 0; i < input1.length; i++) {
+			strInput1 = new StringTokenizer(input1[i], "#");
+			input2IndexI = new Integer(Integer.parseInt(strInput1.nextToken()));
+			input2IndexJ = new Integer(Integer.parseInt(strInput1.nextToken()));
+			input2IndexI--;
+			input2IndexJ--;
+			for (int j = 0; j < 3; j++) {
+				String[] newInput = input2[input2IndexI].split("#");
+				currTemp = Integer.parseInt(newInput[input2IndexJ]);
+				if (input1[i].equals("1#1")) {
+					StringTokenizer strInput2R = new StringTokenizer(input2[input2IndexI], "#");
+					StringTokenizer strInput2B = new StringTokenizer(input2[input2IndexI + 1], "#");
+					for (int k = 0; k <= input2IndexJ + 1; k++)
+						diffMatrix.put("R", Math.abs(currTemp - Integer.parseInt(strInput2R.nextToken())));
+					for (int k = 0; k <= input2IndexJ; k++)
+						diffMatrix.put("B", Math.abs(currTemp - Integer.parseInt(strInput2B.nextToken())));
+					input1[i] = findTheNextPath(input1[i], input2IndexI, input2IndexJ);
+					StringTokenizer strInputTemp = new StringTokenizer(input1[i], "#");
+					input2IndexI = Integer.parseInt(strInputTemp.nextToken());
+					input2IndexJ = Integer.parseInt(strInputTemp.nextToken());
+					input2IndexI--;
+					input2IndexJ--;
+					diffMatrix.clear();
+				} else if (input1[i].equals("1#5")) {
+					StringTokenizer strInput2L = new StringTokenizer(input2[input2IndexI], "#");
+					StringTokenizer strInput2B = new StringTokenizer(input2[input2IndexI + 1], "#");
+					for (int k = 0; k <= input2IndexJ; k++)
+						diffMatrix.put("B", Math.abs(currTemp - Integer.parseInt(strInput2B.nextToken())));
+					for (int k = 0; k <= input2IndexJ - 1; k++)
+						diffMatrix.put("L", Math.abs(currTemp - Integer.parseInt(strInput2L.nextToken())));
+					input1[i] = findTheNextPath(input1[i], input2IndexI, input2IndexJ);
+					StringTokenizer strInputTemp = new StringTokenizer(input1[i], "#");
+					input2IndexI = Integer.parseInt(strInputTemp.nextToken());
+					input2IndexJ = Integer.parseInt(strInputTemp.nextToken());
+					input2IndexI--;
+					input2IndexJ--;
+					diffMatrix.clear();
+				}
+
+				else if (input1[i].equals("6#1")) {
+					StringTokenizer strInput2R = new StringTokenizer(input2[input2IndexI], "#");
+					StringTokenizer strInput2U = new StringTokenizer(input2[input2IndexI - 1], "#");
+					for (int k = 0; k <= input2IndexJ; k++)
+						diffMatrix.put("U", Math.abs(currTemp - Integer.parseInt(strInput2U.nextToken())));
+					for (int k = 0; k <= input2IndexJ + 1; k++)
+						diffMatrix.put("R", Math.abs(currTemp - Integer.parseInt(strInput2R.nextToken())));
+					input1[i] = findTheNextPath(input1[i], input2IndexI, input2IndexJ);
+					StringTokenizer strInputTemp = new StringTokenizer(input1[i], "#");
+					input2IndexI = Integer.parseInt(strInputTemp.nextToken());
+					input2IndexJ = Integer.parseInt(strInputTemp.nextToken());
+					input2IndexI--;
+					input2IndexJ--;
+					diffMatrix.clear();
+				}
+
+				else if (input1[i].equals("6#5")) {
+					StringTokenizer strInput2L = new StringTokenizer(input2[input2IndexI], "#");
+					StringTokenizer strInput2U = new StringTokenizer(input2[input2IndexI - 1], "#");
+					for (int k = 0; k <= input2IndexJ; k++)
+						diffMatrix.put("U", Math.abs(currTemp - Integer.parseInt(strInput2U.nextToken())));
+					for (int k = 0; k <= input2IndexJ - 1; k++)
+						diffMatrix.put("L", Math.abs(currTemp - Integer.parseInt(strInput2L.nextToken())));
+					input1[i] = findTheNextPath(input1[i], input2IndexI, input2IndexJ);
+					StringTokenizer strInputTemp = new StringTokenizer(input1[i], "#");
+					input2IndexI = Integer.parseInt(strInputTemp.nextToken());
+					input2IndexJ = Integer.parseInt(strInputTemp.nextToken());
+					input2IndexI--;
+					input2IndexJ--;
+					diffMatrix.clear();
+				} else if (input2IndexJ == 0) {
+					StringTokenizer strInput2B = new StringTokenizer(input2[input2IndexI + 1], "#");
+					StringTokenizer strInput2R = new StringTokenizer(input2[input2IndexI], "#");
+					StringTokenizer strInput2U = new StringTokenizer(input2[input2IndexI - 1], "#");
+					for (int k = 0; k <= input2IndexJ; k++)
+						diffMatrix.put("U", Math.abs(currTemp - Integer.parseInt(strInput2U.nextToken())));
+					for (int k = 0; k <= input2IndexJ + 1; k++)
+						diffMatrix.put("R", Math.abs(currTemp - Integer.parseInt(strInput2R.nextToken())));
+					for (int k = 0; k <= input2IndexJ; k++)
+						diffMatrix.put("B", Math.abs(currTemp - Integer.parseInt(strInput2B.nextToken())));
+					input1[i] = findTheNextPath(input1[i], input2IndexI, input2IndexJ);
+					StringTokenizer strInputTemp = new StringTokenizer(input1[i], "#");
+					input2IndexI = Integer.parseInt(strInputTemp.nextToken());
+					input2IndexJ = Integer.parseInt(strInputTemp.nextToken());
+					input2IndexI--;
+					input2IndexJ--;
+					diffMatrix.clear();
+				} else if (input2IndexI == 5) {
+					StringTokenizer strInput2R = new StringTokenizer(input2[input2IndexI], "#");
+					StringTokenizer strInput2L = new StringTokenizer(input2[input2IndexI], "#");
+					StringTokenizer strInput2U = new StringTokenizer(input2[input2IndexI - 1], "#");
+					for (int k = 0; k <= input2IndexJ; k++)
+						diffMatrix.put("U", Math.abs(currTemp - Integer.parseInt(strInput2U.nextToken())));
+					for (int k = 0; k <= input2IndexJ + 1; k++)
+						diffMatrix.put("R", Math.abs(currTemp - Integer.parseInt(strInput2R.nextToken())));
+					for (int k = 0; k <= input2IndexJ - 1; k++)
+						diffMatrix.put("L", Math.abs(currTemp - Integer.parseInt(strInput2L.nextToken())));
+					input1[i] = findTheNextPath(input1[i], input2IndexI, input2IndexJ);
+					StringTokenizer strInputTemp = new StringTokenizer(input1[i], "#");
+					input2IndexI = Integer.parseInt(strInputTemp.nextToken());
+					input2IndexJ = Integer.parseInt(strInputTemp.nextToken());
+					input2IndexI--;
+					input2IndexJ--;
+					diffMatrix.clear();
+				} else if (input2IndexJ == 1) {
+					StringTokenizer strInput2R = new StringTokenizer(input2[input2IndexI], "#");
+					StringTokenizer strInput2L = new StringTokenizer(input2[input2IndexI], "#");
+					StringTokenizer strInput2B = new StringTokenizer(input2[input2IndexI + 1], "#");
+					for (int k = 0; k <= input2IndexJ + 1; k++)
+						diffMatrix.put("R", Math.abs(currTemp - Integer.parseInt(strInput2R.nextToken())));
+					for (int k = 0; k <= input2IndexJ - 1; k++)
+						diffMatrix.put("L", Math.abs(currTemp - Integer.parseInt(strInput2L.nextToken())));
+					for (int k = 0; k <= input2IndexJ; k++)
+						diffMatrix.put("B", Math.abs(currTemp - Integer.parseInt(strInput2B.nextToken())));
+					input1[i] = findTheNextPath(input1[i], input2IndexI, input2IndexJ);
+					StringTokenizer strInputTemp = new StringTokenizer(input1[i], "#");
+					input2IndexI = Integer.parseInt(strInputTemp.nextToken());
+					input2IndexJ = Integer.parseInt(strInputTemp.nextToken());
+					input2IndexI--;
+					input2IndexJ--;
+					diffMatrix.clear();
+				} else if (input2IndexJ == 4) {
+					StringTokenizer strInput2 = new StringTokenizer(input2[input2IndexI], "#");
+					StringTokenizer strInput2U = new StringTokenizer(input2[input2IndexI - 1], "#");
+					for (int k = 0; k <= input2IndexJ; k++)
+						diffMatrix.put("U", Math.abs(currTemp - Integer.parseInt(strInput2U.nextToken())));
+					for (int k = 0; k <= input2IndexJ - 1; k++)
+						diffMatrix.put("L", Math.abs(currTemp - Integer.parseInt(strInput2.nextToken())));
+					input1[i] = findTheNextPath(input1[i], input2IndexI, input2IndexJ);
+					StringTokenizer strInputTemp = new StringTokenizer(input1[i], "#");
+					input2IndexI = Integer.parseInt(strInputTemp.nextToken());
+					input2IndexJ = Integer.parseInt(strInputTemp.nextToken());
+					input2IndexI--;
+					input2IndexJ--;
+					diffMatrix.clear();
+				} else {
+					StringTokenizer strInput2R = new StringTokenizer(input2[input2IndexI], "#");
+					StringTokenizer strInput2L = new StringTokenizer(input2[input2IndexI], "#");
+					StringTokenizer strInput2U = new StringTokenizer(input2[input2IndexI - 1], "#");
+					StringTokenizer strInput2B = new StringTokenizer(input2[input2IndexI + 1], "#");
+					for (int k = 0; k <= input2IndexJ; k++)
+						diffMatrix.put("U", Math.abs(currTemp - Integer.parseInt(strInput2U.nextToken())));
+					for (int k = 0; k <= input2IndexJ + 1; k++)
+						diffMatrix.put("R", Math.abs(currTemp - Integer.parseInt(strInput2R.nextToken())));
+					for (int k = 0; k <= input2IndexJ; k++)
+						diffMatrix.put("B", Math.abs(currTemp - Integer.parseInt(strInput2B.nextToken())));
+					for (int k = 0; k <= input2IndexJ - 1; k++)
+						diffMatrix.put("L", Math.abs(currTemp - Integer.parseInt(strInput2L.nextToken())));
+					input1[i] = findTheNextPath(input1[i], input2IndexI, input2IndexJ);
+					StringTokenizer strInputTemp = new StringTokenizer(input1[i], "#");
+					input2IndexI = Integer.parseInt(strInputTemp.nextToken());
+					input2IndexJ = Integer.parseInt(strInputTemp.nextToken());
+					input2IndexI--;
+					input2IndexJ--;
+					diffMatrix.clear();
+				}
+			}
+		}
+		return input1;
+	}
+
+	public static String findTheNextPath(String input, Integer input2IndexI, Integer input2IndexJ) {
+		Integer dummyTempI, dummyTempJ;
+		Set<Integer> t = new TreeSet<>(diffMatrix.values());
+		int searchMap = t.iterator().next();
+		Entry<String, Integer> temp;
+		int min = 9999;
+		Set<Entry<String, Integer>> env = diffMatrix.entrySet();
+		Iterator<Entry<String, Integer>> itr = env.iterator();
+		while (itr.hasNext()) {
+			temp = itr.next();
+			if (min > temp.getValue()) {
+				min = temp.getValue();
+				nextPath.clear();
+				nextPath.put(temp.getKey(), temp.getValue());
+			}
+		}
+		String next = new ArrayList<>(nextPath.keySet()).get(0);
+		switch (next) {
+		case "R":
+			dummyTempI = input2IndexI + 1;
+			dummyTempJ = input2IndexJ + 2;
+			input = new String(dummyTempI.toString()).concat("#" + dummyTempJ.toString());
+			break;
+		case "B":
+			dummyTempI = input2IndexI + 2;
+			dummyTempJ = input2IndexJ + 1;
+			input = new String(dummyTempI.toString()).concat("#" + dummyTempJ.toString());
+			break;
+		case "L":
+			dummyTempI = input2IndexI + 1;
+			dummyTempJ = input2IndexJ;
+			input = new String(dummyTempI.toString()).concat("#" + dummyTempJ.toString());
+			break;
+		case "U":
+			dummyTempI = input2IndexI;
+			dummyTempJ = input2IndexJ + 1;
+			input = new String(dummyTempI.toString()).concat("#" + dummyTempJ.toString());
+			break;
+		}
+		return input;
+	}
+}
