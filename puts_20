@@ -1,0 +1,15 @@
+#include <cstdio>
+#include <cmath>
+int main() {
+  unsigned int n;
+  while (1) {
+    scanf("%u", &n);
+    if (n == 0) return 0;
+    double sq = (int)sqrt(n);
+    if (sq * sq == n) {
+      puts("yes");
+    } else {
+      puts("no");
+    }
+  }
+}
