@@ -1,0 +1,130 @@
+client.cpp
+#include <stdio.h>
+#include <iostream>
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <sys/eventfd.h>
+#include <unistd.h>
+#include <string.h>
+#include <linux/limits.h> /* for PATH_MAX */
+#include <stdlib.h>     /* malloc, free, rand */
+#include "ancillary.h"
+
+int main(void)
+{
+  /* Create eventfd */
+  unsigned int initval = 0;
+  int event_fd = eventfd(initval, EFD_SEMAPHORE);
+   
+  struct sockaddr_un address;
+  int  socket_fd;
+  
+  socket_fd = socket(PF_UNIX, SOCK_STREAM, 0);
+  if(socket_fd < 0)
+  {
+    printf("socket() failed\n");
+    return 1;
+  }
+  
+  /* start with a clean address structure */
+  memset(&address, 0, sizeof(struct sockaddr_un));
+  
+  address.sun_family = AF_UNIX;
+  snprintf(address.sun_path, 100, "./demo_socket");
+  
+  printf("waiting to connect\n");
+  if(connect(socket_fd, 
+             (struct sockaddr *) &address, 
+             sizeof(struct sockaddr_un)) != 0)
+  {
+    printf("connect() failed\n");
+    return 1;
+  }
+ 
+  printf("connected\n");
+
+  ancil_send_fd(socket_fd, event_fd);
+  std::cout << "sent event_fd: " << event_fd << std::endl;
+}
+------------------------------------------------------------
+ client.out
+waiting to connect
+connected
+sent event_fd: 3
+--------------------------------------------------------------
+ server.cpp
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <sys/eventfd.h>
+#include <linux/limits.h> /* for PATH_MAX */
+#include <errno.h>
+
+#include <stdio.h>
+#include <unistd.h>
+#include <string.h>
+#include <iostream>
+
+#include <sys/socket.h>     /* struct msghdr */
+#include <stdlib.h>     /* malloc, free, rand */
+#include "ancillary.h"
+
+int main()
+{
+  const std::string path = "./demo_socket";
+
+  unlink(path.c_str());
+
+  struct sockaddr_un address;
+  int socket_fd, connection_fd;
+  socklen_t address_length;
+  
+  socket_fd = socket(PF_UNIX, SOCK_STREAM, 0);
+  if(socket_fd < 0)
+  {
+   std::cout << "socket() failed" << std::endl;
+   return 1;
+  } 
+
+  /* start with a clean address structure */
+  memset(&address, 0, sizeof(struct sockaddr_un));
+
+  address.sun_family = AF_UNIX;
+  strncpy(address.sun_path, path.c_str(), 100);
+  // snprintf(address.sun_path, 100, "./demo_socket");
+
+  if(bind(socket_fd, 
+          (struct sockaddr *) &address, 
+          sizeof(struct sockaddr_un)) != 0)
+  {
+   std::cout << "bind() failed" << std::endl;
+   return 1;
+  }
+
+  if(listen(socket_fd, 5) != 0)
+  {
+   std::cout << "listen() failed" << std::endl;
+   return 1;
+  }
+
+  std::cout << "waiting on accept()" << std::endl;
+  if((connection_fd = accept(socket_fd, 
+                                (struct sockaddr *) &address,
+                                &address_length)) > -1)
+  {
+    int event_fd;
+    int response = ancil_recv_fd(socket_fd, &event_fd);
+    std::cout << "response: " << response << std::endl;
+    std::cout << "errno: " << errno << std::endl;
+    while (response == -1)
+    {
+      response = ancil_recv_fd(socket_fd, &event_fd); // try again
+    }
+    std::cout << "received event_fd: " << event_fd << std::endl;
+  }
+}
+-------------------------------------------------------------
+ server.output
+waiting on accept()
+response: -1
+errno: 22
