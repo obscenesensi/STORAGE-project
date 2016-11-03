@@ -1,0 +1,18 @@
+import javax.swing.JOptionPane;
+import java.util.StringTokenizer;
+
+public class StringConverter {
+    String text = JOptionPane.showInputDialog("Enter your story here");
+
+    StringConverter() {
+        JOptionPane.showMessageDialog(null, text.toUpperCase());
+        JOptionPane.showMessageDialog(null, text.toLowerCase());
+        StringTokenizer a = new StringTokenizer(text);
+        while (a.hasMoreTokens()) System.out.println(a.nextToken());}
+
+    public static void main(String[] args){
+
+        new StringConverter();
+
+    }
+}
