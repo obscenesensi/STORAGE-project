@@ -1,0 +1,18 @@
+
+#include <iostream.h>
+#include <conio.h>
+//www.gatewan.com
+void main()
+{
+char teks1[50];
+char teks2[50];
+    cout<<"Ketik nama depan anda : ";
+    cin.getline(teks1,sizeof(teks1));
+    cout<<endl;
+    cout<<"Ketik nama belakang anda : ";
+    cin.getline(teks2,sizeof(teks2));
+    cout<<endl;
+    cout<<"Nama lengkap anda adalah : ";
+    cout<<strcat(teks1,teks2);
+getch();
+}
