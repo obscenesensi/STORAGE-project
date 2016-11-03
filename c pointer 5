@@ -1,0 +1,17 @@
+#include<stdoi.h>
+
+int esum(int a, int b);
+
+void main()
+{
+int a, b;
+
+	printf_s("두 수를 입력하시오");
+	scanf_s("%d %d", &a, &b);
+	printf_s("%d", esum(a, b));
+}
+
+int esum(int a, int b)
+{
+	return a + b;
+}
