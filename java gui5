@@ -1,0 +1,51 @@
+import javax.swing.*;
+import java.awt.*;
+
+/**
+ * @author Wardo
+ *         Date: 9/25/13
+ */
+public class TestPanel extends JPanel {
+    private JFrame frame;
+    private JLabel boardLabel;
+    private JButton selection;
+    private final static int BRDSIZE = 10; // default board size
+    private JMenuItem newGameItem;
+    private JMenuItem quitItem;
+    private JPanel boardPanel;
+    private JButton colSelect[];
+
+
+
+    private Integer[] pWins = {0, 0}; // Default Player Wins
+    private String[] PLAYER = {"PLAYER 1", "PLAYER 2"}; // Default Player names for string
+
+
+    public TestPanel (JFrame frame, JMenuItem quitGameItem, JMenuItem newGameItemItem){
+        JPanel boardPanel = new JPanel(new GridLayout(BRDSIZE, BRDSIZE));
+        JPanel north = new JPanel(new GridLayout(0, BRDSIZE));
+        JPanel south = new JPanel();
+
+        setLayout(new BorderLayout());
+
+        for (int a = 0; a < BRDSIZE; a++ ){
+            north.add(new JButton("Select"));
+        }
+
+        for (int i = 0; i < BRDSIZE; i++){
+            for(int j = 0; j < BRDSIZE; j++){
+                boardPanel.add(new JLabel("   j   "));
+                boardPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            }
+        } // Creates initial board with BRDSIZE as its width and heighth
+
+
+        south.add(new JLabel(PLAYER[0] + " wins: " + pWins[0] + "\t \t \t \t \t \t \t \t \t" + PLAYER[1] + " wins: " + pWins[1]));
+        add(north, BorderLayout.NORTH);
+        add(boardPanel, BorderLayout.CENTER);
+        add(south, BorderLayout.SOUTH);
+
+    }// END OF PANEL METHOD
+
+
+} // END OF CLASS
