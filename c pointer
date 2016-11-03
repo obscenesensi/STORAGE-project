@@ -1,0 +1,12 @@
+#include<stdio.h>
+
+void main()
+{
+int in = 25;
+	float fn = 34.5;
+	char ch = 'g';
+
+	printf_s("Value of in is : %d, address of in is : %p\n", in, &in);
+	printf_s("Value of fn is : %f, address of fn is : %p\n", fn, &fn);
+	printf_s("Value of ch is : %c, address of ch is : %p\n", ch, &ch);
+}
