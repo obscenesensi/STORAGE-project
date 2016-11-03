@@ -1,0 +1,7 @@
+static bool is_double(const std::string& s)
+{
+	std::istringstream iss(s);
+	double d;
+	char c;
+	return iss >> d && !(iss >> c);
+}
