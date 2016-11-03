@@ -1,0 +1,10 @@
+#include "base/values.h"
+#include "base/json/json_writer.h"
+
+std::string uri = "palm://com.webos.notification/createPincodePrompt";
+std::string payload = "{\"promptType\":\"parental\"}";
+std::string payload;
+base::DictionaryValue promptValue;
+promptValue.SetString("promptType", "parental");
+base::JSONWriter::Write(&promptValue, &payload);
+printf("sungguk %s\n", payload.c_str());
