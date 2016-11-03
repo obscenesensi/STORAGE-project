@@ -1,0 +1,48 @@
+#include <iostream>
+#include <chrono>
+#include <ctime> //localtime - potential error: not thread safe
+#include <string>
+#include <iomanip> //setfill, setw, setprecision
+#include <sstream> //ostringstream
+
+template <typename T> 
+std::string to_string_formatted(const T a_value, const int width = 6, const char fillchar='0', const int precision = 6)
+{
+  std::ostringstream out;
+  out << std::setfill(fillchar) << std::setw(width) << std::setprecision(precision) << a_value;
+  return out.str();
+}
+
+std::string currentTimeString()
+{
+    // current time
+    std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
+
+    // get this second
+    time_t tnow = std::chrono::system_clock::to_time_t(now);
+    tm *date = std::localtime(&tnow);	//not therad safe
+    auto this_second = std::chrono::system_clock::from_time_t(std::mktime(date));
+
+    // number of milliseconds between the beginning of the second and now
+    unsigned int milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(now - this_second).count();
+    
+    std::string now_str = "";
+    now_str +=  std::to_string(1900 + date->tm_year);
+    now_str +=  to_string_formatted(date->tm_mon + 1, 2);
+    now_str +=  to_string_formatted(date->tm_mday, 2);
+    now_str +=  "_";
+    now_str +=  to_string_formatted(date->tm_hour, 2);
+    now_str +=  to_string_formatted(date->tm_min, 2);
+    now_str +=  to_string_formatted(date->tm_sec, 2);
+    now_str +=  "_";
+    now_str +=  to_string_formatted(milliseconds, 3);
+
+    return now_str;
+    
+}
+
+int main() {
+	
+	std::cout << currentTimeString();
+	return 0;
+}
