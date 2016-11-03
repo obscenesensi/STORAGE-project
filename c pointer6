@@ -1,0 +1,17 @@
+#include<stdoi.h>
+
+double farea(int r);
+
+
+void main()
+{
+int r;
+	printf_s("반지름을 입력하시오 : ");
+	scanf_s("%d", &r);
+	printf("%f", farea(r));
+}
+
+double farea(int r)
+{
+	return r*r*3.14;
+}
