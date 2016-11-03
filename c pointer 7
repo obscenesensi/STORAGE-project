@@ -1,0 +1,47 @@
+#include<stdoi.h>
+
+int grn();
+int gcs(int a, int b);
+
+void main()
+{
+int a, b, sum=0;
+	a = grn();
+	b = grn();
+	sum = gcs(a,b);
+	printf_s("%d", sum);
+}
+
+int grn()
+{
+	int a = 0;
+	printf_s("수를 입력하시오");
+	scanf_s("%d", &a);
+	return a;
+}
+
+int gcs(int a, int b)
+{
+	int i,sum=0;
+	if (a > b)
+	{
+		for (i = b; i <= a; i++)
+		{
+			if (i % 2 == 0)
+				sum += i;
+			else
+				continue;
+		}
+	}
+	else
+	{
+		for (i = a; i <= b; i++)
+		{
+			if (i % 2 == 0)
+				sum += i;
+			else
+				continue;
+		}
+	}
+	return sum;
+}
