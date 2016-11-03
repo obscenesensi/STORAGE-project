@@ -1,0 +1,12 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main()
+{
+ int number = 50;
+ string str;
+ str = to_string(number);
+ cout<<str;
+ return 0;
+}
