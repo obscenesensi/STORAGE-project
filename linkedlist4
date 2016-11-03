@@ -1,0 +1,184 @@
+#include <stdio.h>      
+#include <stdlib.h>     
+#include <string.h>
+typedef struct node
+{
+        int data;
+        struct node *next;
+        } list_node;
+      
+    
+void Insert_node(list_node *header,int input);
+void delete_node(list_node *header);
+void delete_all(list_node *header);
+void Inverse(list_node *header);
+void product(list_node *num1,list_node *num2,list_node *result);
+void printi(list_node *header);
+
+main()
+{
+      list_node *header,*dummy,*header2,*dummy2,*anshead,*ansdummy;
+      dummy = (list_node*)malloc(sizeof(list_node));
+      dummy -> next = NULL;
+      dummy -> data = 0;
+      header = dummy;
+      dummy2 = (list_node*)malloc(sizeof(list_node));
+      dummy2 -> next = NULL;
+      dummy2 -> data = 0;
+      header2 = dummy2;
+      ansdummy = (list_node*)malloc(sizeof(list_node));
+      ansdummy -> next = NULL;
+      ansdummy -> data = 0;
+      anshead = ansdummy;
+      char array[256];
+      int i = 0;
+      //system("color F0");
+      while(1)
+      {
+              printf("pls input a number : ");
+              scanf("%s",array);
+              for(i = 0 ; i < strlen(array) ; i++) Insert_node(header,array[i]-48);
+              printf("pls input another number : ");
+              scanf("%s",array);
+              for(i = 0 ; i < strlen(array) ; i++) Insert_node(header2,array[i]-48);
+      
+/*                                  debug use
+      printi(header);
+      Inverse(header);
+      printf("\n");
+      printi(header);
+      printi(header2);
+*/
+                      product(header,header2,anshead);
+                      printf("answer is ");
+                      printi(anshead);
+                      delete_all(header);
+                      delete_all(header2);
+                      delete_all(anshead);
+                      printf("\n");
+                      //system("pause");
+                      }
+      return 0;
+}
+
+
+void Insert_node(list_node *header,int input)    
+{
+     list_node *tmp = (list_node*)malloc(sizeof(list_node));
+     tmp -> data = input;
+     if(header -> next == NULL) tmp -> next = header;
+     else tmp -> next = header -> next;
+     header -> next = tmp;
+}
+
+void delete_node(list_node *header)                
+{
+     if(header -> next == NULL) printf("queue is empty.");
+     else
+     {
+         list_node *d = header -> next;
+         if(d -> next == header )
+         {
+              header -> next = NULL;
+              free(d);
+              }
+         else
+         {
+             
+             while(d -> next -> next != header)
+             {
+                     d = d -> next;
+                     }
+             free(d -> next);
+             d -> next = header;
+             }
+     }
+}
+
+void delete_all(list_node *header)                
+{
+     list_node *loop = header -> next;
+     list_node *d = header -> next;
+     for(loop ; loop != header ; loop)
+     {
+              if(header -> next != NULL) header -> next = NULL;
+              d = loop;
+              loop = loop -> next;
+              free(d);
+     }
+}
+
+
+void printi(list_node *header)   
+{
+         list_node *p = header -> next;
+         for(p ; p != header ; p = p -> next)
+         {
+               printf("%d",p -> data);
+                              }
+}
+
+void Inverse(list_node *header)
+{
+     list_node *inv = header -> next;
+     list_node *ptr,*before;
+     before = header;
+     ptr = inv;
+     while(inv -> next != header)
+     {
+             ptr = inv -> next;
+             inv -> next = before;
+             before = inv;
+             inv = ptr;
+             }
+     inv -> next = before;
+     header ->next = inv;
+}
+             
+             
+
+
+
+void product(list_node *num1,list_node *num2,list_node *result)
+{
+     list_node *ptr1 = num1 -> next;
+     list_node *ptr2 = num2 -> next;
+     list_node *ptrans = result -> next;
+     list_node *ptrans2 = result -> next;
+     int count1,count2,countans;
+     count1 = 0;
+     count2 = 0;
+     countans = 0;
+     for(ptr1 = num1 -> next ; ptr1 != num1 ; ptr1 = ptr1 -> next) countans+=1;
+     for(ptr2 = num2 -> next ; ptr2 != num2 ; ptr2 = ptr2 -> next) countans+=1;
+//     printf("%d",countans);
+     for(count1 = 0 ; count1 < countans-1 ; count1++) Insert_node(result,0);
+     ptrans = result -> next;
+     ptrans2 = result -> next;
+     for(ptr2 = num2 -> next ; ptr2 != num2 ; ptr2 = ptr2 -> next)
+     {
+              count2 = ptr2 -> data;
+              for(ptr1 = num1 -> next ; ptr1 != num1 ; ptr1 = ptr1 -> next)
+              {
+                       count1 = ptr1 -> data;
+                       countans = count1 * count2;
+                       ptrans -> data += countans;
+                       ptrans = ptrans -> next;
+              }
+              ptrans2 = ptrans2 -> next;
+              ptrans = ptrans2;
+     }
+     for(ptrans = result -> next ; ptrans -> next != result ; ptrans = ptrans -> next)
+     {
+                if(ptrans -> data >= 10)
+                {
+                          countans = ptrans -> data;
+                          count1 = countans %10;
+                          count2 = countans - count1;
+                          ptrans -> next -> data += (count2/10);
+                          ptrans -> data = count1;
+                }
+     }
+     Inverse(ptrans);
+                          
+}
