@@ -1,0 +1,20 @@
+#include<stdoi.h>
+
+void main()
+{
+int in = 25;
+	float fn = 34.5;
+	char ch = 'g';
+
+	int *ip;
+	float *fp;
+	char *cp;
+
+	ip = &in;
+	fp = &fn;
+	cp = &ch;
+
+	printf_s("size of in is : %d, size of ip is : %d\n", sizeof in , sizeof ip);
+	printf_s("size of fn is : %d, size of fn is : %d\n", sizeof fn, sizeof fp);
+	printf_s("size of ch is : %d, size of ch is : %d\n", sizeof ch, sizeof cp);
+}
