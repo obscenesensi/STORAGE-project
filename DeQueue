@@ -1,0 +1,19 @@
+int Dequeue( CircularQueue* Queue )
+
+{
+
+ 
+
+ int Position = Queue->Front;
+
+ 
+
+Queue->Front = (Queue->Front + 1)%(Queue->Capacity + 1);
+
+                                           
+
+ return Queue->Nodes[Position].Data;                      
+
+ 
+
+}    
