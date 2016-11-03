@@ -1,0 +1,99 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <fstream>
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <unordered_set>
+#include <chrono>
+#include<iostream>
+
+using namespace std;
+
+//8976
+//118374
+
+//when avoid copy 
+//9159 in length_sort
+//30182
+//#define VECTOR
+#ifdef VECTOR
+vector <std::string> words(10000);
+bool length_sort(string &x, string &y){
+	const size_t lhsLength = x.length();
+	const size_t rhsLength = y.length();
+	if(lhsLength==rhsLength)
+		return x<y;
+	return lhsLength < rhsLength;
+}
+
+void ReadFile(string filename){
+	string line;
+	
+	std::ifstream infile(filename);
+	while (getline(infile, line))
+	{
+		words.push_back(line);
+	}
+	infile.close();
+}
+#else
+char *buffer;
+char ** words;
+long wcnt;
+void ReadFile(char *filename){
+	FILE * fp=fopen(filename,"rb");
+	long sz;
+	//get the size of file
+	fseek(fp, 0L, SEEK_END);
+	sz = ftell(fp);
+	fseek(fp, 0L, SEEK_SET);
+	buffer=(char*)malloc(sz*sizeof(char)+10);
+	fread(buffer,sizeof(char),sz,fp);	
+	fclose(fp);
+	long cnt=0;
+	for(long i=0;i<sz;i++){
+		if(buffer[i]=='\n'){
+			buffer[i]='\0';
+			cnt++;
+		}
+	}
+	words=(char **) malloc(sizeof(char*)*cnt);
+	words[0]=&(buffer[0]);
+
+	wcnt=cnt;
+	cnt=1;
+	for(long i=1;i<sz;i++){
+		if(buffer[i]=='\0'){
+			words[cnt++]=&(buffer[i+1]);
+		}
+	}
+}
+bool length_sort(char * x, char * y){
+	const size_t lhsLength = strlen(x);
+	const size_t rhsLength = strlen(y);
+	if(lhsLength==rhsLength)
+		return strcmp(x,y)<=0;
+	return lhsLength < rhsLength;
+}
+
+#endif
+void main(){
+
+	auto begin = chrono::high_resolution_clock::now(); 
+	ReadFile("C:/data/words.txt");
+	auto end = chrono::high_resolution_clock::now();    
+	auto dur = end - begin;
+	auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
+	cout << ms << endl;
+#ifdef VECTOR
+	sort(words.begin(),words.end(),length_sort);
+#else
+	sort(words,words+wcnt,length_sort);
+#endif
+	end = chrono::high_resolution_clock::now();    
+	dur = end - begin;
+	ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
+	cout << ms << endl;
+	int a;
+	cin >>a;
+}
