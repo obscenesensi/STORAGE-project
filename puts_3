@@ -1,0 +1,25 @@
+#include <cstdio>
+
+void f(int x, int y) {
+    puts("f::f(int, int)");
+}
+
+void f(int x) {
+    puts("f::f(int)");
+}
+
+struct r {
+    r(int) {
+        puts("r::r(int)");
+    }
+
+    r(int, int) {
+        puts("r::r(int, int)");
+    }
+};
+
+int main() {
+    (f)(3, 4);
+    auto x = (r)(3, 4);
+    return 0;
+}
