@@ -1,0 +1,80 @@
+#include "String.h"
+
+#include <string.h>
+
+String::~String(void)
+{
+    delete[] _data;
+    _data = NULL;
+}
+
+String::String(const char* data /*= NULL*/)
+{
+    if (NULL != data)
+    {
+        int size = strlen(data);
+        _data = new char[size+1];
+        strcpy(_data, data);
+    }
+    else
+    {
+        _data = NULL;
+    }
+}
+
+String::String(const String& other)
+{
+    if (this != &other && NULL != other._data)
+    {
+        int size = strlen(other._data);
+        _data = new char[size+1];
+        strcpy(_data, other._data);
+    }
+}
+
+String& String::operator+=(const String& other)
+{
+    if (NULL != other._data)
+    {
+        int otherSize = strlen(other._data);
+        int selfSize = 0;
+        if (NULL != _data)
+        {
+            selfSize = strlen(_data);
+        }
+        
+        char* _newData = new char[otherSize+selfSize+1];
+
+        if (NULL != _data)
+        {
+            strcpy(_newData, _data);
+            delete[] _data;
+            _data = NULL;
+        }
+        
+        strcat(_newData, other._data);
+        _data = _newData;
+    }
+
+    return *this;
+}
+
+String& String::operator=(const String& rhs)
+{
+    if (this != &rhs && NULL != rhs._data)
+    {
+        delete[] _data;
+
+        int size = strlen(rhs._data);
+        _data = new char[size+1];
+        strcpy(_data, rhs._data);
+    }
+
+    return *this;
+}
+
+std::ostream& operator<<(std::ostream& os, String& str)
+{
+    os << str._data;
+    return os;
+}
