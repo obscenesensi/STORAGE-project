@@ -1,0 +1,18 @@
+#include <cstdio>
+int main() {
+  int n;
+  char str[53] = {"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"};
+  while (scanf("%d", &n) != EOF) {
+    printf("2 %d %d\n", n, n);
+    for (int i = 0; i < n; ++i) {
+      for (int j = 0; j < n; ++j) putchar(str[i]);
+      puts("");
+    }
+    puts("");
+    for (int i = 0; i < n; ++i) {
+      for (int j = 0; j < n; ++j) putchar(str[j]);
+      puts("");
+    }
+  }
+  return 0;
+}
