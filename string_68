@@ -1,0 +1,8 @@
+void trim( std::string& str, const std::string& whitespaces=" \t\f\v\n\r" )
+{
+  size_t found = str.find_first_not_of( whitespaces );
+  if ( found!=std::string::npos )
+    str.erase( 0, found );
+  else
+    str.clear();
+}
