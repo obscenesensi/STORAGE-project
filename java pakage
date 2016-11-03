@@ -1,0 +1,56 @@
+import B.MyCalculator;
+import A.Calculator;
+public class Test {
+	public static void main(String[] args)
+	{
+		Calculator myCal = new MyCalculator();
+		
+		System.out.println(myCal.add(1, 3));
+		System.out.println(myCal.sub(1, 3));
+		
+		int [] array ={2,1,3,4,5};
+		System.out.println(myCal.avg(array));
+		
+		System.out.println(myCal.hashCode());
+		System.out.println(myCal.toString());
+		
+	}
+}
+
+package A;
+
+public abstract class Calculator {
+	public abstract int add(int a, int b);
+	public abstract int sub(int a, int b);
+	public abstract double avg(int[] a);
+}
+
+package B;
+import A.Calculator;
+
+public class MyCalculator extends Calculator{
+	public int add(int a, int b)
+	{
+		return a+b;
+	}
+	public int sub(int a, int b)
+	{
+		return a-b;
+	}
+	public double avg(int[] a)
+	{
+		double result = 0.0;
+		for(int i=0;i<a.length;i++)
+		{
+			result += a[i];
+		}
+		return result/a.length;
+	}
+	
+	public String toString()
+	{
+		return "MyCalculator클래스에서 만들어진 객체";	
+	}
+	
+}
+
