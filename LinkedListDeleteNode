@@ -1,0 +1,17 @@
+deleteNode(CL, pre)
+
+if(CL = null) then error;
+
+else {
+
+old <- pre.link;
+
+pre.link <- old.link;
+
+if (old = CL) then
+
+CL <- old.link;
+
+return Node(old);
+
+}
