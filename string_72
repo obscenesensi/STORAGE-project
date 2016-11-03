@@ -1,0 +1,49 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	long long n00, n01, n10, n11;
+	cin >> n00 >> n01 >> n10 >> n11;
+
+	long long n0 = (n01 + n10 > 0) ? 1 : 0;
+	while (n0 * (n0 - 1) / 2 < n00) n0++;
+
+	long long n1 = (n01 + n10 > 0) ? 1 : 0;
+	while (n1 * (n1 - 1) / 2 < n11) n1++;
+
+	if (n00 + n01 + n10 + n11 == 0) {
+		cout << "1" << endl;
+		return 0;
+	}
+
+	if (n0 * (n0 - 1) / 2 != n00 || n1 * (n1 - 1) / 2 != n11) {
+		cout << "Impossible" << endl;
+		return 0;
+	}
+
+	string s = string(n0, '0') + string(n1, '1');
+
+	long long z01 = n0 * n1;
+	long long z10 = 0;
+
+	if (z01 + z10 != n10 + n01) {
+		cout << "Impossible" << endl;
+		return 0;
+	}
+
+	for (int i = 0; i < n1; i++) {
+		int j = n0 + i;
+		if (z01 - n01 >= n0) {
+			swap(s[i], s[j]);
+			z01 -= n0;
+		} else {
+			while (j > i && z01 > n01) {
+				swap(s[j], s[j - 1]);
+				j--;
+				z01--;
+			}
+		}
+	}
+
+	cout << s << endl;
+}
