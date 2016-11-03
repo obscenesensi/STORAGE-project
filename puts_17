@@ -1,0 +1,27 @@
+#include <cstdio>
+
+int max(int a, int b) {
+  return a > b ? a : b;
+}
+
+int main() {
+  int X,Y;
+  int l1, h1;
+  int l2, h2;
+
+  scanf("%d %d", &X, &Y);
+  scanf("%d %d", &l1, &h1);
+  scanf("%d %d", &l2, &h2);
+
+  if (l1+l2 <= X && max(h1, h2) <= Y) puts("S");
+  else if (l1+h2 <= X && max(h1, l2) <= Y) puts("S");
+  else if (h1+h2 <= X && max(l1, l2) <= Y) puts("S");
+  else if (h1+l2 <= X && max(l1, h2) <= Y) puts("S");
+  else if (l1+l2 <= Y && max(h1, h2) <= X) puts("S");
+  else if (l1+h2 <= Y && max(h1, l2) <= X) puts("S");
+  else if (h1+h2 <= Y && max(l1, l2) <= X) puts("S");
+  else if (h1+l2 <= Y && max(l1, h2) <= X) puts("S");
+  else puts("N");
+
+  return 0;
+}
