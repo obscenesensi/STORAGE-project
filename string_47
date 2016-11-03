@@ -1,0 +1,50 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int strToInteger(char *temp)
+{
+	int i=0,val=0,sign=1;
+	printf("string value transferred : %s  \n", temp);
+	if(temp == NULL)
+	{
+		printf("Error: String cannot be null");
+		return NULL;
+	}
+	while(temp[i] == ' ')
+	{
+
+		i++;
+	}
+	if(temp[i] == '-' | temp[i]=='+')
+	{
+		if(temp[i]=='-') sign = -1;
+		if(temp[i]=='+') sign = 1;
+		i++;
+	}
+	while(temp[i] != '\0')
+	{
+		if(temp[i] < '0' | temp[i] > '9')
+		{
+			printf("Error: Non integer value in the string");
+			return NULL;
+		}
+
+		val = val*10 + (temp[i++] - '0');
+
+	}
+
+	return val*sign;
+}
+
+
+int main(int argc, char* argv[])
+{
+
+	printf("value : %d \n",  strToInteger("123"));
+	printf("value : %d \n",  strToInteger("  -0123"));
+	printf("value : %d \n",  strToInteger("  +0123"));
+	printf("value : %d \n",  strToInteger("   456678"));
+	printf("value : %d \n",  strToInteger("1a23"));
+	printf("value : %d \n",  strToInteger(NULL));
+	return 0;
+}
