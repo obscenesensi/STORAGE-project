@@ -1,0 +1,130 @@
+#include <cstdio>
+#include <cstdarg>
+#include <string>
+#include <exception>
+
+// #include <cstdlib>
+// #include <vector>
+// #include <iostream>
+
+
+std::string string_printf(const char* const format, ...)
+{
+
+  va_list arg_ptr;
+  va_start(arg_ptr, format);
+  const int ret_prn_pre = vsnprintf(NULL, 0, format, arg_ptr);
+  va_end(arg_ptr);
+
+  // fprintf(stderr, "[%s] ret_prn_pre=%d\n", __func__, ret_prn_pre);
+
+  if(ret_prn_pre < 0) {
+    throw std::invalid_argument("format is invalid");
+  }
+
+  const size_t size = ret_prn_pre+1;
+  std::string result_string;
+  result_string.resize(size);
+
+  va_start(arg_ptr, format);
+  const int ret_prn = vsnprintf(&result_string[0], size, format, arg_ptr);
+  va_end(arg_ptr);
+
+  // fprintf(stderr, "[%s] ret_prn=%d\n", __func__, ret_prn);
+
+  if(ret_prn >= size) {
+    throw std::length_error("size of buffer is smaller than needed.");
+  }
+
+  return result_string;
+
+};
+
+
+template<typename T>
+std::string to_string(const T);
+
+template<>
+std::string to_string<int>(const int i)
+{ return string_printf("%d", i); }
+
+template<>
+std::string to_string<long int>(const long int i)
+{ return string_printf("%ld", i); }
+
+template<>
+std::string to_string<long long int>(const long long int i)
+{ return string_printf("%lld", i); }
+
+
+template<>
+std::string to_string<unsigned int>(const unsigned int i)
+{ return string_printf("%u", i); }
+
+template<>
+std::string to_string<unsigned long int>(const unsigned long int i)
+{ return string_printf("%lu", i); }
+
+template<>
+std::string to_string<unsigned long long int>(const unsigned long long int i)
+{ return string_printf("%llu", i); }
+
+
+// template<>
+// std::string to_string<size_t>(const size_t i)
+// { return string_printf("%zu", i); }
+
+// template<>
+// std::string to_string<ssize_t>(const ssize_t i)
+// { return string_printf("%zd", i); }
+
+
+template<>
+std::string to_string<float>(const float f)
+{ return string_printf("%g", f); }
+
+template<>
+std::string to_string<double>(const double f)
+{ return string_printf("%g", f); }
+
+template<>
+std::string to_string<long double>(const long double f)
+{ return string_printf("%Lg", f); }
+
+
+template<>
+std::string to_string<char*>(char* const ptr)
+{ return ptr; }
+
+template<>
+std::string to_string<void*>(void* const ptr)
+{ return string_printf("%p", ptr); }
+
+// template<typename T>
+// std::string to_string<T*>(T* ptr)
+// { return string_printf("%p", ptr); }
+
+
+#define PRINTVAR(var) fprintf(stderr, #var "=%s\n" , to_string(var).c_str())
+
+
+struct {
+  double a;
+  ssize_t s;
+} o;
+
+int main()
+{
+
+  o.a = 1.2345;
+  o.s = 1234;
+
+  //const std::string str = string_printf("test %d %.18g", 1, 1.23456789);
+  //printf("str=\"%s\"\n", to_string((void*)&s).c_str());
+
+  PRINTVAR(o.a);
+  PRINTVAR(o.s);
+
+
+  return 0;
+}
