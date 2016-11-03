@@ -1,0 +1,54 @@
+#include <iostream>
+#include <string.h>
+
+using namespace std;
+
+void a_o(char string[1024]){
+    char string1[1024];
+    for (int i = 0; i < strlen(string); ++i) {
+        if(string[i] == (char) 'а') {
+            string1[i] = 'о';
+            cout << string1[i];
+        }else{
+            string1[i] = string[i];
+            cout << string1[i];
+        }
+    }
+}
+
+void lim_word(char string[]) {
+    int lenght_new = 0;
+    int lenght_old = 100;
+    int n = 0;
+    int point = 0;
+
+    for (int i = 0; i < strlen(string); ++i) {
+        if (string[i] == ' ' or strlen(string) == i + 1){
+            if (lenght_old > lenght_new) {
+                point = n;
+                lenght_old = lenght_new;
+            }
+            lenght_new = 0;
+            n++;
+        }else{
+            lenght_new++;
+        }
+    }
+
+    n = 0;
+
+    for (int j = 0; j < strlen(string); ++j) {
+        if(string[j] == ' ') {
+            n++;
+        }
+        if(n == point) {
+           cout << string[j + 1];
+        }
+    }
+}
+
+int main() {
+    lim_word((char *) "Юра примос ко");
+
+    return 0;
+}
