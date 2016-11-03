@@ -1,0 +1,106 @@
+public class MyLinkedList  {
+    private Node head;
+
+    public MyLinkedList() {
+        head = null;
+    }
+
+    public Node getHead() {
+        return head;
+    }
+
+    public boolean isEmpty() {
+        if (head == null)
+            return true;
+        return false;
+    }
+
+    public int size() {
+        int size = 0;
+        Node current = head;
+
+        while (current != null) {
+            size += 1;
+            current = current.getNext();
+        }
+
+        return size;
+    }
+
+    public Object get(int i) {
+        int index = 0;
+        Node current = head;
+
+        while (current != null && index != i) {
+            index += 1;
+            current = current.getNext();
+        }
+
+        if (current == null)
+            return null;
+        return current.getElement();
+    }
+
+    public void add(Object o) {
+        if (head == null) {
+            head = new MyNode(o);
+            return;
+        }
+
+        Node current = head;
+        while (current.getNext() != null) {
+            current = current.getNext();
+        }
+
+        current.setNext(new MyNode(o));
+    }
+
+    public void remove(Object o) {
+        if (head == null) {
+            return;
+        }
+
+        if (head.getElement() == o) {
+            head = head.getNext();
+            return;
+        }
+
+        Node current = head;
+        while (current.getNext() != null && current.getNext().getElement() != o) {
+            current = current.getNext();
+        }
+
+        if (current.getNext() == null) {
+            // Item not found
+            return;
+        }
+
+        current.setNext(current.getNext().getNext());
+    }
+}
+-----------------------------
+public class MyNode {
+    private Object data;
+    private Node next;
+
+    public MyNode(Object data) {
+        this.data = data;
+        next = null;
+    }
+
+    public Object getElement() {
+        return data;
+    }
+
+    public void setElement(Object element) {
+        data = element;
+    }
+
+    public Node getNext() {
+        return next;
+    }
+
+    public void setNext(Node next) {
+        this.next = next;
+    }
+}
