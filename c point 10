@@ -1,0 +1,27 @@
+#include<stdoi.h>
+
+
+float jgr(int a);
+
+void main()
+{
+int a,i=0;
+	while (1)
+	{
+		printf_s("0~360 사이 각도를 입력하시오");
+		scanf_s("%d", &a);
+		if (a >= 0 && a <= 360)
+			break;
+		else
+			continue;
+	}
+
+	printf_s("%f",jgr(a));
+}
+
+float jgr(int a)
+{
+	float r = 0;
+	r = (a / 180) * 3.14;
+	return r;
+}
