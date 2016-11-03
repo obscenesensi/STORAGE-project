@@ -1,0 +1,18 @@
+
+import java.util.StringTokenizer;
+import java.util.NoSuchElementException;
+public class IpCutter3 {
+public static void main (String[]args) {
+StringTokenizer Q = new StringTokenizer(args[0]);
+String[]k=new String[4];
+try {
+for (int i=0;i<4;i++)
+k[i]=Q.nextToken(".");
+}
+catch (NoSuchElementException ex ) {
+System.out.println("Error : You have entered an invalid IP address"); 
+System.exit(0); }
+for (int i=0;i<4;i++)
+System.out.println(k[i]);
+}
+}
