@@ -1,0 +1,17 @@
+#include <iostream>
+#include <string>
+int main() {
+  std::string str;
+  int cases = 0;
+  while (std::cin >> str && str != "#") {
+    printf("Case %d: ", ++cases);
+    if (str == "HELLO") puts("ENGLISH");
+    else if (str == "HOLA") puts("SPANISH");
+    else if (str == "HALLO") puts("GERMAN");
+    else if (str == "BONJOUR") puts("FRENCH");
+    else if (str == "CIAO") puts("ITALIAN");
+    else if (str == "ZDRAVSTVUJTE") puts("RUSSIAN");
+    else puts("UNKNOWN");
+  }
+  return 0;
+}
