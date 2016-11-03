@@ -1,0 +1,34 @@
+
+#include <iostream>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+vector<string> split_string(string input, char delimiter)
+{
+    vector<string>    output;
+    string::size_type idx;
+
+    input.push_back(delimiter);
+    while ( (idx = input.find_first_of(delimiter)) != string::npos ) {
+        output.push_back(input.substr(0, idx));
+        input.erase(0, idx + 1);
+    }
+
+    return output;
+}
+
+int main(int argc, char *argv[])
+{
+    string test = "0,1,2,3,4,5,6,7,8,9,1024,3.14159265,hoge,,fuga";
+    vector<string> elem;
+
+    elem = split_string(test, ',');
+
+    int i;
+    for (i = 0; i < elem.size(); i++)
+        cout << elem[i] << endl;
+
+    return 0;
+}
