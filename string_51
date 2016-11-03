@@ -1,0 +1,31 @@
+#include <cassert>
+#include <cstddef>
+#include <string>
+
+template <int8_t len>
+class string {
+  private:
+    char arr[len + 1];
+    
+  public:
+    string() { arr[len - 1] = len; }
+    
+    uint8_t size() const noexcept { return static_cast<uint8_t>(len - arr[len - 1]); }
+    
+    void operator=(const std::string& s) {
+      // no check for overflow
+      for (std::size_t i { 0 }; i < s.size(); i++) {
+        arr[i] = s[i];
+      }
+      
+      arr[len - 1] = len - s.size();
+    }
+};
+
+int main() {
+  string<3> s;
+  
+  s = "a";
+  
+  assert(s.size() == 1);
+}
