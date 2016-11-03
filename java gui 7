@@ -1,0 +1,138 @@
+import javax.swing.*;
+import javax.swing.event.*;
+import java.awt.event.*;
+import java.awt.*;
+import java.util.LinkedList;
+
+public class BoardPanel extends JPanel
+{
+	JFrame frame = new JFrame();
+	ComputerPlayer skyNet = new ComputerPlayer();
+	private byte board[][];
+	Board b;
+	boolean thinking;
+	public static final int SpaceSize = 50;
+	public static final int CellPadding = 5;
+	
+	public BoardPanel()
+	{
+		super(); 
+		b = new Board();
+		board = b.getBoard();
+		thinking = false;
+		addMouseListener(
+			new MouseAdapter()
+			{			
+				public void mousePressed(MouseEvent e)
+				{
+					System.out.println("turn:" + b.getTurn());
+					final Point move = new Point(e.getX() / SpaceSize -1, e.getY() / SpaceSize -1);
+					if(b.determineMoves().contains(move) && !thinking)
+					{
+					byte turn = b.getTurn();
+					b.makeMove(move);
+					board = b.getBoard();
+					repaint();
+					Thread T = new Thread()
+					{
+					public void run()
+					{
+						compMove();
+					}
+					};
+					if(turn != b.getTurn())
+					T.start();
+					} 
+				}
+			}
+		);
+
+	}
+	public int findPieces(int turn)
+	{
+		int pieces = 0;
+		for(int i =0; i<8; i++)
+		{
+			for(int j=0; j<8; j++)
+			{
+				if(board[i][j] == turn)
+				pieces ++;
+			}
+		}
+		return(pieces);
+	}
+	
+	public void compMove()
+	{
+		thinking = true;
+		System.out.println("turn:" + b.getTurn());
+		System.out.print("Computer move ");
+		b = skyNet.getMove(b);
+		board = b.getBoard();
+		b.setChildren(new LinkedList<Board>());
+		System.out.println("turn:" + b.getTurn());
+		repaint();
+		thinking = false;
+	}
+	
+	public void paintComponent(Graphics g)
+	{
+		super.paintComponent(g);
+		g.setColor(Color.GREEN);
+		g.fillRect(SpaceSize, SpaceSize, SpaceSize*8, SpaceSize*8);
+		g.setColor(Color.BLACK);
+		g.drawLine(SpaceSize, 40, SpaceSize, SpaceSize * 9);
+		g.drawLine(SpaceSize * 2, 40, SpaceSize * 2, SpaceSize * 9);
+		g.drawLine(SpaceSize * 3, 40, SpaceSize * 3, SpaceSize * 9);
+		g.drawLine(SpaceSize * 4, 40, SpaceSize * 4, SpaceSize * 9);
+		g.drawLine(SpaceSize * 5, 40, SpaceSize * 5, SpaceSize * 9);
+		g.drawLine(SpaceSize * 6, 40, SpaceSize * 6, SpaceSize * 9);
+		g.drawLine(SpaceSize * 7, 40, SpaceSize * 7, SpaceSize * 9);
+		g.drawLine(SpaceSize * 8, 40, SpaceSize * 8, SpaceSize * 9);
+		g.drawLine(SpaceSize * 9, 40, SpaceSize * 9, SpaceSize * 9);
+		g.drawLine(40, SpaceSize, SpaceSize * 9, SpaceSize);		
+		g.drawLine(40, SpaceSize * 2, SpaceSize * 9, SpaceSize * 2);
+		g.drawLine(40, SpaceSize * 3, SpaceSize * 9, SpaceSize * 3);
+		g.drawLine(40, SpaceSize * 4, SpaceSize * 9, SpaceSize * 4);
+		g.drawLine(40, SpaceSize * 5, SpaceSize * 9, SpaceSize * 5);
+		g.drawLine(40, SpaceSize * 6, SpaceSize * 9, SpaceSize * 6);
+		g.drawLine(40, SpaceSize * 7, SpaceSize * 9, SpaceSize * 7);
+		g.drawLine(40, SpaceSize * 8, SpaceSize * 9, SpaceSize * 8);
+		g.drawLine(40, SpaceSize * 9, SpaceSize * 9, SpaceSize * 9);
+		
+		for (int col=0; col<8; col++)
+		{
+			for(int row=0; row<8; row++)
+			{
+				if (board[col][row] == Board.BLACK)
+				{
+					g.setColor(Color.BLACK);
+					g.fillOval( SpaceSize * (col + 1) + CellPadding, 
+							SpaceSize * (row + 1) + CellPadding, 
+							SpaceSize - CellPadding * 2, 
+							SpaceSize - CellPadding * 2);
+				}		
+				else if (board[col][row] == Board.WHITE)
+				{
+					
+					g.setColor(Color.WHITE);
+					g.fillOval( SpaceSize * (col + 1) + CellPadding, 
+								SpaceSize * (row + 1) + CellPadding, 
+								SpaceSize - CellPadding * 2, 
+								SpaceSize - CellPadding * 2);
+				}
+				LinkedList<Point> l = b.determineMoves();
+				while(!l.isEmpty())
+				{
+					Point p = l.remove();
+					g.setColor(Color.RED);
+					g.fillOval( SpaceSize * ((int)p.getX() + 1) + CellPadding +SpaceSize/4, 
+							SpaceSize * ((int)p.getY() + 1) + CellPadding+SpaceSize/4, 
+							SpaceSize - CellPadding * 2 - SpaceSize/2, 
+							SpaceSize - CellPadding * 2 - SpaceSize/2);
+					
+				}
+			}
+		}
+	}
+}
