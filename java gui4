@@ -1,0 +1,74 @@
+package com.aleksnegirov.mt.gui;
+
+import com.aleksnegirov.mt.R;
+import com.aleksnegirov.mt.R.drawable;
+import com.aleksnegirov.mt.R.id;
+import com.aleksnegirov.mt.R.layout;
+
+import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.view.LayoutInflater;
+
+public class CatSpinnerArrayAdapter extends ArrayAdapter<String> {
+	
+	private Context ctx;
+	private String[] catStrings;
+	
+	public CatSpinnerArrayAdapter(Context context, int textViewResourceId,
+			String[] objects) {
+			super(context, textViewResourceId, objects);
+			// TODO Auto-generated constructor stub
+			ctx=context;
+			catStrings=objects;
+			}
+	
+	@Override
+	public View getDropDownView(int position, View convertView,
+	ViewGroup parent) {
+	// TODO Auto-generated method stub
+	return getCustomView(position, convertView, parent);
+	}
+
+	@Override
+	public View getView(int position, View convertView, ViewGroup parent) {
+	// TODO Auto-generated method stub
+	return getCustomView(position, convertView, parent);
+	}
+	
+	public View getCustomView(int position, View convertView, ViewGroup parent) {
+		// TODO Auto-generated method stub
+
+
+		LayoutInflater inflater=LayoutInflater.from(ctx);
+		View row=inflater.inflate(R.layout.row2sp, parent, false);
+		
+		TextView label=(TextView)row.findViewById(R.id.weekofday);
+		ImageView icon=(ImageView)row.findViewById(R.id.icon);
+		
+		
+		label.setText(catStrings[position]);
+
+		
+		
+		
+		if (catStrings[position].equals("Grocery"))
+		    icon.setImageResource(R.drawable.ic_cat_gros);
+		
+		if (catStrings[position].equals("Fuel"))
+		    icon.setImageResource(R.drawable.ic_cat_fuel);
+		
+		if (catStrings[position].equals("Travel"))
+		    icon.setImageResource(R.drawable.ic_cat_travel);
+		  
+		if (catStrings[position].equals("Gift"))
+		    icon.setImageResource(R.drawable.ic_cat_gift);
+		
+		return row;
+		}
+
+
+}
