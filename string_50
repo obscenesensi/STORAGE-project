@@ -1,0 +1,26 @@
+#include <boost/format.hpp>
+#include <iostream>
+#include <sstream>
+using namespace std;
+ 
+int main ()
+{
+    int year = 2011;
+    int month = 3;
+    int day = 11;
+ 
+    // Printf style formatting
+    cout << boost::format("%d %d %d") % year % month % day << endl;
+ 
+    // Fill with zero and set width to 4
+    cout << boost::format("%4i %04i %04i") % year % month % day << endl;
+ 
+    // Assigning it to std::stringstream
+    stringstream ss;
+    ss << boost::format("%4i %4i %4i") % year % month % day;
+ 
+    // Assigning it to std::string
+    string s = boost::str(boost::format("%4i %4i %4i") % year % month % day);
+ 
+    return 0;
+}
