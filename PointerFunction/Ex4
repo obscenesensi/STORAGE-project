@@ -1,0 +1,1 @@
+#include <stdio.h> void swap(); int a,b;  int main() {     a=5;     b=10;      printf("값 교환 전 a: %d b: %d\n",a,b);          swap();              printf("값 교환 후 a: %d b: %d\n",a,b);  }  void swap() {     int temp;      temp=a;     a=b;     b=temp;      }
