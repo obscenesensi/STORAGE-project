@@ -1,0 +1,19 @@
+vector<string> split(string& str ) {
+	vector< string > ret;
+	string::iterator from( str.begin() );
+    int i = 0;
+    while( true ) {
+		string::iterator to = find( from, str.end(), ' ');
+        if( to == str.end() ) {
+            string temp(from,to);
+			ret.push_back( temp );
+            break;
+        } else {
+			string temp(from,to);
+            ret.push_back( temp );
+            from = ++to;
+        }
+        i++;
+    }
+	return ret;
+}
