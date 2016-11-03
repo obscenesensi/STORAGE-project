@@ -1,0 +1,19 @@
+#include <cstdio>
+#include <algorithm>
+int main() {
+  int a[4], t;
+  scanf("%d", &t);
+  while (t-- && scanf("%d %d %d %d", &a[0], &a[1], &a[2], &a[3]) != EOF) {
+    std::sort(a, a + 4);
+    if (a[0] == a[1] && a[1] == a[2] && a[2] == a[3]) {
+      puts("square");
+    } else if (a[0] == a[1] && a[2] == a[3]) {
+      puts("rectangle");
+    } else if (a[0] + a[1] + a[2] > a[3]) {
+      puts("quadrangle");
+    } else {
+      puts("banana");
+    }
+  }
+  return 0;
+  }
