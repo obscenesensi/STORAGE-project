@@ -1,0 +1,32 @@
+insertFirstNode(CL, x)
+
+new <- getNode();
+
+new.data <- x;
+
+if(CL = null) then {
+
+CL <- new;
+
+new.link <- new;
+
+}
+
+else{
+
+temp <- CL;
+
+while (temp.link =/ CL)do
+
+temp <- temp.link;
+
+new.link <- temp.link;
+
+temp.link <- new;
+
+CL <- new;
+
+}
+
+
+
