@@ -1,193 +1,267 @@
-#include <stdio.h>  
-#include <stdlib.h>  
-//트리 구조체 
-typedef struct Tree{ 
-     int data; 
-     struct Tree *left; 
-     struct Tree *right; 
-}Tree; 
-//레벨순회 큐설정 
-Tree* queue[50]; 
-int front = -1; 
-int rear = -1; 
-//트리 값 추가 
-void addChild(Tree **parent, int data); 
-//레벨 순회 값 추가 
-void addQueue(Tree *parent); 
-//레벨 순회 dequeue 
-Tree *dequeue(); 
-//preorder 
-void preOrder(Tree *parent); 
-//inorder 
-void inOrder(Tree *parent); 
-//postorder 
-void postOrder(Tree *parent); 
-//levelorder 
-void levelOrder(Tree *parent); 
-void main(void)  
-{ 
-     //루트 노드 
-     Tree *root; 
-     //파일  
-     FILE *f; 
-     int data; 
-     root = NULL; 
-     //파일 읽기 
-     fopen_s(&f,"data.txt","r"); 
-     //노드 입력 
-     while(!feof(f)) 
-     { 
-            fscanf_s(f,"%d ",&data); 
-            addChild(&root,data); 
-     } 
-     printf_s("전위 탐색\n"); 
-     preOrder(root); 
-     puts(""); 
-     printf_s("중위 탐색\n"); 
-     inOrder(root); 
-     puts(""); 
-     printf_s("후위 탐색\n"); 
-     postOrder(root); 
-     puts(""); 
-     printf_s("레벨 탐색\n"); 
-     levelOrder(root); 
-     puts(""); 
-} 
-//트리 값 추가 
-void addChild(Tree **parent, int data) 
-{ 
-     //부모 노드 현재 노드 
-     Tree *p, *cur; 
-     //새로운 노드 
-     Tree *n; 
-     cur = *parent; 
-     p = cur; 
-     //현재노드 찾기 
-     while(cur != NULL) 
-     { 
-            p = cur; 
-            if(data < cur->data) 
-            { 
-                   cur = cur->left; 
-            } 
-            else 
-            { 
-                   cur = cur->right; 
-            } 
-     } 
-     n = (Tree *)malloc(sizeof(Tree)); 
-     if(n == NULL) 
-     { 
-            return; 
-     } 
-     n->data = data; 
-     n->left = NULL; 
-     n->right = NULL; 
-     //노드 연결 
-     if(p != NULL) 
-     { 
-            if(data < p->data) 
-            { 
-                   p->left = n; 
-            } 
-            else 
-            { 
-                   p->right = n; 
-            } 
-     } 
-     else 
-     { 
-            *parent = n; 
-     } 
-} 
-//preorder 
-void preOrder(Tree *parent) 
-{ 
-     printf_s("%d ",parent->data); 
-     if(parent->left != NULL) 
-     { 
-            preOrder(parent->left); 
-     } 
-     if(parent->right != NULL) 
-     { 
-            preOrder(parent->right); 
-     } 
-} 
-//inorder 
-void inOrder(Tree *parent) 
-{ 
-     if(parent->left != NULL) 
-     { 
-            inOrder(parent->left); 
-     } 
-     printf_s("%d ",parent->data); 
-     if(parent->right != NULL) 
-     { 
-            inOrder(parent->right); 
-     } 
-} 
-//postorder 
-void postOrder(Tree *parent) 
-{ 
-     if(parent->left != NULL) 
-     { 
-            postOrder(parent->left); 
-     } 
-     if(parent->right != NULL) 
-     { 
-            postOrder(parent->right); 
-     } 
-     printf_s("%d ",parent->data); 
-} 
-//레벨 순회 값 추가 
-void addQueue(Tree *parent) 
-{ 
-     if(rear == 50-1) 
-     { 
-            return; 
-     } 
-     rear++; 
-     queue[rear] = parent; 
-      
-} 
-//레벨 순회 dequeue 
-Tree *dequeue() 
-{ 
-     Tree *n = NULL; 
-     if(front == rear) 
-     { 
-            return n; 
-     } 
-     front++; 
-     n = queue[front]; 
-     return n; 
-} 
-//levelorder 
-void levelOrder(Tree *parent) 
-{ 
-   Tree* ptr; 
-   front = -1; 
-   rear = -1; 
-   if(parent == NULL) 
-   { 
-          return; 
-   } 
-   addQueue(parent); 
-   while(1) 
-   { 
-          ptr = dequeue(); 
-          if(ptr == NULL) 
-          { 
-                 break; 
-          } 
-          printf_s("%d ",ptr->data); 
-          if(ptr->left != NULL) 
-          { 
-                 addQueue(ptr->left); 
-          } 
-          if(ptr->right != NULL) 
-          { 
-                 addQueue(ptr->right); 
-          } 
-   } 
-} 
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct _node{
+    int data;
+    struct _node *leftChild;
+    struct _node *rightChild;
+}node;
+
+void printInoorder(node *ptr);
+void printPreorder(node *ptr);
+void prinfPostorder(node *ptr);
+void insertNode(node *tree, node *child);
+node* creatNode(int num);
+bool searchNode(node *tree, int num);
+node* searchMinNode(node *tree);
+node* searchMaxNode(node *tree);
+node* removeNode(node *tree, node *parent, int num);
+
+void main()
+{
+    int menuNum = 0, quitFlag = 0, creatFlag = 1;
+    node *Tree;
+
+    printf("메뉴 : 1 - 추가, 2 - 삭제, 3 - 출력, 4 - 종료\n");
+
+    while(1)
+    {
+        int num;
+
+        printf("메뉴 : ");
+        scanf("%d", &menuNum);
+
+        switch(menuNum)
+        {
+            // 추가
+        case 1:
+            printf("추가 : ");
+            scanf("%d", &num);
+
+            if(creatFlag == 1)
+            {
+                Tree = creatNode(num);
+                creatFlag = 0;
+            }
+            else
+            {
+                if(searchNode(Tree, num))
+                    printf("에러 : 중복된 숫자입니다 : %d\n", num);
+                else
+                    insertNode(Tree, creatNode(num));
+            }
+            break;
+
+            // 삭제
+        case 2:
+            printf("삭제 : ");
+            scanf("%d", &num);
+
+            if(searchNode(Tree, num))
+            {
+                node *Node = removeNode(Tree, NULL, num);
+                free(Node);
+            }
+            else
+                printf("에러 : 존재하지 않는 숫자 입니다 : %d\n", num);
+
+
+            break;
+
+            // 출력
+        case 3:
+            printf("Preorder : ");
+            printPreorder(Tree);    printf("\n");
+
+            printf("Inorder    : ");
+            printInoorder(Tree);    printf("\n");
+
+            printf("Postorder : ");
+            prinfPostorder(Tree);    printf("\n");
+
+            break;
+
+            // 종료
+        case 4:
+            quitFlag = 1;
+            break;
+
+        default:
+            break;
+        }
+
+        if(quitFlag == 1)
+            break;
+    }
+}
+
+void printInoorder(node *ptr)
+{
+    if(ptr != NULL)
+    {
+        printInoorder(ptr->leftChild);
+        printf("%d ", ptr->data);
+        printInoorder(ptr->rightChild);
+    }
+    else
+        return;
+
+}
+
+void printPreorder(node *ptr)
+{
+    if(ptr != NULL)
+    {
+        printf("%d ", ptr->data);
+        printPreorder(ptr->leftChild);
+        printPreorder(ptr->rightChild);
+    }
+    else
+        return;
+}
+
+void prinfPostorder(node *ptr)
+{
+    if(ptr != NULL)
+    {
+        prinfPostorder(ptr->leftChild);
+        prinfPostorder(ptr->rightChild);
+        printf("%d ", ptr->data);
+    }
+    else
+        return;
+}
+
+node* creatNode(int num)
+{
+    node *newNode = (node*)malloc(sizeof(node));
+    newNode->leftChild = NULL;
+    newNode->rightChild = NULL;
+    newNode->data = num;
+
+    return newNode;
+}
+
+void insertNode(node *tree, node *child)
+{
+    if(tree->data < child->data)
+    {
+        if(tree->rightChild == NULL)
+            tree->rightChild = child;
+        else
+            insertNode(tree->rightChild, child);
+    }
+    else if(tree->data > child->data)
+    {
+        if(tree->leftChild == NULL)
+            tree->leftChild = child;
+        else
+            insertNode(tree->leftChild, child);
+    }
+}
+
+bool searchNode(node *tree, int num)
+{
+    if(tree == NULL)
+        return false;
+
+    if(tree->data < num)
+        return searchNode(tree->rightChild, num);
+    else if(tree->data > num)
+        return searchNode(tree->leftChild, num);
+    else
+        return true;
+}
+
+node* searchMinNode(node *tree)
+{
+    if(tree == NULL)
+        return NULL;
+
+    if(tree->leftChild == NULL)
+        return tree;
+    else
+        return searchMinNode(tree->leftChild);
+}
+
+node* searchMaxNode(node *tree)
+{
+    if(tree == NULL)
+        return NULL;
+
+    if(tree->rightChild == NULL)
+        return tree;
+    else
+        return searchMinNode(tree->rightChild);
+}
+
+
+node* removeNode(node *tree, node *parent, int num)
+{
+    node * removedNode = NULL;
+
+    if(tree == NULL)
+        return NULL;
+
+    // 값을 비교해가면서 목표값 검색
+    if(tree->data > num)
+        removedNode = removeNode(tree->leftChild, tree, num);
+    else if(tree->data < num)
+        removedNode = removeNode(tree->rightChild, tree, num);
+    // 목표값을 찾은경우
+    else
+    {
+        removedNode = tree;
+
+        // 삭제할 노드의 자식 노드들이 없을 경우 (잎노드)
+        if((tree->leftChild == NULL) && (tree->rightChild == NULL))
+        {
+            if(parent->leftChild == tree)
+                parent->leftChild = NULL;
+            else
+                parent->rightChild = NULL;
+        }
+        // 삭제할 노드가 자식 노드를 가지고 있을 경우
+        else
+        {
+            // 자식노드가 양쪽 다 있는 경우
+            if((tree->leftChild != NULL) && (tree->rightChild != NULL))
+            {
+                // 1. 삭제할 노드의 왼쪽 트리에서 가장 큰 값을 현재 노드에 위치 시킨다
+                // 2. 사제할 노드의 오른쪽 트리에서 가장 작은 값을 현재 노드에 위치 시킨다.
+                node * minNode = searchMaxNode(tree->leftChild);
+                minNode = removeNode(tree, NULL, minNode->data);
+
+                if(parent->leftChild == tree)
+                {
+                    parent->leftChild = minNode;
+                    minNode->rightChild = tree->rightChild;
+                }
+                else if(parent->rightChild == tree)
+                {
+                    parent->rightChild = minNode;
+                    minNode->rightChild = tree->rightChild;
+                }
+
+                //parent->leftChild = minNode;
+                //minNode->leftChild = tree->leftChild;
+            }
+            // 자식노드가 한쪽에만 있는 경우
+            else
+            {
+                node * temp = NULL;
+                if(tree->leftChild != NULL)
+                    temp = tree->leftChild;
+                else
+                    temp = tree->rightChild;
+
+                if(parent->leftChild == tree)
+                    parent->leftChild = temp;
+                else
+                    parent->rightChild = temp;
+            }
+        }
+    }
+
+    return removedNode;
+}
