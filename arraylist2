@@ -1,0 +1,46 @@
+import java.util.Scanner;
+import java.util.ArrayList;
+
+public class crazy19 {
+    public static void main(String[] args) {
+        boolean flag=true;
+        Scanner input= new Scanner(System.in);
+        Scanner inCh= new Scanner(System.in);
+
+    ArrayList<String> arr= new ArrayList<String>();
+   
+        System.out.println("*****MENU*****");
+        System.out.println("1.add\n2.clear\n3.addall\n4.exit");
+        while(flag){
+        System.out.println("enter names:");
+        String get = input.nextLine();
+            System.out.println("~~**~~now select a choice from menu~~**~~");
+        int inch=inCh.nextInt();
+            
+        
+            
+        
+        switch(inch){
+            
+            case 1:
+                arr.add(get);
+                System.out.println("added:"+arr);
+                
+                break;
+        
+            case 2:
+                arr.clear();
+                System.out.println("your list has been deleted successfully"+arr);
+                break;
+            case 3:
+            arr.addAll(arr);
+                System.out.println("Addall"+arr);
+                break;
+            default:
+                System.out.println("out of choice");
+                
+        }
+        
+    }
+    }
+}
