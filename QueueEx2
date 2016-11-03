@@ -1,0 +1,64 @@
+#include<stdio.h>
+#include<stdlib.h>
+#define Q_SIZE 3
+
+typedef int element;  // 문자형, 숫자형 자료형이 큐에 여러가지 들어갈수 있기 때문 속성지정.
+element queue[Q_SIZE];
+
+int count;  //원형큐는 Q_SIZE 가 3이기 때문에 삽입시는 ++, 삭제시는 -- 하기위한 변수
+
+//원형큐에 삽입하는 함수
+void enqueue(int front, int *rear, element item){
+	*rear = (*rear+1) % Q_SIZE;
+	if(front == *rear){
+		printf("Queue is Fulll\n");
+		return ;
+	}
+	count++;
+	queue[*rear]=item;
+}
+
+//원형큐에 들어 있는 자료 삭제하는 함수
+element dequeue(int *front, int rear){
+	if(*front == rear){
+		printf("Queue is empty\n");
+		exit(1);
+	}
+	else{
+		count--;
+		*front = (*front+1) % Q_SIZE;
+		return queue[*front];
+	}
+}
+
+int main()
+{
+	int rear=0, front=0,i,j; // 인덱스가 fornt 와 rear 필요
+	element data;
+	printf(" 1. add\n 2. delete\n 3. exit\n input : ");
+	scanf("%d",&i);
+	
+	while(1){
+		if(i==1){
+			printf("Input Number : ");
+			scanf("%d",&data);
+			enqueue(front, &rear, data);
+			printf("\nfront값 = %d     rear값 = %d",front,rear);
+		} else if(i==2){
+			dequeue(&front,rear);
+			printf("\nfront값 = %d     rear값 = %d",front,rear);
+		} else if(i==3){
+			for(j=1; j<=count ;j++)
+			{
+                                //원형큐에 담아 있는 자료 출력
+				printf("%d \n",queue[(front+j)%Q_SIZE]);
+			}
+			break;
+		}
+
+		printf("\n 1. add\n 2. delete\n 3. exit\n input : ");
+		scanf("%d",&i);
+	}
+
+	return 0;
+}
