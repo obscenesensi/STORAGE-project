@@ -1,0 +1,269 @@
+ main.cpp
+#include <stdio.h>
+#include <iostream>
+#include "SocketServer.h"
+
+// Need to link with Ws2_32.lib
+#pragma comment(lib, "ws2_32.lib")
+
+using namespace std;
+
+//NOTA: Quando se trabalha com sockets tem sempre que se inicializar a WinSockDLL -> #WSAStartup
+bool InitWinsockDLL()
+{
+  WSADATA wsaData;
+  //
+	///* Use the MAKEWORD(lowbyte, highbyte) macro declared in Windef.h */
+	WORD wVersionRequested = MAKEWORD(2, 2);
+	int iResult = WSAStartup(wVersionRequested, &wsaData);
+
+	if (iResult != 0) 
+	{
+		cout <<  "WSAStartup failed with error: "<< iResult << endl;
+		return false;
+	}
+
+	if (LOBYTE(wsaData.wVersion) != 2 || HIBYTE(wsaData.wVersion) != 2) 
+	{
+		/* Tell the user that we could not find a usable */
+		/* WinSock DLL.                                  */
+		cout <<  "Could not find a usable version of Winsock.dll" << endl;
+		WSACleanup();
+		return false;
+	}
+
+	cout <<  "The Winsock 2.2 dll was found okay" << endl;
+	return true;
+}
+
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+	if(!InitWinsockDLL())
+		return 1;
+
+	SocketServer c_socket_server;
+
+	if(!c_socket_server.Start(7777))
+	{
+		WSACleanup();
+		return 1;
+	}
+
+	getchar();
+
+	WSACleanup();
+	return 0;
+}
+
+----------------------------------------------------------------------------------
+ SocketServer.cpp
+#include "StdAfx.h"
+#include "SocketServer.h"
+#include <iostream>
+
+using namespace std;
+
+SocketServer::SocketServer() 
+  : m_AccepterSocket(INVALID_SOCKET),
+	m_nPort(0),
+	m_dwAccepterThreadID(0)
+{
+	m_bRunning = false;
+
+	m_hAccepterThread = nullptr;
+
+}
+
+//--
+
+SocketServer::~SocketServer(void)
+{
+	Stop();
+}
+
+//--
+
+bool SocketServer::Start(int nPort)
+{
+	// this should be synchronized
+	if(this->m_bRunning)
+		return true;
+	
+	m_bRunning = true;
+	//--
+
+	this->m_nPort = nPort;
+	if(!ActivateListener())
+		m_bRunning = false;
+	
+	return m_bRunning;	
+}
+
+//--
+
+void SocketServer::Stop()
+{
+	// this should be synchronized
+	if(m_bRunning)
+	{
+		m_bRunning = false;
+
+		CloseAccepterSocket();
+
+		if(m_hAccepterThread != nullptr)
+		{
+			WaitForSingleObject(this->m_hAccepterThread,INFINITE);
+			CloseHandle(this->m_hAccepterThread);
+			this->m_hAccepterThread = nullptr;
+		}
+	}
+}
+
+//---
+
+bool SocketServer::ActivateListener()
+{
+	this->m_AccepterSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+
+	if(!this->BindLocalPort())
+		return false;
+
+	if(listen(this->m_AccepterSocket,MAX_PENDING_CONNECTIONS) != 0)
+	{
+		std::cout <<  "ERROR: Failed to start listening to accept socket. Error: " << WSAGetLastError() << std::endl;
+		return false;
+	}
+
+	this->m_hAccepterThread = CreateThread(NULL,0,Accepter,this,0,&this->m_dwAccepterThreadID);
+
+	if (this->m_hAccepterThread != NULL)
+		return true;
+
+	std::cout << "Failed to start accepter thread. Error: " << GetLastError() << std::endl;
+
+	return false;
+}
+
+//---
+
+bool SocketServer::BindLocalPort()
+{
+	sockaddr_in sin;
+	sin.sin_addr.S_un.S_addr = INADDR_ANY;
+	sin.sin_family = AF_INET;
+	sin.sin_port = htons(this->m_nPort);
+
+	if(bind(this->m_AccepterSocket, (sockaddr*)&sin, sizeof(sin)) == 0)
+		return true;
+
+	std::cout << "Could not bind port. Error: " << WSAGetLastError() << std::endl;
+	return false;
+}
+
+//---
+
+bool SocketServer::CloseAccepterSocket()
+{
+	if(m_AccepterSocket == INVALID_SOCKET)
+		return true;
+
+	if(closesocket(this->m_AccepterSocket) == 0)
+	{
+		m_AccepterSocket = INVALID_SOCKET;
+		return true;
+	}
+
+	std::cout << "Failed to close accepter socket: " << WSAGetLastError() << std::endl;
+
+	return false;
+}
+
+//---
+
+DWORD WINAPI SocketServer::Accepter(LPVOID arg)
+{
+	SocketServer* _this = (SocketServer *) arg;
+
+	sockaddr_in socket_in;
+	int size_socket_in = sizeof(socket_in);
+	SOCKET new_connection;
+
+	while ((new_connection = accept(_this->m_AccepterSocket, (sockaddr*)&socket_in, &size_socket_in)) != -1 && _this->m_bRunning) 
+		_this->HandleNewConnection(new_connection,socket_in);
+
+	closesocket(_this->m_AccepterSocket);
+
+	return 1;
+}
+
+//---
+
+void SocketServer::HandleNewConnection(SOCKET& rNewConnection,sockaddr_in& rSocketIn)
+{
+	char hostname[NI_MAXHOST] = "";
+
+	if(getnameinfo((sockaddr *)&rSocketIn,sizeof(rSocketIn),hostname,NI_MAXHOST,NULL,0,0) != 0)
+	{
+		_snprintf_s(hostname,_countof(hostname),_TRUNCATE,"%i.%i.%i.%i",
+			rSocketIn.sin_addr.S_un.S_un_b.s_b1,
+			rSocketIn.sin_addr.S_un.S_un_b.s_b2,
+			rSocketIn.sin_addr.S_un.S_un_b.s_b3, 
+			rSocketIn.sin_addr.S_un.S_un_b.s_b4);
+	}
+
+	//TODO handle new connection
+	
+	std::cout << "Received a new connection. Closing now..." << endl;
+
+	closesocket(rNewConnection);
+}
+---------------------------------------
+ SocketServer.h
+#pragma once
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#include <windows.h> 
+
+/* !!!
+  NOTA: tem que se garantir que o windows.h é compilado sempre após o ws2tcpip.h, 
+  	        caso contrário começa a indicar que há referencias duplicadas. */
+
+//----
+#define MAX_PENDING_CONNECTIONS 5
+//--------
+
+class SocketServer
+{
+public:
+  SocketServer();
+
+	~SocketServer(void);
+
+	bool Start(int nPort);
+
+	void Stop();
+
+private:
+	bool m_bRunning;
+
+	unsigned int m_nPort;
+
+	DWORD m_dwAccepterThreadID;
+
+	HANDLE m_hAccepterThread;
+
+	SOCKET m_AccepterSocket; // = INVALID_SOCKET;
+	//--------
+	
+	bool ActivateListener();
+
+	bool BindLocalPort();
+
+	void HandleNewConnection(SOCKET& rNewConnection,sockaddr_in& rSocketIn);
+
+	bool CloseAccepterSocket();
+
+
+	static DWORD WINAPI Accepter(LPVOID arg);
+};
