@@ -1,0 +1,49 @@
+
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+namespace stuff {
+typedef long long ll;
+
+void solve(int test_num) {
+  int cnt[2][26];
+  memset(cnt, 0, sizeof(cnt));
+  for (int i = 0; i < 2; i++) {
+    string str;
+    cin >> str;
+    for (const char& c : str)
+      cnt[i][c - 'a'] = 1;
+  }
+  for (int c = 0; c < 26; c++)
+    if (cnt[0][c] + cnt[1][c] == 2) {
+      cout << "YES\n";
+      return;
+    }
+  cout << "NO\n";
+}
+
+void solve() {
+#ifdef AZN
+  freopen("input.txt", "r", stdin);
+  freopen("output.txt", "w", stdout);
+//freopen("azn.txt", "w", stderr);
+  double start_t = clock();
+#endif
+  ios::sync_with_stdio(false);
+  cin.tie(NULL);
+  int T = 1;
+  cin >> T;
+  for (int t = 1; t <= T; t++)
+    solve(t);
+#ifdef AZN
+  pln("Took:", (clock() - start_t) / CLOCKS_PER_SEC);
+#endif
+}
+}
+
+int main() {
+  stuff::solve();
+  return 0;
+}
