@@ -1,0 +1,34 @@
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+
+public class Yazdir extends JFrame implements ActionListener{
+	private JTextField metin = new JTextField(20);
+	private JButton Dugme = new JButton("Ekrana Bas");
+	private JLabel birEtiket = new JLabel("Bir yazı yaz ve ekrana bas");
+	
+	public Yazdir(){
+		setTitle("Ekrana yazdırma");
+		setLayout(new FlowLayout());
+		setVisible(true);
+		
+		add(metin);
+		add(Dugme);
+		add(birEtiket);
+		Dugme.addActionListener((ActionListener) this);
+		pack();
+	}
+	public void actionPerformed(ActionEvent e){
+		String birMetin;
+		birMetin = metin.getText();
+		birEtiket.setText("Ekrana Girdiğiniz Yazı:"+"  "+birMetin);
+	}
+	public static void main(String[] args) {
+		
+	new Yazdir();
+	}
+	
+}
