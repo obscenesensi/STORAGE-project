@@ -1,0 +1,12 @@
+#include <iostream>
+using namespace std;
+
+int main(int argc, char const *argv[])
+{
+    const char *p = "shuoming";     // note: const
+    cout << "sizeof(p): " << sizeof(p) << endl;
+    while (*p){
+        cout << "p++: " << p++ << endl;
+    }
+    return 0;
+}
