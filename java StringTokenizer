@@ -1,0 +1,40 @@
+import java.util.StringTokenizer;
+
+public class StringTest {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		String s1 = "Sun";
+		String s2 = "Moon";
+		//String s5 = "Moon";
+		String s3 = new String("Sun");
+		String s4 = new String("Moon");
+		//String s6  = new String("Moon");
+		String s7 = s3.concat(s4);
+		System.out.println(s3);
+		System.out.println(s4);
+		System.out.println(s7);
+		
+		String s8= new String("         SunMoon             ");
+		System.out.println(s8.trim());
+		
+		//StringBuffer연습
+		StringBuffer sb1 = new StringBuffer("Sun");
+		System.out.println(sb1.capacity());
+		System.out.println(sb1.length());
+		sb1.append("Moon");
+		System.out.println(sb1.capacity());
+		System.out.println(sb1.length());
+		System.out.println(sb1);
+		
+		//StringTokenizer 연습
+		String s = "Sun&Moon&University";
+		StringTokenizer st = new StringTokenizer(s,"&");
+		System.out.println(st.countTokens());
+		while(st.hasMoreTokens())
+		{
+			System.out.println(st.nextToken());
+		}
+	}
+
+}
