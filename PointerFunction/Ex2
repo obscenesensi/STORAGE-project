@@ -1,0 +1,1 @@
+#include <stdio.h> int main() {     int *p; //포인터 변수 p     int a=5; //일반 변수 a     p=&a;       printf("변수 a의 값 : %d\n",a);     printf("변수 a의 주소 : %d\n",&a);      printf("포인터 변수 p의 값 : %d\n",p);     printf("포인터 변수 p의 주소 : %d\n",&p);     printf("포인터 변수 p가 가리키는 변수의 값 : %d\n",*p); }
