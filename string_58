@@ -1,0 +1,11 @@
+#include <iostream>
+#define str(x) #x
+ 
+enum State {
+   One,
+   Two
+};
+ 
+int main() {
+std::cout << str(One) << std::endl;
+}
