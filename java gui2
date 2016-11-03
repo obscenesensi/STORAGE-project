@@ -1,0 +1,151 @@
+import javax.swing.*;
+import javax.swing.event.*;
+import java.awt.*;
+import java.awt.event.*;
+
+	public class guiTest extends JFrame {
+		private static boolean useFood = false;
+		private boolean useBunyip = false;
+		private boolean b2p = false;
+		private static boolean goldCharms = false;
+		private static boolean greenCharms = false;
+		private static boolean crimsonCharms = false;
+		private static boolean blueCharms = false;
+		private static boolean clueScrolls = false;
+		private static boolean bones = false;
+
+		private void button1ActionPerformed(ActionEvent e) {
+			switch (comboBox1.getSelectedIndex()) {
+			case 1:
+				useFood = true;
+				break;
+			case 2:
+				useBunyip = true;
+				break;
+			case 3:
+				b2p = true;
+			}
+			goldCharms = checkBox1.isSelected();
+			greenCharms = checkBox2.isSelected();
+			crimsonCharms = checkBox3.isSelected();
+			blueCharms = checkBox4.isSelected();
+			clueScrolls = checkBox5.isSelected();
+			guiWait = false;
+			setVisible(false);
+			dispose();
+		}
+
+		public guiTest() {
+
+			label1 = new JLabel();
+			label2 = new JLabel();
+			checkBox1 = new JCheckBox();
+			checkBox2 = new JCheckBox();
+			checkBox3 = new JCheckBox();
+			checkBox4 = new JCheckBox();
+			checkBox5 = new JCheckBox();
+			checkBox6 = new JCheckBox();
+			comboBox1 = new JComboBox();
+			button1 = new JButton();
+
+			// ======== this ========
+			Container contentPane = getContentPane();
+			contentPane.setLayout(null);
+
+			// ---- label1 ----
+			label1.setText("Ankou Slayer Pro");
+			label1.setFont(new Font("Lucida Grande", Font.PLAIN, 24));
+			contentPane.add(label1);
+			label1.setBounds(new Rectangle(new Point(35, 5), label1
+					.getPreferredSize()));
+
+			// ---- label2 ----
+			label2.setText("Pickup:");
+			label2.setFont(new Font("Lucida Grande", Font.BOLD, 16));
+			contentPane.add(label2);
+			label2.setBounds(100, 50, label2.getPreferredSize().width, 20);
+
+			// ---- checkBox1 ----
+			checkBox1.setText("Gold Charms");
+			contentPane.add(checkBox1);
+			checkBox1.setBounds(new Rectangle(new Point(70, 75), checkBox1
+					.getPreferredSize()));
+
+			// ---- checkBox2 ----
+			checkBox2.setText("Green Charms");
+			contentPane.add(checkBox2);
+			checkBox2.setBounds(new Rectangle(new Point(70, 95), checkBox2
+					.getPreferredSize()));
+
+			// ---- checkBox3 ----
+			checkBox3.setText("Crimson Charms");
+			contentPane.add(checkBox3);
+			checkBox3.setBounds(new Rectangle(new Point(70, 115), checkBox3
+					.getPreferredSize()));
+
+			// ---- checkBox4 ----
+			checkBox4.setText("Blue Charms");
+			contentPane.add(checkBox4);
+			checkBox4.setBounds(new Rectangle(new Point(70, 135), checkBox4
+					.getPreferredSize()));
+
+			// ---- checkBox5 ----
+			checkBox5.setText("Clue Scrolls");
+			contentPane.add(checkBox5);
+			checkBox5.setBounds(new Rectangle(new Point(70, 155), checkBox5
+					.getPreferredSize()));
+
+			// ---- checkBox6 ----
+			checkBox6.setText("Bones (check if using B2P)");
+			contentPane.add(checkBox6);
+			checkBox6.setBounds(new Rectangle(new Point(70, 175), checkBox6
+					.getPreferredSize()));
+
+			// ---- comboBox1 ----
+			comboBox1.setModel(new DefaultComboBoxModel(new String[] {
+					"Healing...", "Food", "Bunyip", "B2P" }));
+			contentPane.add(comboBox1);
+			comboBox1.setBounds(70, 205, 125,
+					comboBox1.getPreferredSize().height);
+
+			// ---- button1 ----
+			button1.setText("Start!");
+			button1.setFont(new Font("Lucida Grande", Font.PLAIN, 18));
+			button1.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					button1ActionPerformed(e);
+				}
+			});
+			contentPane.add(button1);
+			button1.setBounds(80, 235, 105, 40);
+			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			contentPane.setPreferredSize(new Dimension(265, 305));			
+			pack();
+			setLocationRelativeTo(getOwner());
+			setVisible(true);
+		}
+
+		private JLabel label1;
+		private JLabel label2;
+		private JCheckBox checkBox1;
+		private JCheckBox checkBox2;
+		private JCheckBox checkBox3;
+		private JCheckBox checkBox4;
+		private JCheckBox checkBox5;
+		private JCheckBox checkBox6;
+		private JComboBox comboBox1;
+		private JButton button1;
+
+		
+	private static boolean guiWait = true;
+    public static void main(String args[]){
+    	guiTest gui = new guiTest();
+    	while(guiWait) {
+    		System.out.printf("Waiting: %b\n", guiWait);
+    	}
+    	System.out.printf("Food selected: %b\n", useFood);
+    	System.out.printf("Gold charms: %b\n", goldCharms);
+    }
+
+}
