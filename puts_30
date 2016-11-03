@@ -1,0 +1,13 @@
+#include <cstdio>
+int main() {
+  while (1) {
+    int tmp1 = 0, ch;
+    while ((ch = getchar()) != '#') {
+      if (ch == EOF) return 0;
+      else if (ch == '0' || ch == '1')
+        tmp1 = ((ch - '0') + tmp1 * 2) % 131071;
+    }
+    if (tmp1) puts("NO");
+    else puts("YES");
+  }
+}
