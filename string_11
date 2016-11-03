@@ -1,0 +1,77 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <unordered_map>
+#include <string>
+using namespace std;
+
+string intToBytes(unsigned int a) {
+    unsigned char mask = 0xff;
+    string ret;
+    for (int i = 0; i < 4; i++) {
+        unsigned char temp = a & mask;
+        ret += temp;
+        a >>= 8;
+    }
+    return ret;
+}
+
+unsigned int bytesToInt(string s) {
+    unsigned int ret = 0;
+    for (int i = 3; i >= 0; i--) {
+        unsigned char temp = s[i];
+        ret |= temp;
+        if (i != 0) {
+            ret <<= 8;
+        }
+    }
+    return ret;
+}
+
+// Encodes a list of strings to a single string.
+string encode(vector<string>& strs) {
+    string ret;
+    for (int i = 0; i < strs.size(); i++) {
+        ret += intToBytes(strs[i].size());
+        cout << strs[i] << endl;
+        ret += strs[i];
+        cout << ret << endl;
+    }
+    return ret;
+}
+
+// Decodes a single string to a list of strings.
+vector<string> decode(string s) {
+    vector<string> ret;
+    if (s == "")    return ret;
+    unsigned int index = 0;
+    while (index < s.size()) {
+        unsigned int length = bytesToInt(s.substr(index, 4));
+        index += 4;
+        if (length != 0) {
+            string temp = s.substr(index, length);
+            ret.push_back(temp);
+            index += length;
+        } else {
+            ret.push_back("");
+        }
+    }
+    return ret;
+}
+
+int main() {
+    vector<string> v = {"nSM","Dsy"};
+    
+    string a = encode(v);
+    cout << a.size() << endl;
+    cout << a << endl;
+    for (int i = 0; i < a.size(); i++) {
+        printf("%d : %d\n", i, a[i]);
+    }
+    
+    vector<string> b = decode(a);
+    
+    return 0;
+}
+
+
