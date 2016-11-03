@@ -1,0 +1,35 @@
+
+public class Point {
+	private int x;
+	private int y;
+	
+	public Point(int x, int y)
+	{
+		this.x = x;
+		this.y = y;
+	}
+	
+	public boolean equals(Point obj)
+	{
+		if((this.x == obj.x) && (this.y == obj.y))
+			return true;
+		else 
+			return false;
+	}
+}
+
+
+public class Test {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		
+		Point a = new Point(2, 3);
+		Point b = new Point(2, 3);
+		
+		System.out.println(a == b);
+		
+		System.out.println(a.equals(b));
+	}
+
+}
