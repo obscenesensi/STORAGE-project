@@ -1,0 +1,48 @@
+#include <stdio.h>
+#include <stdint.h>
+#include <string.h>
+#include <stdarg.h>
+//------------------------------------------------------------------------
+void
+cpuid(uint32_t v, uint32_t &a, uint32_t &b, uint32_t &c, uint32_t &d){
+  uint32_t eax, ebx, ecx, edx;
+  asm("nop" :: "a" (v));
+  asm("cpuid");
+  asm("movl %%eax, %0" : "=r" (eax));
+  asm("movl %%ebx, %0" : "=r" (ebx));
+  asm("movl %%ecx, %0" : "=r" (ecx));
+  asm("movl %%edx, %0" : "=r" (edx));
+  a = eax;
+  b = ebx;
+  c = ecx;
+  d = edx;
+}
+//------------------------------------------------------------------------
+int
+put(int num, ...){
+  va_list args;
+  va_start(args,num);
+  char buf[256];
+  buf[num*4] = 0;
+  for(int i=0;i<num;i++){
+    uint32_t v = va_arg(args,uint32_t);
+    memcpy(buf+4*i,(char*)(&v),4);
+  }
+  printf("%s",buf);
+  va_end(args);
+}
+//------------------------------------------------------------------------
+int
+main(void){
+  uint32_t eax, ebx, ecx, edx;
+  cpuid(0,eax,ebx,ecx,edx);
+  put(3,ebx,edx,ecx);
+  printf("\n");
+  cpuid(0x80000002,eax,ebx,ecx,edx);
+  put(4,eax,ebx,ecx,edx);
+  cpuid(0x80000003,eax,ebx,ecx,edx);
+  put(4,eax,ebx,ecx,edx);
+  cpuid(0x80000004,eax,ebx,ecx,edx);
+  put(4,eax,ebx,ecx,edx);
+  printf("\n");
+}
