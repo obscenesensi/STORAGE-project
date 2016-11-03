@@ -1,0 +1,139 @@
+#include <stdio.h>
+#include <malloc.h>
+
+typedef struct node{
+    int key;
+    struct node *prev;
+    struct node *next;
+}NODE;
+
+void insert_node( NODE **, int);
+int delete_node( NODE **, int);
+void display_node( NODE *);
+
+int main( void)
+{
+    NODE *H = (NODE *)malloc(sizeof(NODE));
+
+    // initialize the starting node.
+    H->key  = NULL;
+    H->next = H;
+    H->prev = H;
+
+    insert_node( &H, 10);
+    insert_node( &H, 20);
+    insert_node( &H, 30);
+    insert_node( &H, 40);
+
+    delete_node( &H, 30);
+
+    display_node( H);
+
+    delete_node( &H, 40);
+    delete_node( &H, 10);
+
+    display_node( H);
+
+    delete_node( &H, 20);
+
+    display_node( H);
+
+    insert_node( &H, 50);
+    insert_node( &H, 80);
+
+    display_node( H);
+
+    return 0;
+}
+
+/*
+    insert_node( NODE **, int)
+    insert a key on the back of the linked list.
+*/
+void insert_node( NODE **n, int key)
+{
+    NODE *new_node  = (NODE *)malloc(sizeof(NODE));
+    NODE *temp      = *n;
+
+    printf("INSERT [%d]\n", key);
+
+    new_node->next  = temp;
+    new_node->key   = key;
+    temp->prev      = new_node;
+
+    // find the last node.
+    while( temp->next != *n)
+    {
+        temp    = temp->next;
+    }
+
+    new_node->prev  = temp;
+    temp->next  = new_node;
+}
+
+/* 
+    delete_node( NODE **, int)
+    delete the key that you want from the linked list.
+    if the key is removed, this function will return 0.
+    if it is not, this function will return -1.
+*/
+int delete_node( NODE **n, int key)
+{
+    NODE *h = (*n)->next;   // head
+    NODE *t = *n;           // tail
+
+    printf("DELETE [%d]\n", key);
+
+    // if variable 'h' is not starting node.
+    while( h != *n)
+    {
+        if( h->key == key)
+        {
+            t->next         = h->next;
+            h->next->prev   = t;
+
+            free(h);
+
+            return 0;
+        }
+
+        h   = h->next;
+        t   = t->next;
+    }
+
+    printf("Can't find the key!\n");
+
+    return -1;
+}
+
+/*
+    display_node( NODE *)
+    display all node in the linked list.
+*/
+void display_node( NODE *n)
+{
+    NODE *temp  = n->next;
+
+    printf("S > ");
+
+    // display all nodes along next.
+    while( temp != n)
+    {
+        printf("%3d", temp->key);
+
+        temp    = temp->next;
+    }
+
+    printf(" > < ");
+    temp    = temp->prev;
+
+    // display all nodes along previous.
+    while( temp != n)
+    {
+        printf("%3d", temp->key);
+
+        temp    = temp->prev;
+    }
+
+    printf(" < E.\n");
+}
