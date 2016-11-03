@@ -1,0 +1,26 @@
+typedef struct Node
+
+{
+
+    int data;
+
+} Node;
+
+
+
+
+typedef struct CircularQueue
+
+{
+
+    Node* Nodes;              // 노드 배열의 시작 위치
+
+ 
+
+    int   Front;                     // 전단의 인덱스
+
+    int   Rear;                     // 후단의 인덱스 (실제 위치보다 +1을 가리킴)
+
+    int   Capacity;              // 배열의 용량(Dummy 공간 추가로 실제용량보다 1 더 큼)
+
+} CircularQueue;
