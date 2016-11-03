@@ -1,0 +1,19 @@
+class constexpr_string
+  {
+  protected: 
+    const char* const p;
+    const std::size_t s;
+  public:
+    template<std::size_t N>
+    constexpr constexpr_string(const char(&a)[N])
+      : p(a), s(N-1)
+    {}
+    constexpr char operator[](std::size_t n)
+    {
+      return n < s ? p[n] : throw std::out_of_range("");
+    } 
+    constexpr std::size_t size()
+    { 
+      return s;
+    }
+  };
