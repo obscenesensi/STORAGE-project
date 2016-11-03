@@ -1,0 +1,14 @@
+#include<stdoi.h>
+
+void main()
+{
+int in;
+	int *ip;
+
+	ip = &in;
+
+	printf_s("Please enter a ineger : ");
+	scanf_s("%d", &in);
+
+	printf_s("Multiplied inerger is : %d", *ip *2);
+}
