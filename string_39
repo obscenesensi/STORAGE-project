@@ -1,0 +1,258 @@
+#include <iostream>
+#include <string>
+#include <chrono>
+#include <sstream>
+
+using namespace std;
+
+static const size_t LOOPS = 1000000;
+static const size_t LOOPS2 = 10000;
+
+int main(int argc, char *argv[])
+{
+    bool quiet = true;
+
+    if(argc == 2)
+    {
+        quiet = string(argv[1]) != "-v";
+    }
+
+    typedef chrono::high_resolution_clock clock;
+    typedef chrono::duration<float, milli> mil;
+    string s1 = "Test data1";
+
+    if(!quiet)
+    {
+        cout << "LOOPS = " << LOOPS << endl;
+        cout << "LOOPS2 = " << LOOPS2 << endl;
+    }
+
+    {
+        // Version 1
+        if(!quiet)
+            cout << "Version 1 : = + +" << endl;
+
+        string l_czTempStr;
+        auto t0 = clock::now();
+
+        for (size_t i = 0; i < LOOPS; ++i)
+        {
+            l_czTempStr = s1 + "Test data2" + "Test data3";
+        }
+
+        auto t1 = clock::now();
+
+        if(!quiet)
+            cout << l_czTempStr << endl;
+
+        cout << mil(t1 - t0).count();
+
+        if(!quiet)
+            cout << "ms" << endl << endl;
+        else
+            cout << " ";
+    }
+
+    {
+        // Version 2
+        if(!quiet)
+            cout << "Version 2 : +=" << endl;
+
+        string l_czTempStr;
+        auto t0 = clock::now();
+
+        for (size_t i = 0; i < LOOPS; ++i)
+        {
+            l_czTempStr = "Test data1";
+            l_czTempStr += "Test data2";
+            l_czTempStr += "Test data3";
+        }
+
+        auto t1 = clock::now();
+
+        if(!quiet)
+            cout << l_czTempStr << endl;
+
+        cout << mil(t1 - t0).count();
+
+        if(!quiet)
+            cout << "ms" << endl << endl;
+        else
+            cout << " ";
+    }
+
+    {
+        // Version 3
+        if(!quiet)
+            cout << "Version 3 : append" << endl;
+
+        string l_czTempStr;
+        auto t0 = clock::now();
+
+        for (size_t i = 0; i < LOOPS; ++i)
+        {
+            l_czTempStr = "Test data1";
+            l_czTempStr.append("Test data2");
+            l_czTempStr.append("Test data3");
+        }
+
+        auto t1 = clock::now();
+
+        if(!quiet)
+            cout << l_czTempStr << endl;
+
+        cout << mil(t1 - t0).count();
+
+        if(!quiet)
+            cout << "ms" << endl << endl;
+        else
+            cout << " ";
+    }
+
+    {
+        // Version 4
+        if(!quiet)
+            cout << "Version 4 : ostream" << endl;
+
+        string l_czTempStr;
+        auto t0 = clock::now();
+
+        for (size_t i = 0; i < LOOPS; ++i)
+        {
+            ostringstream oss;
+            oss << "Test data1";
+            oss << "Test data2";
+            oss << "Test data3";
+            l_czTempStr = oss.str();
+        }
+
+        auto t1 = clock::now();
+
+        if(!quiet)
+            cout << l_czTempStr << endl;
+
+        cout << mil(t1 - t0).count();
+
+        if(!quiet)
+            cout << "ms" << endl << endl;
+        else
+            cout << " ";
+    }
+
+    {
+        // Version 5
+        if(!quiet)
+            cout << "Version 5 : = + + (LOOPS2)" << endl;
+
+        string l_czTempStr;
+        auto t0 = clock::now();
+        l_czTempStr = "Test data1";
+
+        for (size_t i = 0; i < LOOPS2; ++i)
+        {
+            l_czTempStr = l_czTempStr + "Test data2" + "Test data3";
+        }
+
+        auto t1 = clock::now();
+
+        if(!quiet)
+            cout << l_czTempStr.size() << " bytes" << endl;
+
+        cout << mil(t1 - t0).count();
+
+        if(!quiet)
+            cout << "ms" << endl << endl;
+        else
+            cout << " ";
+    }
+
+    {
+        // Version 6
+        if(!quiet)
+            cout << "Version 6 : +=" << endl;
+
+        string l_czTempStr;
+        auto t0 = clock::now();
+
+        l_czTempStr = "Test data1";
+        l_czTempStr.reserve(l_czTempStr.size() * (1 + 2 * LOOPS));
+
+        for (size_t i = 0; i < LOOPS; ++i)
+        {
+            l_czTempStr += "Test data2";
+            l_czTempStr += "Test data3";
+        }
+
+        auto t1 = clock::now();
+
+        if(!quiet)
+            cout << l_czTempStr.size() << " bytes" << endl;
+
+        cout << mil(t1 - t0).count();
+
+        if(!quiet)
+            cout << "ms" << endl << endl;
+        else
+            cout << " ";
+    }
+
+    {
+        // Version 7
+        if(!quiet)
+            cout << "Version 7 : append" << endl;
+
+        string l_czTempStr;
+        auto t0 = clock::now();
+        l_czTempStr = "Test data1";
+        l_czTempStr.reserve(l_czTempStr.size() * (1 + 2 * LOOPS));
+
+        for (size_t i = 0; i < LOOPS; ++i)
+        {
+            l_czTempStr.append("Test data2");
+            l_czTempStr.append("Test data3");
+        }
+
+        auto t1 = clock::now();
+
+        if(!quiet)
+            cout << l_czTempStr.size() << " bytes" << endl;
+
+        cout << mil(t1 - t0).count();
+
+        if(!quiet)
+            cout << "ms" << endl << endl;
+        else
+            cout << " ";
+    }
+
+    {
+        // Version 8
+        if(!quiet)
+            cout << "Version 8 : ostream" << endl;
+
+        string l_czTempStr;
+        auto t0 = clock::now();
+        ostringstream oss;
+        oss << "Test data1";
+
+        for (size_t i = 0; i < LOOPS; ++i)
+        {
+            oss << "Test data2";
+            oss << "Test data3";
+        }
+
+        l_czTempStr = oss.str();
+        auto t1 = clock::now();
+
+        if(!quiet)
+            cout << l_czTempStr.size() << " bytes" << endl;
+
+        cout << mil(t1 - t0).count();
+
+        if(!quiet)
+            cout << "ms";
+    }
+
+    cout << endl;
+    return 0;
+}
