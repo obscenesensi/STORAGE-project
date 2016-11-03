@@ -1,0 +1,29 @@
+#include <string>
+#include <vector>
+#include <iostream>
+
+std::vector<std::string> ssplit(std::string &s, std::string delim) {
+    std::string::size_type pos_b = 0;
+    std::string::size_type pos_e = 0;
+    std::string::size_type delim_size = delim.size();
+
+    std::vector<std::string> result;
+    std::string sub;
+    while ((pos_e = s.find(delim, pos_b)) != std::string::npos) {
+        sub = s.substr(pos_b, pos_e - pos_b);
+        result.push_back(sub);
+        pos_b = pos_e + delim_size;
+    }
+    result.push_back(s.substr(pos_b));
+    return result;
+}
+
+int main()
+{
+    std::string mys("\n\ntooooma\n\ntodo\n\nlo que quieras\n\nya\n!!");
+    std::string delim("\n\n");
+    for (auto v: ssplit(mys, delim)) {
+        std::cout << v << std::endl;
+    }
+    return 0;
+}
