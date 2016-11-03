@@ -1,0 +1,21 @@
+#include <cstdio>
+int main() {
+  int k, n, m, x, y;
+  while (scanf("%d %d %d", &k, &n, &m) != EOF && k) {
+    while (k--) {
+      scanf("%d %d\n", &x, &y);
+      if (x == n || y == m) {
+        puts("divisa");
+      } else if (x < n && y > m) {
+        puts("NO");
+      } else if (x > n && y > m) {
+        puts("NE");
+      } else if (x < n && y < m) {
+        puts("SO");
+      } else {
+        puts("SE");
+      }
+    }
+  }
+  return 0;
+}
