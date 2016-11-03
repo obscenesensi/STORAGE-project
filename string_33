@@ -1,0 +1,71 @@
+#include <iostream>
+#include <vector>
+#define print_vector(vec) for(int i=0;i<vec.size();i++) { cout<<vec[i]<<" ";} cout<<endl;
+
+using namespace std;
+
+
+void kmp_preprocess(vector<int>& prefix_table, string pattern)
+{
+	int pattern_length= pattern.size();
+	
+	int i=0, j=-1;
+	
+	prefix_table[i]=j;
+	
+	while(i < pattern_length)
+	{
+		//back-track to previously matched prefix
+		while(j>=0 && pattern[i]!=pattern[j]) j= prefix_table[j];
+		
+		i++,j++;
+		
+		prefix_table[i]= j;
+	}
+}
+
+void kmp_search(string text, string pattern)
+{
+	vector<int> prefix_table(pattern.size()+1);
+
+	kmp_preprocess(prefix_table, pattern);
+
+	//print_vector(prefix_table);
+
+	int i=0, j=0;
+
+	while(i < text.size())
+	{
+		//back-track to previously matched prefix if pattern[j] and text[i] doesn't match
+		while(j>=0 && text[i]!= pattern[j]) j= prefix_table[j];
+		
+		//a character matches, check next character of text with pattern
+		i++,j++;
+	
+		//if all characters of pattern have been matched, report the index
+		if(j == pattern.size() )
+		{
+			cout<<"Match Found at index: "<<i-j<<endl;
+			j= prefix_table[j];
+			//back-track to previously matched prefix to keep reporting other occurrences of the pattern
+		}
+	}
+}
+
+
+
+int main(void)
+{
+
+	string text= "abababababaababababaa";
+
+	string pattern="ababaa";
+
+	kmp_search(text, pattern);
+
+	/*
+	
+	Match Found at index: 6
+	Match Found at index: 15
+	*/
+}
