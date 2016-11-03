@@ -1,0 +1,21 @@
+insertMiddleNode(CL, pre, x)
+
+new <- getNode();
+
+new.data <- x;
+
+if(CL=null) then {
+
+CL <- new;
+
+new.link <- new;
+
+}
+
+else {
+
+new.link <- pre.link;
+
+pre.link <- new;
+
+}
