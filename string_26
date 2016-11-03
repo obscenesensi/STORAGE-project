@@ -1,0 +1,67 @@
+#include <string>
+#include <iostream>
+#include <algorithm>
+
+
+namespace detail {
+template<class CharT, class Traits, class SAlloc, class VAlloc> 
+void
+string_split_impl(std::basic_string<CharT, Traits, SAlloc> const& str, CharT delim,
+                  std::vector<std::basic_string<CharT, Traits, SAlloc>, VAlloc>& pieces)
+{
+  if(!str.empty())
+    {
+      pieces.reserve(1ul + std::count(str.begin(), str.end(), delim));
+      size_t beg = 0ul, end = str.find(delim, beg);
+      pieces.push_back(str.substr(beg,end));
+      beg = end + (end < str.size());
+      for(; end < str.size(); beg = end + (end < str.size()))
+        {
+          end = str.find(delim, beg);
+          pieces.push_back(str.substr(beg,end));
+        }
+    }
+}
+template<class Iterator, class CharT, class Traits, class Alloc>
+void
+string_join_impl(Iterator first, Iterator last, CharT delim,
+                 std::basic_string<CharT, Traits, Alloc>& str)
+{
+  if(first != last)
+    {
+      str += *first++;
+      while(first != last)                                                                            
+        {                                                                                             
+          str += delim;                                                                               
+          str += *first++;                                                                            
+        }
+    }
+}
+} // end namespace detail
+
+inline std::vector<std::wstring>
+string_split(std::wstring const& str, wchar_t delim)
+{
+  std::vector<std::wstring> pieces;
+  detail::string_split_impl(str, delim, pieces);
+  return pieces;
+}
+
+inline std::wstring
+string_join(std::vector<std::wstring> const& pieces, wchar_t delim)
+{
+  std::wstring str;
+  detail::string_join_impl(pieces.begin(), pieces.end(), delim, str);
+  return str;
+}
+
+int main()
+{
+  wchar_t delim = L':';
+  const wchar_t* strings[] = { L"", L"a", L"asd", L":", L"::", L"a:", L":a", L"a:b" };
+  for(const wchar_t* str : strings)
+    {
+      std::wcout << L"\"" << str << L"\": " << string_split(str, delim).size() << std::endl;
+    }
+  return 0;
+}
