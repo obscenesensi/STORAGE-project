@@ -1,0 +1,21 @@
+#include<stdoi.h>
+
+float ic(float C);
+
+void main()
+{
+float C;
+	printf_s("섭씨를 입력하시오 :");
+	scanf_s("%f", &C);
+
+	printf_s("화씨 %f입니다.", ic(C));
+}
+
+float ic(float C)
+{
+	float F;
+
+	F = (9.0 / 5.0) * C + 32;
+
+	return F;
+}
