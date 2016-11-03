@@ -1,0 +1,24 @@
+
+#include <cstdlib>
+#include <cstdio>
+#include <stdint.h>
+
+void func(bool a)
+{
+  if (a) {
+    puts("true");
+  } else {
+    puts("false");
+  }
+}
+
+
+int main(void)
+{ 
+  for (int i = 0; i < 10; ++i) {
+    const int v = rand();
+    func(v % 2 ? true : false);
+  }
+
+  return 0;
+}
