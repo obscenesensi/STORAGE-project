@@ -1,0 +1,16 @@
+#include <cstdio>
+int main() {
+  char wave[9][10] = {"1","22","333","4444","55555","666666","7777777","88888888","999999999"};
+  int t, a, f;
+  scanf("%d", &t);
+  while (t--) {
+    scanf("%d %d", &a, &f);
+    for (int i = 0; i < f; ++i) {
+      if (i) puts("");
+      for (int j = 0; j < a; ++j) puts(wave[j]);
+      for (int j = a - 2; j >= 0; --j) puts(wave[j]);
+    }
+    if (t) puts("");
+  }
+  return 0;
+}
