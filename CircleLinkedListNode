@@ -1,0 +1,9 @@
+typedef struct node{
+	int data;
+	node* next;
+}Node;
+
+typedef struct list{
+	int countIndex;
+	Node* tail;				// 원형리스트는 head가 아닌 tail노드를 가진다.
+}List;
