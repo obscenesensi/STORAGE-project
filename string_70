@@ -1,0 +1,32 @@
+#include <iostream>
+#include <cstring>
+
+void swap(char* src, char* dst)
+{
+       char ch = *dst;
+       *dst = *src;
+       *src = ch;
+}
+
+void permuteString(char* s, int beg, int end)
+{
+       int i;
+       int range = end - beg;
+       if (range == 1) {
+               std::cout<<s<<std::endl;
+       } else {
+               for(i=0; i<range; i++) {
+                       swap(&s[beg], &s[beg+i]);
+                       permuteString(s, beg+1, end);
+                       swap(&s[beg], &s[beg+i]);
+               }
+       }
+}
+
+int main()
+{
+       char str[] = "GOD";
+       std::cout<<"The permutations are :- "<<std::endl;
+       permuteString(str, 0, strlen(str));
+       return 0;
+}
