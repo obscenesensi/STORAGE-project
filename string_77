@@ -1,0 +1,40 @@
+#include <bits/stdc++.h>
+#include <sys/time.h>
+using namespace std;
+
+double myclock()
+{
+    timeval t; gettimeofday(&t,0);
+    return t.tv_sec+t.tv_usec*1e-6;
+}
+
+int test1()
+{
+    int sum=0;
+    for(int i=0;i<1000000;i++)
+        sum+=to_string(i).size();
+    return sum;
+}
+
+int test2()
+{
+    char buf[10];
+    int sum=0;
+    for(int i=0;i<1000000;i++){
+        sprintf(buf,"%d",i);
+        sum+=string(buf).size();
+    }
+    return sum;
+}
+
+int main()
+{
+    double t0=myclock();
+    int a=test1();
+    double t1=myclock();
+    int b=test2();
+    double t2=myclock();
+    assert(a==b);
+    printf("test1: %.3f s\n",t1-t0);
+    printf("test2: %.3f s\n",t2-t1);
+}
