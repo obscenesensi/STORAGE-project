@@ -1,0 +1,29 @@
+Test1 t1;
+Test2 t2;
+t1 = t2;
+
+to overload assign operator in Test1
+to overload type cast operator in Test2
+to create Test1(const Test2&) conversion constructor
+
+struct Test2;
+struct Test1 {
+  Test1() { }
+  Test1(const Test2& t) { puts("const constructor wins"); }
+//  Test1(Test2& t) { puts("constructor wins"); }
+//  Test1& operator=(Test2& t) { puts("assign wins"); }
+};
+
+struct Test2 {
+  Test2() { }
+//  operator Test1() const { puts("const cast wins"); return Test1(); }
+//  operator Test1() { puts("cast wins"); return Test1(); }
+};
+
+
+int main() {
+  Test1 t1;
+  Test2 t2;
+  t1 = t2;
+  return 0;
+}
