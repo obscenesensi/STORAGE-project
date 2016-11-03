@@ -1,0 +1,17 @@
+#define ENUM_STR_BEGIN(type_name) \
+class type_name { 							\
+	std::string v; 							\
+public: 									\
+	static std::set<std::string>* vals() { static std::set<std::string> s; return &s; }\
+	type_name(const std::string& a): v(a){} \
+	std::string toString() { return v; } 	\
+	bool isValid() { return vals()->find(v) != vals()->end(); }
+
+#define ENUM_STR_VAR(name) 							\
+	class run_cmd_##name {public: run_cmd_##name(){	\
+		vals()->insert(#name);						\
+	}} tmpvar##name; 								\
+	bool is##name() { return v == #name; } 			\
+	static std::string name() { return #name; }
+
+#define ENUM_STR_END(type_name) }
