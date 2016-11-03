@@ -1,0 +1,40 @@
+#include <iostream>
+#include <ctime>
+#include <string>
+
+void function_a(const std::string& str) {
+    return;
+}
+
+void function_b(std::string str) {
+    return;
+}
+
+int main() {
+    std::string str = "a really not so long string";
+    clock_t start, end;
+
+    start = clock();
+        for (int i = 0; i < 1e6; ++i) {
+            function_a(str);
+        }
+    end = clock();
+
+    std::cout << "function_a: " << float(end - start) / CLOCKS_PER_SEC * 1000.f << "ms" << std::endl;
+
+    start = clock();
+        for (int i = 0; i < 1e6; ++i) {
+            function_b(str);
+        }
+    end = clock();
+
+    std::cout << "function_b: " << float(end - start) / CLOCKS_PER_SEC * 1000.f << "ms" << std::endl;
+
+    start = clock();
+        for (int i = 0; i < 1e6; ++i) {
+            function_b(std::move(str));
+        }
+    end = clock();
+
+    std::cout << "function_b-move: " << float(end - start) / CLOCKS_PER_SEC * 1000.f << "ms" << std::endl;
+}
