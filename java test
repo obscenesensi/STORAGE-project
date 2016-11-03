@@ -1,0 +1,46 @@
+import java.util.*; 
+import java.io.*; 
+public class Report1 {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Scanner sc = new Scanner(System.in); 
+		InputStreamReader rb = new InputStreamReader(System.in);
+	       String first = ""; 
+	       String longeast = ""; 
+	       String second = ""; 
+	       System.out.print("입력 "); 
+	       try{ 
+	          while(true){ 	        	  
+	        	  int c = rb.read(); // 입력받기
+	        	    if (c == -1) // 입력받은 값이 -1이면 break;
+	        	    {    StringTokenizer st = new StringTokenizer(first); 
+
+		             int n = st.countTokens(); 
+
+		             longeast = st.nextToken();//첫 토큰
+
+		             for(int i = 0; i < n; i++){ 
+
+		            	 second = st.nextToken();//두 번째 토큰
+		            	 if(longeast.length() < second.length()) // 크기 비교
+
+		            		 longeast = second; 
+		             } 
+	        	    	break;
+	        	   }
+	        	    first = sc.next();
+	          } 
+	          System.out.print(longeast); //출력
+	       } 
+	       
+	      catch(NoSuchElementException e){ //예외처리
+	          System.out.print(longeast); 
+	       } 
+	       
+	       catch (IOException e) { //예외처리
+	    	   System.out.println("입력 오류 발생");
+	       }
+	}
+
+}
