@@ -1,0 +1,41 @@
+#include<stdoi.h>
+
+
+float hc(float a, char op, float b);
+
+void main()
+{
+float a=0, b=0;
+	char op;
+
+	printf_s("피연산자1, 산술연산자, 피연산자2 순으로 입력하시오:");
+	scanf_s("%f", &a);
+	scanf_s("%c", &op);
+	scanf_s("%f", &b);
+
+	printf_s("%f %c %f = %f", a, op, b, hc( a, op, b));
+}
+
+float hc(float a, char op, float b)
+{
+	float result = 0.0;
+	switch (op)
+	{
+	case '+':
+		result = a + b;
+		break;
+	case '-':
+		result = a - b;
+		break;
+	case '*':
+		result = a*b;
+		break;
+	case '/':
+		result = a / b;
+		break;
+	case '%':
+		result = (int)a%(int)b;
+		break;
+	}
+	return result;
+}
