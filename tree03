@@ -1,0 +1,225 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <memory.h>
+
+
+//노드의 구조
+typedef struct TreeNode{
+ int key;
+ struct TreeNode *left, *right;
+}TreeNode;
+
+int count_1=0;
+
+//출력
+
+void display(TreeNode *p)
+{
+ if(p != NULL)
+ {
+  printf("(");
+  display(p->left);
+  printf(" %d ",p->key);
+  display(p->right);
+  printf(")");
+ }
+}
+
+//(반복적인)탐색 함수
+TreeNode *Search(TreeNode *node, int key)
+{
+ while(node != NULL){
+  if(key == node->key){ 
+          printf("%d하고 비교합니다\n", *node);
+          count_1++;
+          return node;
+  }
+  else if(key < node->key){
+          printf("%d하고 비교합니다\n", *node);
+          count_1++;
+          node = node->left;
+  }
+  //작으면 왼쪽
+  else {
+          printf("%d하고 비교합니다\n", *node);
+          node = node->right;
+          count_1++;         
+  }
+ 
+
+ }
+ printf("비교 횟수 : %d \n",count_1);
+ printf("존재하지 않습니다.\n");
+ count_1=0;
+ return NULL;//탐색에 실패했을 경우 null반환
+}
+
+
+//삽입연산 함수
+//key를 이진 탐색 트리 root에 삽입한다.
+//key가 이미 root안에 있으면 삽입되지 않는다.
+void insert_node(TreeNode **root, int key)
+{
+ TreeNode *p,*t;  //p는 부모노드, t는 현재노드
+ TreeNode *n;  //n은 새로운 노드
+ t = *root;
+ p = NULL;
+ //탐색을 먼저 수행
+ while(t != NULL){
+  if(key == t->key)
+  {
+          printf("존재하는 값입니다.\n ");
+          return;
+  }
+  p = t;
+  if(key < t->key) t = t->left;
+  else t= t->right;
+ }
+ //item이 트리안에 없으므로 삽입 가능
+ n = (TreeNode *)malloc(sizeof(TreeNode));
+ if(n == NULL) return;
+ //데이터 복사
+ n->key = key;
+ n->left = n->right = NULL;
+//부모노드와 링크 연결
+ if(p != NULL){
+  if(key < p->key)
+   p->left = n;
+  else p->right = n;
+ }
+ else *root = n;  //부모가 없으면 자기자신이 부모가 되라.
+}
+
+//삭제연산 함수
+
+void delete_node(TreeNode **root,int key)
+{
+ TreeNode *p,*child,*succ,*succ_p,*t;
+ //key를 갖는 노드 t를 탐색, p는 t의 부모노드
+ p = NULL;
+ t = *root;
+ //key를 갖는 노드 t를 탐색한다.
+ while(t != NULL && t->key != key){
+  p = t;
+  t = (key<t->key)? t->left:t->right;
+ }
+ //탐색이 종료된 시점에세 t가 NULL이면 트리안에 key가 없음
+ if(t == NULL){//탐색트리에 없는 키
+  printf("key is not in the tree");
+  return;
+ }
+ //첫번째 경우:단말노드인 경우
+ if(t->left == NULL && t->right == NULL){
+         if(p != NULL){
+                 //부모노드의 자식 필드를 NULL로 만든다.
+                 if(p->left==t)
+                         p->left=NULL;
+                 else p->right=NULL;
+         }
+
+  else//만약 부모노드가 NULL이면 삭제되는 노드가 루트
+   *root = NULL;
+}
+
+ //두번째 경우 : 하나의 자식만을 가지는 경우
+ else if((t->left==NULL) || (t->right == NULL)){
+  child = (t->left!=NULL)? t->left:t->right;
+  if(p != NULL){
+          if(p->left ==t)//부모를 자식과 연결
+                  p->left=child;
+  else p->right = child;
+  }
+ else //만약 부모노드가 NULL이면 삭제되는 노드가 루트
+         *root=child;
+ }
+//세번째 경우: 두개의 자식을 가지는 경우
+ else{
+//오른쪽 서브 트리에서 후계자를 찾는다.
+         succ_p = t;
+         succ = t->right;
+  //후계자를 찾아 계속 왼쪽으로 이동한다.
+  while(succ->left != NULL){
+   succ_p = succ;
+   succ = succ->left;
+  }
+  //후속자와 부모와 자식을 연결
+  if(succ_p->left == succ)
+   succ_p->left = succ->right;
+  else
+   succ_p->right = succ->right;
+  //후속자가 가진 키값을 현재 노드에 복사
+  t->key = succ->key;
+  //원래의 후속자 삭제
+  t = succ;
+ }
+ free(t);
+}
+
+int get_maximum(TreeNode *root)
+{
+ while(root->right != NULL) root=root->right;
+ return root->key;
+}
+//
+int get_minimum(TreeNode *root)
+{
+ while(root->left != NULL) root=root->left;
+ return root->key;
+}
+void help(void)
+{
+ printf("******************\n");
+ printf("i : 입력\n");
+ printf("d : 삭제\n");
+ printf("s : 탐색\n");
+ printf("p : 출력\n");
+ printf("q : 종료\n");
+ printf("******************\n");
+}
+
+void main(void)
+{
+ char command;
+ int key;
+ TreeNode *root = NULL;
+ TreeNode *tmp;
+ int count;
+
+ do{
+  help();
+  command = getchar();
+
+  switch(command){
+  case 'i':
+   printf("숫자 : ");
+   scanf("%d", &key);
+   insert_node(&root,key);
+   break;
+  case 'd':
+   printf("숫자 : ");
+   scanf("%d", &key);
+   delete_node(&root,key);
+   break;
+  case 'p':
+   display(root);
+   printf("\n");
+   break;
+  case 's':
+   printf("숫자 : ");
+   scanf("%d",&key);
+   tmp = Search(root,key);
+   if(tmp != NULL){
+        printf("비교 횟수 : %d ",count_1);
+    printf("검색 성공!!\n");
+        count_1=0;
+   }
+   break;
+ 
+  
+         
+  }
+  fflush(stdin);
+ }while(command != 'q');
+}
+
