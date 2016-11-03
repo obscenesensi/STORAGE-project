@@ -1,0 +1,17 @@
+
+#include <string>
+#include <iostream> // cin e cout
+
+using namespace std;
+
+int main(){
+	
+	string frase; // declaro a string frase
+	
+	cin >> frase; // leio o valor de frase
+	
+	// imprimo o tamanho de frase e substring nela contida, a partir da posição 2 
+	cout << frase.size() << " " << frase.substr(2) << "\n";
+	
+	return 0;
+}
