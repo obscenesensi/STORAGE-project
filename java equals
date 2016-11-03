@@ -1,0 +1,49 @@
+public class Circle {
+	private int x, y, radius;
+	public Circle(int x, int y, int radius)
+	{
+		this.x = x;
+		this.y = y;
+		this.radius = radius;
+		
+	}
+	public boolean equals(Circle obj)
+	{
+		if(this.radius == obj.radius)
+			return true;
+		else 
+			return false;
+	}
+  ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+  import java.util.Scanner;
+public class CircleTest {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Scanner input= new Scanner(System.in);
+		System.out.println("x1 : ");
+		int x1 = input.nextInt();
+		
+		System.out.println("y1 : ");
+		int y1 = input.nextInt();
+		
+		System.out.println("radius1 : ");
+		int radius1 = input.nextInt();
+		
+		Circle a = new Circle(x1,y1,radius1);
+		
+		System.out.println("x2 : ");
+		int x2 = input.nextInt();
+		
+		System.out.println("y2 : ");
+		int y2 = input.nextInt();
+		
+		System.out.println("radius2 : ");
+		int radius2 = input.nextInt();
+		
+		Circle b = new Circle(x2,y2,radius2);
+		
+		System.out.println(a.equals(b));
+	}
+
+}
