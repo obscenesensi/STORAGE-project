@@ -1,0 +1,22 @@
+#include <stdio.h>
+
+struct Foo {
+  virtual void f() {}
+};
+
+struct : Foo {
+  void f() { puts("a"); }
+}
+a;
+
+struct : Foo {
+  void f() { puts("b"); }
+}
+b;
+
+void call_foo(Foo *a) { a->f(); }
+
+int main() {
+  call_foo(&a);
+  call_foo(&b);
+}
