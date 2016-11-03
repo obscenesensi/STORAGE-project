@@ -1,0 +1,238 @@
+#include "stdafx.h"
+  5 #include <stdlib.h>
+  6 
+  7 
+  8 typedef struct tagBinaryTree{
+  9 
+ 10 	struct tagBinaryTree* Left;
+ 11 	struct tagBinaryTree* Right;
+ 12 	int Data;
+ 13 
+ 14 }Tree;
+ 15 
+ 16 void InsertNode(Tree* _Tree, Tree* NewNode);		/* 트리에 노드 연결 */
+ 17 Tree* CreateNode(int Data);				/* 노드 만들기 */
+ 18 void InoderTreePrint(Tree* _Tree);			/* 중위 트리 출력 */
+ 19 Tree* MinDataFind(Tree* _Tree);				/* 최소값 찾기 */
+ 20 Tree* DeletNode(Tree* _Tree, int Data);			/* 노드 삭제 */
+ 21 
+ 22 
+ 23 void main(){
+ 24 
+ 25 	Tree* Root = CreateNode(11);			//루트
+ 26 
+ 27 	//노드 삽입
+ 28 	InsertNode(Root, CreateNode(9));				
+ 29 	InsertNode(Root, CreateNode(10));				
+ 30 		InsertNode(Root, CreateNode(13));				
+ 31 		InsertNode(Root, CreateNode(12));
+ 32 		InsertNode(Root, CreateNode(14));
+ 33 			InsertNode(Root, CreateNode(16));
+ 34 				InsertNode(Root, CreateNode(17));
+ 35 				InsertNode(Root, CreateNode(15));
+ 36 	InsertNode(Root, CreateNode(8));				
+ 37 
+ 38 	//중위 표기식 출력
+ 39 	printf("** 중위 표기식 트리 출력 **\n");
+ 40 	InoderTreePrint(Root);
+ 41 	printf("\n");
+ 42 
+ 43 	//최소값 출력
+ 44 	printf("** 해당 트리의 최소값 **\n");
+ 45 	Tree* Min = MinDataFind(Root);
+ 46 	printf("%d\n", Min->Data);
+ 47 
+ 48 	//노드 삭제
+ 49 	printf("** 노드 삭제... 13 **\n");
+ 50 	Tree* DeletNode_ = DeletNode(Root, 13);
+ 51 	InoderTreePrint(Root);
+ 52 	printf("\n");
+ 53 
+ 54 	//노드 삽입
+ 55 	printf("** 노드 삽입... 1 **\n");
+ 56 	InsertNode(Root, CreateNode(1));
+ 57 	InoderTreePrint(Root);
+ 58 	printf("\n");
+ 59 
+ 60 
+ 61 }
+ 62 
+ 63 /* 노드 삭제 */
+ 64 Tree* DeletNode(Tree* _Tree, int Data){
+ 65 
+ 66 	/* 지울 노드가 한쪽 자식 노드만 포함할 경우, 자식 노드를 지울 노드 부모 자식으로 붙인다*/
+ 67 	/* 지울 노드가 둘 다 있으면, 최소값을 부모노드로 삼고, 그 부모 노드는 지울 부모노드의 자식이 된다 */
+ 68 	
+ 69 	Tree* TreeList = _Tree;				//트리
+ 70 	Tree* MinNode = NULL;				//최소값
+ 71 	Tree* Previous = NULL;				//이전 부모값을 담을 변수
+ 72 	int Wich = 0;					//0 왼쪽 1 오른쪽 노드에서 내려옴
+ 73 
+ 74 	while(1){
+ 75 		
+ 76 		if(TreeList->Data == Data){
+ 77 			break;
+ 78 		}
+ 79 		else if(TreeList->Data > Data){
+ 80 			Previous = TreeList;
+ 81 			TreeList = TreeList->Left;
+ 82 			Wich = 0;
+ 83 		}
+ 84 		else if(TreeList->Data < Data){
+ 85 			Previous = TreeList;
+ 86 			TreeList = TreeList->Right;
+ 87 			Wich = 1;
+ 88 		}
+ 89 
+ 90 	}
+ 91 
+ 92 	//지울 노드의 자식이 둘 다 있으면
+ 93 	if(TreeList->Left != NULL && TreeList->Right != NULL){
+ 94 
+ 95 		while(1){
+ 96 			
+ 97 			//최소값 가져오기
+ 98 			Tree* _TreeList = TreeList;
+ 99 			Tree* _Previous = NULL;
+100 
+101 			while(_TreeList->Left != NULL){
+102 				_Previous = _TreeList;
+103 				_TreeList = _TreeList->Left;
+104 			}
+105 
+106 			//최소값
+107 			MinNode =_TreeList;					
+108 
+109 			if((MinNode->Left != NULL) || (MinNode->Right != NULL)){
+110 				//최소값을 때어내기위해 최소 값 부모 노드에 최소값 왼쪽 오른쪽 데이터를 붙인다
+111 				_Previous->Left = MinNode->Left;
+112 				_Previous->Right = MinNode->Right;
+113 			}else{
+114 				_Previous->Left = NULL;
+115 			}
+116 
+117 			MinNode->Left = TreeList->Left;
+118 			MinNode->Right = TreeList->Right;
+119 			
+120 			//부모노드에 최소값 부착 : 왼쪽 오른쪽 위치 지정, 0 왼쪽 1 오른쪽
+121 			if(Wich == 0)
+122 				Previous->Left = MinNode;
+123 			else if(Wich == 1)
+124 				Previous->Right = MinNode;
+125 
+126 			return TreeList;
+127 		}
+128 	}
+129 	//자식을 가지고 있지 않으면
+130 	else if((TreeList->Left == NULL) && (TreeList->Right == NULL)){
+131 
+132 		if(Wich == 0)
+133 			Previous->Left = NULL;
+134 		else if(Wich == 1)
+135 			Previous->Right = NULL;
+136 		
+137 		return TreeList;
+138 
+139 	}
+140 	//하나만 가지고 있을 경우
+141 	else if((TreeList->Left != NULL) || (TreeList->Right != NULL)){	
+142 	
+143 		if(Wich == 0){
+144 			if(TreeList->Left != NULL)
+145 				Previous->Left = TreeList->Left;
+146 			else if(TreeList->Right != NULL);
+147 				Previous->Right = TreeList->Right;
+148 		}
+149 		else if(Wich == 1){
+150 			if(TreeList->Left != NULL)
+151 				Previous->Left = TreeList->Left;
+152 			else if(TreeList->Right != NULL);
+153 				Previous->Right = TreeList->Right;
+154 		}
+155 
+156 		return TreeList;
+157 	}
+158 
+159 	return NULL;
+160 
+161 }
+162 
+163 
+164 /* 최소값 찾기 */
+165 Tree* MinDataFind(Tree* _Tree){
+166 
+167 	/* 작은 값은 무조건 왼쪽에 배치되므로 */
+168 
+169 	Tree* TreeList = _Tree;
+170 
+171 	while(TreeList->Left != NULL){
+172 
+173 		TreeList = TreeList->Left;
+174 
+175 	}
+176 
+177 	return TreeList;
+178 }
+179 
+180 /* 중위 트리 출력 */
+181 void InoderTreePrint(Tree* _Tree){
+182 
+183 	if(_Tree == NULL)
+184 		return;
+185 
+186 	InoderTreePrint(_Tree->Left);
+187 
+188 	printf("%d ", _Tree->Data);
+189 
+190 	InoderTreePrint(_Tree->Right);
+191 
+192 }
+193 
+194 /*트리에 노드 연결 */
+195 void InsertNode(Tree* _Tree, Tree* NewNode){
+196 
+197 	Tree* TreeList = _Tree;
+198 	int Flag = 0;	//종료 신호
+199 
+200 	/* 작은 값은 왼쪽, 큰 값은 오른쪽에 위치시킨다 */
+201 
+202 	while(1){
+203 
+204 		if(TreeList->Left == NULL || TreeList->Right == NULL){
+205 			
+206 			if((TreeList->Data > NewNode->Data) && (TreeList->Left == NULL)){
+207 					TreeList->Left = NewNode;
+208 					Flag = 1;
+209 			}
+210 			else if((TreeList->Data < NewNode->Data) && (TreeList->Right == NULL)){
+211 					TreeList->Right = NewNode;
+212 					Flag = 1;
+213 			}
+214 
+215 		}
+216 
+217 		if(Flag == 1)	//종료
+218 			return;
+219 
+220 		if(TreeList->Data > NewNode->Data)
+221 			TreeList = TreeList->Left;
+222 		else
+223 			TreeList = TreeList->Right;
+224 
+225 	}
+226 
+227 }
+228 
+229 
+230 /* 노드 만들기 */
+231 Tree* CreateNode(int Data){
+232 
+233 	Tree* NewNode = (Tree*)malloc(sizeof(Tree));
+234 
+235 	NewNode->Left = NULL;
+236 	NewNode->Right = NULL;
+237 	NewNode->Data = Data;
+238 
+239 	return NewNode;
+240 
+241 }
