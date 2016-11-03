@@ -1,0 +1,69 @@
+#include <assert.h>
+#include <stddef.h>
+
+#include <new>
+#include <utility>
+
+template<class X, size_t N>
+class FixedSizeStack
+{
+public:
+    FixedSizeStack() : length(0) { }
+
+    ~FixedSizeStack()
+    {
+        for (int i = 0; i < length; i++)
+            data[i].~X();
+    }
+
+    template<class... Args>
+    void push(Args&&... args)
+    {
+        assert(length < N);
+        new(&data[length]) X(std::forward<Args>(args)...);
+        length++;
+    }
+
+    X pop()
+    {
+        assert(length > 0);
+        length--;
+        auto x = std::move(data[length]);
+        data[length].~X();
+        return std::move(x);
+    }
+
+private:
+    union { X data[N]; };
+    size_t length;
+};
+
+// ...
+
+#include <stdio.h>
+
+int main()
+{
+    static size_t n = 0;
+    struct X
+    {
+        X() { n++; puts("X()"); }
+        X(const X&) { n++; puts("X(const X&)"); }
+        X(X&&) { n++; puts("X(X&&)"); }
+        ~X() { n--; puts("~X()"); }
+        void operator=(const X&) { puts("operator=(const X&)"); }
+        void operator=(X&&) { puts("operator=(X&&)"); }
+    };
+    {
+        FixedSizeStack<X, 3> stack;
+        auto x = X();
+        stack.push(x);
+        stack.push(X());
+        stack.push();
+        stack.push(stack.pop());
+        x = stack.pop();
+        stack.pop();
+    }
+    assert(n == 0);
+    return 0;
+}
