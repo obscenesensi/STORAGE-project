@@ -1,0 +1,31 @@
+
+public class WrapperClassTest {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		int x;
+		x = 10;
+		System.out.println(x);
+		
+		Integer xObj; 
+		//xObj = new Integer(10);
+		xObj = new Integer("10");
+		System.out.println(xObj);
+		
+		System.out.println(xObj.intValue());
+		
+		Integer yObj = 20;
+		
+		System.out.println(yObj);
+		
+		int w = yObj;
+		System.out.println(w);
+		
+		int y= Integer.parseInt("234");
+		System.out.println(y);
+		
+		int z = Integer.parseInt("10", 2);
+		System.out.println(z);
+	}
+
+}
