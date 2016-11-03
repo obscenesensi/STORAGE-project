@@ -1,0 +1,15 @@
+#include <algorithm>
+#include <cstdio>
+int main() {
+  int arr[3], t;
+  scanf("%d", &t);
+  while (t-- && scanf("%d %d %d", &arr[0], &arr[1], &arr[2]) != EOF) {
+    std::sort(arr, arr + 3);
+    if (arr[0] + arr[1] > arr[2]) {
+      puts("OK");
+    } else {
+      puts("Wrong!!");
+    }
+  }
+  return 0;
+}
