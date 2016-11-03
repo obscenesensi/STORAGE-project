@@ -1,0 +1,38 @@
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Scanner;
+import java.util.StringTokenizer;
+
+
+public class Solution {
+
+    static BigInteger[] table;
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        String input = scanner.nextLine();
+        StringTokenizer stringTokenizer = new StringTokenizer(input);
+        table = new BigInteger[20];
+        table[0]= new BigInteger(stringTokenizer.nextToken());
+        table[1]= new BigInteger(stringTokenizer.nextToken());
+        int n = Integer.parseInt(stringTokenizer.nextToken());
+        if (table[0].compareTo(new BigInteger(String.valueOf(0))) == -1
+                || table[1].compareTo(new BigInteger(String.valueOf(2)))==1
+                || n < 3 || n > 20) {
+            return;
+        }
+        System.out.println(findNthFibonacci(n-1));
+    }
+
+    static BigInteger findNthFibonacci(long n){
+        if(n<=0)
+            return table[0];
+        if(n==1)
+            return table[1];
+        if(table[((int) n)]!=null)
+            return table[((int) n)];
+        for(long i=0;i<n;i++){
+            table[(int) n]= findNthFibonacci(n-1).multiply(findNthFibonacci(n-1)).add(findNthFibonacci(n-2));
+        }
+        return table[(int) n];
+    }
+}
