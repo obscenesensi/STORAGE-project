@@ -1,0 +1,17 @@
+void Enqueue( CircularQueue* Queue, int Data)                
+
+      
+
+{
+
+        int Position=0;
+
+ 
+
+        Position  = Queue->Rear;
+
+        Queue->Rear = (Queue->Rear + 1) %(Queue->Capacity + 1);
+
+        Queue->Nodes[Position].Data = Data;
+
+}
