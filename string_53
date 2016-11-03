@@ -1,0 +1,91 @@
+#include <string>
+#include <atomic>
+#include <cassert>
+#include <iostream>
+
+struct Counter
+{
+    std::string value;
+    std::atomic_uint count;
+
+    Counter(const char * str)
+    {
+        value = str;
+        count = 1;
+    }
+};
+
+class SharedString
+{
+    Counter * value;
+
+public:
+    SharedString(const char * str)
+    {
+        value = new Counter(str);
+    }
+
+    SharedString(SharedString& str)
+    {
+        value = str.value;
+        ++value->count;
+        std::cout << (void *)value << ": " << value->count << std::endl;
+    }
+
+    SharedString& operator=(const SharedString& str)
+    {
+        if (str.value != this->value)
+        {
+            this->~SharedString();
+        }
+
+        value = str.value;
+        ++value->count;
+        std::cout << (void *)value << ": " << value->count << std::endl;
+    }
+
+    ~SharedString()
+    {
+        std::cout << "Deleting :" << (void *)value << std::endl;
+
+        if (--value->count == 0)
+        {
+            delete value;
+            value = 0;
+        }
+    }
+
+    void printf(void)
+    {
+        std::cout << value->value << std::endl;
+    }
+};
+
+void MyFunc(SharedString s)
+{
+    SharedString ss = s;
+    ss.printf();
+}
+
+void MyFunc2(SharedString& s)
+{
+    SharedString ss = s;
+    ss.printf();
+}
+
+int main(void)
+{
+    {
+        SharedString s("toto");
+
+        MyFunc(s);
+    }
+
+    {
+        SharedString s("tata");
+
+        MyFunc2(s);
+    }
+
+    return 0;
+}
