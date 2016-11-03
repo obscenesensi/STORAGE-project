@@ -1,0 +1,45 @@
+class Solution {
+public:
+	bool isScramble(string s1, string s2) {
+		int N = s1.size();
+		if (N != s2.size()) return false;
+		if (N == 0) return true;
+
+		init(N);  s1_ = &s1;  s2_ = &s2;
+		return judge(0, 0, N);
+	}
+	bool judge(int i, int j, int l) {
+		if (l==0) return true;
+		if (dp_[i][j][l-1] != 0) return dp_[i][j][l-1]==2;
+
+		string sub1 = s1_->substr(i, l);
+		string sub2 = s2_->substr(j, l);
+		if (sub1 == sub2) {
+			dp_[i][j][l-1] = 2;
+			return true;
+		}
+		sort(sub1.begin(), sub1.end());
+		sort(sub2.begin(), sub2.end());
+		if (sub1 != sub2) {
+			dp_[i][j][l-1] = 1;
+			return false;
+		}
+
+		for (int k = 1; k <= l-1; ++k) {
+			if ( (judge(i, j, k) && judge(i+k, j+k, l-k)) || (judge(i, j+l-k, k) && judge(i+k, j, l-k)) ) {
+				dp_[i][j][l-1] = 2;
+				return true;
+			}
+		}
+		dp_[i][j][l-1] = 1;
+		return false;
+	}
+	void init(int N) {
+		vector<char> x(N, 0);
+		vector< vector<char> > y(N, x);
+		dp_.assign(N, y);
+	}
+	vector< vector< vector<char> > > dp_; // 0:not yet calc; 1:fail 2:success
+	string *s1_;
+	string *s2_;
+  };
