@@ -1,0 +1,31 @@
+#include <stack>
+#include <iostream>
+          
+using std::stack;
+          
+int main(){
+        stack<int> st;
+        stack<int> ret;
+        stack<int> temp;
+        st.push(1);
+        st.push(3);
+        st.push(-2);
+        st.push(9);
+        st.push(4);
+        st.push(3);
+        while(!st.empty()){
+                temp.push(st.top());
+                st.pop();
+        }
+        for(int i=0; i<temp.size()-1; i++){ 
+                while(!temp.empty()){
+                        int top = temp.top();
+                        temp.pop(); 
+                        int top2 = temp.top();
+                        int result = top2-top;
+                        ret.push(result);
+                        std::cout << result << std::endl;
+                }
+        }
+        return 0;
+}
