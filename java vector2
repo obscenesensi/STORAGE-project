@@ -1,0 +1,26 @@
+import java.util.Scanner;
+import java.util.Vector;
+public class VectorTest {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Scanner sc = new Scanner(System.in);
+		Vector<Float> v = new Vector<Float>(10);
+		
+		float big = 0;
+		
+		
+		
+		for(int i = 0; i < 10; i++)
+		{
+			System.out.println((i+1)+". 실수를 입력하시오");
+			v.add(sc.nextFloat());	
+			if(big < v.get(i))
+			{
+				big = v.get(i);
+			}
+		}
+		System.out.println("가장 큰 값 = "+big);
+	}
+
+}
