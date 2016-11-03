@@ -1,0 +1,155 @@
+#include <stdio.h>
+#include <process.h>
+#include <stdlib.h>
+
+typedef struct node
+{
+  char  data;
+  struct node *  next;
+} NODE;
+
+NODE *append (NODE *, NODE *);
+void print_list (NODE *);
+NODE *insert (char, NODE *);      // 노드를 삽입하는 함수
+NODE *delete (char , NODE *);    // 노드를 삭제하는 함수
+
+int main ()
+{
+  FILE *  fp;
+  NODE *  temp = NULL;
+  NODE *  list = NULL;
+  char  ch;
+
+  if ( (fp = fopen ("d10-7.dat", "r")) == NULL )
+  {
+    printf ("file open error!");
+    exit (-1);
+  }
+  fscanf (fp, "%c", &ch);
+  while ( 0==feof(fp) )
+  {
+    temp = (NODE *) malloc (sizeof (NODE));
+    temp->data = ch;
+    temp->next = NULL;
+    list = append (list, temp);
+    fscanf (fp, "%c", &ch);
+  }
+  fclose (fp);
+
+  print_list (list);
+  printf ("\n");
+
+  list = insert ('c', list);
+  list = insert ('h', list);
+  list = insert ('m', list);
+
+  print_list(list);
+  printf ("\n");
+
+  list = delete ('f', list);
+  list = delete ('e', list);
+  list = delete ('k', list);
+  list = delete ('m', list);
+
+  print_list(list);
+  printf ("\n");
+
+  return 0;
+}
+
+NODE *append (NODE *list, NODE *temp)
+{
+  NODE *current = list;
+
+  if ( list == NULL )
+  {
+    list = temp;
+  }
+  else
+  {
+    while (current->next !=NULL )
+    {
+      current = current->next;
+    }
+    current->next = temp;
+  }
+  return (list);
+}
+
+void print_list (NODE *head)
+{
+  if (head == NULL)
+  {
+    printf ("NULL");
+  }
+  else
+  {
+    printf ("%c ==> ", head->data);
+    print_list (head->next);
+  }
+  return;
+}
+
+ NODE *insert (char item, NODE *list) 
+{
+  NODE *current = NULL;
+  NODE *follow = NULL;
+  NODE *newnode = NULL;
+  current = follow = list;
+
+  if ( (newnode = (NODE *) malloc (sizeof (NODE))) == NULL )
+  {
+    printf ("No memory allocated..\n");
+    return NULL;
+  }
+  newnode->data = item;
+
+  while ( (current!=NULL) && (current->data < item) ) // 삽입위치찾기  부등호가 >면 역순 정렬 
+  {
+    follow = current;          // 다음 노드로 이동
+    current = current->next;  // 다음 노드로 이동
+  }
+  newnode->next = current;
+  if (current==list)
+  {
+    list = newnode;
+  }
+  else
+  {
+    follow->next = newnode;
+  }
+  return list;
+}
+
+ NODE *delete (char item, NODE *list) 
+{
+  NODE *current;
+  NODE *follow;
+  current = follow = list;
+
+  while ((current!=NULL) && (current->data != item))  // 삭제위치찾기 
+  {
+    follow = current;
+    current = current->next;
+  }
+  if (current == NULL)
+  {
+    printf ("'%c' Item is not found...\n", item);
+    return list;
+  }
+  if (list == current)
+  {
+    list = current->next;
+  }
+  else if (current->next == NULL )
+  {
+    follow->next = NULL;
+  }
+  else
+  {
+    follow->next = current->next;
+  }
+  free (current);
+  
+  return list;
+}
