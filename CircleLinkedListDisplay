@@ -1,0 +1,8 @@
+void display(List* list){
+	int i;
+	Node* node;
+
+	for(node = list->tail->next, i = 0; i < list->countIndex; i++, node = node->next){
+		printf("%d ", node->data);
+	}
+}
