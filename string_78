@@ -1,0 +1,49 @@
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+string toUpper(string str);
+string toLower(string str);
+vector<string> toUpper(vector<string> strings);
+vector<string> toLower(vector<string> strings);
+
+int main(int argc, char *argv[]) {
+	
+	string hello = "Hello World";
+	hello = toUpper(hello);
+	cout << hello << endl;
+	
+	cout << toUpper("hi girl") << endl;
+	cout << toLower("HI how are YOU?") << endl;
+	
+	vector<string> names = {"daniel", "sofia", "noel"};
+	names = toUpper(names);
+	
+	for (auto str: toUpper(names)) {
+		cout << str << ' ';
+	}
+	
+	return 0;
+}
+
+string toUpper(string str) {
+	transform(str.begin(), str.end(), str.begin(), ::toupper);
+	return str;
+}
+
+string toLower(string str) {
+	transform(str.begin(), str.end(), str.begin(), ::tolower);
+	return str;
+}
+
+vector<string> toUpper(vector<string> strings) {	
+	for_each(strings.begin(), strings.end(), [](string& str){ str = toUpper(str); });
+	return strings;
+}
+
+vector<string> toLower(vector<string> strings) {
+	for_each(strings.begin(), strings.end(), [](string& str){ str = toLower(str); });
+	return strings;
+}
