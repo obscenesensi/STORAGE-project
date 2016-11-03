@@ -1,0 +1,47 @@
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <vector>
+#include <Windows.h>
+
+using namespace std;
+
+int _tmain (int argc, _TCHAR* argv[])
+{
+	string the_numbers_str = "zero,one,two,three,four,five,six,seven,eight,nine,ten";
+
+	vector <string>the_vector; // tokens here
+	string the_temp;
+
+	int the_initial_location = 0;
+	size_t the_final_location = the_numbers_str.size(); // case no delimiter...
+
+	// search for commas
+	// npos is a static member constant value with the greatest possible value for an element of type size_t
+	while (the_numbers_str.find(",", the_initial_location) != std::string::npos)
+	{
+		// store the position of the delimiter
+		the_final_location = the_numbers_str.find(",", the_initial_location);
+		// get the token
+		the_temp = the_numbers_str.substr(the_initial_location, (the_final_location - the_initial_location));
+		// set new pos
+		the_initial_location = the_final_location + 1;
+		// put it into the array
+		the_vector.push_back(the_temp);
+	}
+
+	// set the last one
+	the_temp = the_numbers_str.substr(the_initial_location, (the_final_location - the_initial_location));
+	the_vector.push_back(the_temp);
+
+	// output
+	for (int i = 0; i < the_vector.size(); ++i)
+		cout << ":" << the_vector[i] << endl;
+
+	// clear vector
+	the_vector.clear();
+
+	Sleep (5000);
+
+    return 0;
+}
