@@ -1,0 +1,43 @@
+nsigned char ND::Keyboard::GetChar()
+
+{
+
+	unsigned char scancode;
+
+	scancode=(unsigned char)ND::Ports::InputB(0x60);
+
+		
+
+	if(scancode & ND_KEYBOARD_KEY_RELEASE)
+
+	{
+
+		return 255;
+
+	}else{
+
+		return en_US[scancode];
+
+	}
+
+}
+
+char* ND::Keyboard::GetString()
+
+{
+
+	while(stringBuffer[stringPos-1]!='\n')
+
+	{
+
+		
+
+	}
+
+	stringPos=0;
+
+	
+
+	return stringBuffer;
+
+}
