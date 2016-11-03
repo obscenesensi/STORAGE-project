@@ -1,0 +1,8 @@
+#include <stdio.h>
+int main(int, char**)
+{
+        if (4294967296 != 4294967296LL)
+                puts("Literal overflows");
+        else
+                puts("Literal does not overflow");
+}
