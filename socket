@@ -1,0 +1,33 @@
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>
+#include <string.h>
+
+int main(int argc, char *argv[]) {
+
+struct sockaddr_storage conn_list;
+struct addrinfo * res;
+struct addrinfo src;
+int sckfd;
+
+
+memcpy(void *, const void *, size_t)
+
+memset(&src, 0, sizeof(src));
+
+src.ai_family = AF_UNSPEC;
+src.ai_socktype = SOCK_STREAM;
+src.ai_flags = AI_PASSIVE;
+
+src.ai_next
+
+getaddrinfo(NULL, "8080", &src, &res);
+
+sckfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+
+bind(sckfd, res->ai_addr, res->ai_addrlen);
+
+//accept();
+    
+}
