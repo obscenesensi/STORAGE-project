@@ -1,0 +1,35 @@
+#include<stdio.h>
+#include<string.h>
+
+int main(void)
+{
+    char array1[105],array2[105];
+    int l,n,m,i,j,k;
+
+    gets(array1);
+    gets(array2);
+
+    m= strlen(array1);
+    n= strlen(array2);
+
+    for( i = 0; i<n; i++ )
+    {
+        for( j= 0; j<m; j++ )
+        {
+            if( array2[i] == array1[j] )
+            {
+                array1[j] = 0;
+            }
+        }
+    }
+
+    for( i=0; i<m;i++ )
+    {
+        if(array1[i] != 0 )
+        {
+            printf( "%c",array1[i] );
+        }
+    }
+
+    return 0;
+}
