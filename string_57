@@ -1,0 +1,11 @@
+vector<string> tokenize(string str)
+{
+    vector<string> vec;
+    string word;
+    istringstream iss(str, istringstream::in);
+    while( iss >> word )
+    {
+        vec.push_back(word);
+    }
+    return vec;
+}
