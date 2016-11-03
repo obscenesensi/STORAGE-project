@@ -1,0 +1,30 @@
+void AddNode(List* list, int position, node element){
+	Node *preNode = list->tail;
+	Node *newNode = (Node*)malloc(sizeof(Node));
+
+	//데이터 삽입
+	newNode->data = element.data;
+
+	if(list->countIndex == 0)
+	{
+		newNode->next = newNode;
+		list->tail = newNode;
+	}
+	else
+	{
+		for(int i = 0; i < position; i++)
+		{
+			preNode = preNode->next;
+		}
+
+		newNode->next = preNode->next;
+		preNode->next = newNode;
+
+		if(position == list->countIndex)
+		{
+			list->tail = newNode;
+		}
+	}
+
+	list->countIndex++;
+}
