@@ -1,0 +1,61 @@
+
+public class Point {
+	private int x;
+	private int y;
+	
+	public Point(int x, int y)
+	{
+		this.x = x;
+		this.y = y;	
+	}
+	public String toString()
+	{
+			return "(" + x + ", " + y + ")";
+	}
+}
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+import java.util.Vector;
+
+public class pointVectorTest {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Vector<Point> pv = new Vector<Point>();
+		pv.add(new Point(1, 2));
+		pv.add(new Point(2, 3));
+		pv.add(new Point(2, 3));
+		
+		for(int i = 0; i < pv.size();i++)
+		{
+			Point temp = pv.get(i);
+			System.out.println(temp);
+		}
+	}
+
+}
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+import java.util.Vector;
+
+public class VetorTest {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Vector<Integer> v = new Vector<Integer>(7);
+		v.add(new Integer(5));
+		v.add(new Integer(4));
+		v.add(new Integer(-1));
+		v.add(new Integer(10));
+		int result = v.get(2);
+		System.out.println(result);
+		
+		v.add(2,3);
+		
+		System.out.println(v.get(2));
+		System.out.println(v.get(3));
+		
+		System.out.println(v.remove(1));
+		System.out.println(v.get(1));
+	}
+
+}
+
