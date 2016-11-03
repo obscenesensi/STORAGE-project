@@ -1,0 +1,193 @@
+#include <stdio.h>  
+#include <stdlib.h>  
+//트리 구조체 
+typedef struct Tree{ 
+     int data; 
+     struct Tree *left; 
+     struct Tree *right; 
+}Tree; 
+//레벨순회 큐설정 
+Tree* queue[50]; 
+int front = -1; 
+int rear = -1; 
+//트리 값 추가 
+void addChild(Tree **parent, int data); 
+//레벨 순회 값 추가 
+void addQueue(Tree *parent); 
+//레벨 순회 dequeue 
+Tree *dequeue(); 
+//preorder 
+void preOrder(Tree *parent); 
+//inorder 
+void inOrder(Tree *parent); 
+//postorder 
+void postOrder(Tree *parent); 
+//levelorder 
+void levelOrder(Tree *parent); 
+void main(void)  
+{ 
+     //루트 노드 
+     Tree *root; 
+     //파일  
+     FILE *f; 
+     int data; 
+     root = NULL; 
+     //파일 읽기 
+     fopen_s(&f,"data.txt","r"); 
+     //노드 입력 
+     while(!feof(f)) 
+     { 
+            fscanf_s(f,"%d ",&data); 
+            addChild(&root,data); 
+     } 
+     printf_s("전위 탐색\n"); 
+     preOrder(root); 
+     puts(""); 
+     printf_s("중위 탐색\n"); 
+     inOrder(root); 
+     puts(""); 
+     printf_s("후위 탐색\n"); 
+     postOrder(root); 
+     puts(""); 
+     printf_s("레벨 탐색\n"); 
+     levelOrder(root); 
+     puts(""); 
+} 
+//트리 값 추가 
+void addChild(Tree **parent, int data) 
+{ 
+     //부모 노드 현재 노드 
+     Tree *p, *cur; 
+     //새로운 노드 
+     Tree *n; 
+     cur = *parent; 
+     p = cur; 
+     //현재노드 찾기 
+     while(cur != NULL) 
+     { 
+            p = cur; 
+            if(data < cur->data) 
+            { 
+                   cur = cur->left; 
+            } 
+            else 
+            { 
+                   cur = cur->right; 
+            } 
+     } 
+     n = (Tree *)malloc(sizeof(Tree)); 
+     if(n == NULL) 
+     { 
+            return; 
+     } 
+     n->data = data; 
+     n->left = NULL; 
+     n->right = NULL; 
+     //노드 연결 
+     if(p != NULL) 
+     { 
+            if(data < p->data) 
+            { 
+                   p->left = n; 
+            } 
+            else 
+            { 
+                   p->right = n; 
+            } 
+     } 
+     else 
+     { 
+            *parent = n; 
+     } 
+} 
+//preorder 
+void preOrder(Tree *parent) 
+{ 
+     printf_s("%d ",parent->data); 
+     if(parent->left != NULL) 
+     { 
+            preOrder(parent->left); 
+     } 
+     if(parent->right != NULL) 
+     { 
+            preOrder(parent->right); 
+     } 
+} 
+//inorder 
+void inOrder(Tree *parent) 
+{ 
+     if(parent->left != NULL) 
+     { 
+            inOrder(parent->left); 
+     } 
+     printf_s("%d ",parent->data); 
+     if(parent->right != NULL) 
+     { 
+            inOrder(parent->right); 
+     } 
+} 
+//postorder 
+void postOrder(Tree *parent) 
+{ 
+     if(parent->left != NULL) 
+     { 
+            postOrder(parent->left); 
+     } 
+     if(parent->right != NULL) 
+     { 
+            postOrder(parent->right); 
+     } 
+     printf_s("%d ",parent->data); 
+} 
+//레벨 순회 값 추가 
+void addQueue(Tree *parent) 
+{ 
+     if(rear == 50-1) 
+     { 
+            return; 
+     } 
+     rear++; 
+     queue[rear] = parent; 
+      
+} 
+//레벨 순회 dequeue 
+Tree *dequeue() 
+{ 
+     Tree *n = NULL; 
+     if(front == rear) 
+     { 
+            return n; 
+     } 
+     front++; 
+     n = queue[front]; 
+     return n; 
+} 
+//levelorder 
+void levelOrder(Tree *parent) 
+{ 
+   Tree* ptr; 
+   front = -1; 
+   rear = -1; 
+   if(parent == NULL) 
+   { 
+          return; 
+   } 
+   addQueue(parent); 
+   while(1) 
+   { 
+          ptr = dequeue(); 
+          if(ptr == NULL) 
+          { 
+                 break; 
+          } 
+          printf_s("%d ",ptr->data); 
+          if(ptr->left != NULL) 
+          { 
+                 addQueue(ptr->left); 
+          } 
+          if(ptr->right != NULL) 
+          { 
+                 addQueue(ptr->right); 
+          } 
+   } 
+} 
