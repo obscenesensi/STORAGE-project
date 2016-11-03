@@ -1,0 +1,66 @@
+#include <cstdio>
+#include <cstdlib>
+
+using namespace std;
+
+struct Entry{
+	int element ; //element 
+	Entry *next ; 
+	Entry *last ;
+	
+	Entry(){
+		next = last = this ; 	
+	}
+	Entry( int _element ){
+		element = _element ;
+		next = last = 0 ;
+	}
+} ; 
+
+struct LinkedList{
+	Entry *head ; 
+	LinkedList(){ 
+		head = new Entry() ; 	
+	}  ;
+	
+	void addHead( int element ){
+		Entry *entry = new Entry( element ) ; 
+		entry->last = head ;
+		entry->next = head->next ;
+		head->next->last = entry ;  
+		head->next = entry ;  
+	}
+	
+	void addBack( int element ){
+		Entry *entry = new Entry( element ) ; 
+		entry->next = head ; 
+		entry->last = head->last ;
+		head->last->next = entry ;  
+		head->last = entry ; 
+	}
+
+	void traversal(){
+		Entry *current = head->next ; 
+		while( current != head ){
+			printf(" -> %d",current->element ) ; 
+			current = current->next ; 
+		}
+	}
+} ; 
+
+int main(){
+
+	LinkedList list ; 
+	while( 1 ){		//use linkedList API 
+		int x, type ; 
+		scanf("%d %d",&x, &type ) ;
+		 
+		if( type == 0 )	list.addHead( x ) ;
+		else	list.addBack( x ) ; 
+		
+		list.traversal() ;
+		printf("\n");   
+	}
+
+	return 0 ; 
+}
