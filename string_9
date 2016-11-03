@@ -1,0 +1,43 @@
+#include <iostream> 
+#include <string> 
+#include <algorithm> 
+using namespace std;
+
+void permute(const string& word, const string& comb, bool* used) {
+    if (comb.size() == word.size()) {
+        cout << comb << endl;
+        return;
+    }
+    string newComb;
+    for (int i = 0; i < word.size(); i++) {
+        if (used[word[i]] == false) {
+            for (int j=i; j<word.size(); j++) {
+                if (word[i] == word[j]) {
+                    newComb += word[j];
+                } else {
+                    break;
+                }
+            }
+            used[word[i]] = true;
+            permute(word, comb+newComb, used);
+            newComb = "";
+            used[word[i]] = false;
+        }
+    }
+}
+
+void printComb(const string& word) {
+    bool used[256];
+    for (int i=0; i<256; i++) used[i] = false;
+    string str = word;
+    sort(str.begin(), str.end());
+    permute(str, "", used);
+}
+
+int main()
+{
+    string input;
+    cin >> input;
+    printComb(input);
+    return 0;
+    }
