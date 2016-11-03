@@ -1,0 +1,69 @@
+#include <cstring>
+#include <utility>
+#include <iostream>
+using namespace std;
+
+class String
+{
+private:
+    char* data_;
+    int sz;
+public:
+    String():data_(nullptr),sz(0)
+    {}
+    ~String()
+    {
+        delete[] data_;
+    }
+    String(const char* str,int len):data_(len>0? new char[len+1]:nullptr),sz(len)
+    {
+        if(len>0)
+        {
+            memcpy(data_,str,len);
+            data_[len]='\0';
+        }
+    }
+    String(const char* str):String(str,strlen(str)){}
+    String(const String& rhs):String(rhs.data_,rhs.sz){}
+    String(String&& rhs):String(rhs.data_,rhs.sz)
+    {
+        rhs.data_=nullptr;
+        rhs.sz=0;
+    }
+    String& operator=(String rhs)
+    {
+        swap(rhs);
+        return *this;
+    }
+    void swap(String& rhs)
+    {
+        std::swap(data_,rhs.data_);
+        std::swap(sz,rhs.sz);
+    }
+    const char* c_str()
+    {
+        return data_;
+    }
+    int size()
+    {
+        return sz;
+    }
+    friend ostream& operator<<(ostream &os,const String &s)
+    {
+        os<<s.data_;
+        return os;
+    }
+};
+int main()
+{
+    const char* p="abc";
+    String s4(p);
+    cout<<s4<<endl;
+    String s1("abc");
+    String s2=s1;
+    cout<<"s1="<<" "<<s1<<endl;
+    cout<<"s2="<<" "<<s2<<endl;
+    String s3(move(s2));
+    cout<<"s3="<<" "<<s3<<endl;
+    cout<<"s2="<<" "<<s2<<endl;
+}
