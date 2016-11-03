@@ -1,0 +1,28 @@
+
+vector<string> split(string s)
+{
+    vector<string> sRet;
+    size_t i = 0;
+
+    do
+    {
+        string sWord;
+
+        // Find beginning of a word
+        while(i < s.size() && s[i] == ' ') ++i;
+
+        // Accumulate chars until end of a word or the input
+        while(i < s.size() && s[i] != ' ')
+        {
+            sWord += s[i];
+            i++;
+        }
+
+        // If we have a word save it
+        if(!sWord.empty())
+            sRet.push_back(sWord);
+    }
+    while(i < s.size());
+
+    return sRet;
+}
