@@ -1,0 +1,26 @@
+public class MyLinkedList {
+	private static node head;
+	public void DisplayList(node q)
+	{if (q != null) {
+		System.out.println(q.data);
+		DisplayList(q.next);}}
+	public void Buildlist() throws IOException
+	{node q = new node(0,null);
+	node head = q;
+	String oneLine;
+	BufferedReader indata = new BufferedReader(new InputStreamReader(System.in)); // read data from terminals
+	System.out.println("How many nodes?\n"); 
+	oneLine = indata.readLine();   // always need the following two lines to read data
+	head.data = Integer.parseInt(oneLine);
+	for (int i=1; i<=head.data; i++)
+		{System.out.println("A new value please\n");
+		oneLine = indata.readLine();
+		int num = Integer.parseInt(oneLine);
+		node p = new node(num,null);
+		q.next = p;
+		q = p;}}
+	public static void main(String[] args) throws IOException
+	{MyLinkedList mylist = new MyLinkedList();
+	mylist.Buildlist();
+	mylist.DisplayList(head);}
+}
