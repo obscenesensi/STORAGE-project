@@ -1,0 +1,36 @@
+using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+
+public class test : MonoBehaviour {
+
+	public float m_float = 0f;
+	public double m_double = 0d;
+	public string m_input = "";
+	public string m_out = "";
+
+	void Start()
+	{
+
+		for (int i = 16777000; i < 16777250; ++i)
+		{
+			m_input = i.ToString();
+#if true // string -> float -> double
+			m_float = float.Parse(m_input);
+			m_double = m_float;
+#else  // string -> doiuble
+			m_double = double.Parse(m_input);
+#endif
+			m_out = m_double.ToString();
+			if (m_input != m_out)
+			{
+				Debug.Log(" ++++++++++++++++++++++ ");
+				Debug.Log(m_input);
+				Debug.Log(m_out);
+				//Debug.Log(m_float.ToString("G17"));
+			}
+		}
+
+	}
+
+}
