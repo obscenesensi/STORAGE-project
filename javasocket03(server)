@@ -1,0 +1,109 @@
+package soket.server;
+ 
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import org.apache.log4j.Logger;
+import soket.server.communicator.Communicator;
+import soket.server.communicator.LengthSpecificCommunicator;
+import soket.server.connectionhandler.ConnectionHandler;
+import soket.server.connectionhandler.ConnectionHandlerManager;
+import soket.server.connectionhandler.NormalConnectionHandlerManager;
+import soket.server.executor.CommandExecutor;
+import soket.server.executor.CommandExecutorJobAdd;
+import soket.server.requesthandler.CommandRequestHandler;
+ 
+public class SimpleServer implements TCPServer {
+ static Logger logger = Logger.getLogger(SimpleServer.class);
+ private int threadID = 0;
+ private ServerSocket server;
+ private static boolean isClosed = false;
+ private ConnectionHandlerManager connectionHandlerManager;
+ 
+ public SimpleServer(){
+  connectionHandlerManager = new NormalConnectionHandlerManager();
+ }
+ 
+ public static void main(String[] args) throws IOException{
+  
+  try{
+   TCPServer server = new SimpleServer();
+   server.startServer();
+  }catch(Exception e){
+   logger.info("main() error", e);
+  }
+ }
+ 
+ /* 
+  * 소켓서버를 실행한다. 
+  */
+ public void startServer() throws Exception
+ {
+   printMessage("소켓 서버를 실행합니다.");
+   server = new ServerSocket(5000); //5000번 포트로 리슨
+   //클라이언트와의 연결 대기 루프
+   while( true ){
+      try{
+           printMessage("새로운 Client의 연결요청을 기다립니다.");
+           Socket connectedSocket = server.accept(); //클라이언트와 연결될때까지 대기한다.
+           printMessage("Client와 연결이 이루어지고 서비스를 시작합니다.");
+    
+           processService(connectedSocket, threadID++ ); //별도의  쓰래드를 생성해서  서비스 처리를 위임한다.
+      }catch(Exception e){
+           if( !(e instanceof java.net.SocketException && isClosed == true) ){
+           printMessage("startServer() error", e);
+      }
+      break;
+   }
+  }
+ }
+ 
+ /* 
+  * 신규 클라이언트 접속시마다 새로운 Thread를 생성해서 서비스 처리를 위임한다. 
+  */
+ private void processService(Socket connectedSocket, int serviceID) throws IOException {
+  
+  CommandRequestHandler requestHandler = null;
+  try{
+     requestHandler = new CommandRequestHandler();
+     requestHandler.addCommand("add", new CommandExecutorJobAdd());
+     requestHandler.addCommand("exit", new CommandExecutorExit());
+  }catch(Exception e){
+     printMessage("processService() error", e);
+  }
+  
+  ConnectionHandler connectionHandler = connectionHandlerManager.createConnectionHandler(serviceID);
+  //connectionHandler.keepConnection(new CommunicatorUTF(connectedSocket), requestHandler);
+  connectionHandler.keepConnection(new LengthSpecificCommunicator(connectedSocket), requestHandler);
+ }
+ /* 
+  * 소켓버를 종료한다.
+  */
+ public void shutDownServer() throws Exception{
+   isClosed = true;
+   printMessage("서버 소켓의 연결을 닫습니다.");
+   server.close();
+   printMessage("열려진 서버 서비스가 있다면 종료합니다.");
+   if(connectionHandlerManager != null) connectionHandlerManager.stop();
+  
+ }
+ 
+ //로그 출력 함수(msg)
+ private void printMessage(String msg){
+  ServerLog.getInstance().info(this.getClass().getName(), msg);
+ }
+ //로그 출력 함수(msg, throwable)
+ private void printMessage(String msg, Throwable e){
+  ServerLog.getInstance().info(this.getClass().getName(), msg, e);
+ }
+ 
+ class CommandExecutorExit implements CommandExecutor{
+   public void execute(String request, Communicator communicator) throws Exception {
+     communicator.sendResponse("서버를 종료합니다.");
+     shutDownServer();
+   }
+   public int stop() {
+     return Stopable.STAT_IMMEDIATE;
+   }
+  }
+}
