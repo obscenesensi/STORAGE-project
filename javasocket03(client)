@@ -1,0 +1,88 @@
+package soket.client;
+ 
+import java.awt.Robot;
+import java.io.IOException;
+import java.net.UnknownHostException;
+import org.apache.log4j.Logger;
+import junit.framework.TestCase;
+ 
+public class SimpleClientMain extends TestCase{
+ 
+ static Logger logger = Logger.getLogger(SimpleClientMain.class);
+ 
+ public static void main(String[] args) throws UnknownHostException, IOException{
+  
+  try{
+   
+   String result;
+   
+   SimpleClient sc1 = new SimpleClient();
+   SimpleClient sc2 = new SimpleClient();
+   SimpleClient sc3 = new SimpleClient();
+   
+   //[1] ==== 서버에 연결 ==================
+   setTimerOn(1); //1초 지연실행시킴
+   logger.info("connect 1");
+   sc1.connect("127.0.0.1", 5000);
+   
+   setTimerOn(1);
+   logger.info("connect 2");
+   sc2.connect("127.0.0.1", 5000);
+   
+   setTimerOn(1);
+   logger.info("connect 3");
+   sc3.connect("127.0.0.1", 5000);
+   
+   //[2] ==== 서버에 요청 ==================
+   setTimerOn(2);
+   logger.info("클라이언트1이 요청함");
+   result = sc1.sendString("1번째 소켓요청 abc");
+   logger.info("클라이언트1이 받은 결과 [" + result + "]");
+   
+   setTimerOn(3);
+   logger.info("클라이언트2가 요청함 ");
+   result = sc2.sendString("2번째 소켓요청 def");
+   logger.info("클라이언트2가 받은 결과  [" + result + "]");
+   setTimerOn(3);
+   logger.info("클라이언트3이 요청함 ");
+   result = sc3.sendString("아내/딸/아들/가족:엄마:아빠");
+   logger.info("클라이언트3이 받은 결과 [" + result + "]");
+   
+   setTimerOn(3);
+   logger.info("클라이언트1이 재요청함 ");
+   result = sc3.sendString("재요청테스트1");
+   logger.info("클라이언트1이 받은 결과 [" + result + "]");
+   
+   setTimerOn(3);
+   logger.info("클라이언트2가 재 요청함 ");
+   result = sc2.sendString("재요청테스트2 abc");
+   logger.info("클라이언트2이 받은 결과 [" + result + "]");
+   
+   //[3] ==== 서버와 연결종료! ==================
+   setTimerOn(3);
+   logger.info("connect close 1");
+   sc1.close();
+   
+   setTimerOn(2);
+   logger.info("connect close 2");
+   sc2.close(); 
+   
+   setTimerOn(2);
+   logger.info("connect close 3");
+   sc3.close();   
+   
+  }catch(Exception e){
+   logger.info("Client 오류 발생!");
+   e.printStackTrace();
+  }
+ }
+ 
+   public static void setTimerOn(int nTimer)  throws Exception  // nTimer - 단위 : 초
+   {
+        int nDelayTime;
+        nDelayTime = nTimer * 1000; // 밀리초 단위에 맞도록 *1000을 해준다.
+        
+        Robot tRobot = new Robot();
+        tRobot.delay(nDelayTime);   // delay() 함수를 이용하여 nDelayTime 밀리초 동안 프로세스를 sleep 상태로 만든다.
+  }
+}
