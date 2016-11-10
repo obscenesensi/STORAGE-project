@@ -3,35 +3,34 @@ import java.net.*;
 
 public class Client {
 	public static void main(String[] args) {
-		BufferedReader in = null;
-		BufferedReader stin = null;
-		BufferedWriter out = null;
+		
 		Socket socket = null;
+		
 		try {
-			socket = new Socket("210.119.33.88", 9999); // Å¬¶óÀÌ¾ğÆ® ¼ÒÄÏ »ı¼º
-			in = new BufferedReader(new InputStreamReader(socket.getInputStream())); // ¼­¹ö·ÎºÎÅÍÀÇ ÀÔ·Â ½ºÆ®¸²
-			stin = new BufferedReader(new InputStreamReader(System.in)); // Å°º¸µå·ÎºÎÅÍÀÇ ÀÔ·Â ½ºÆ®¸²
-			out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())); // ¼­¹ö·ÎÀÇ Ãâ·Â ½ºÆ®¸²
+			socket = new Socket("210.119.33.88", 9999); // í´ë¼ì´ì–¸íŠ¸ ì†Œì¼“ ìƒì„±
+			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream())); // ì„œë²„ë¡œë¶€í„°ì˜ ì…ë ¥ ìŠ¤íŠ¸ë¦¼
+			BufferedReader stin = new BufferedReader(new InputStreamReader(System.in)); // í‚¤ë³´ë“œë¡œë¶€í„°ì˜ ì…ë ¥ ìŠ¤íŠ¸ë¦¼
+			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())); // ì„œë²„ë¡œì˜ ì¶œë ¥ ìŠ¤íŠ¸ë¦¼
 			String outputMessage;
 			while (true) {
-				outputMessage = stin.readLine(); // Å°º¸µå¿¡¼­ ÇÑ ÇàÀÇ ¹®ÀÚ¿­ ÀĞÀ½
-				if (outputMessage.equalsIgnoreCase("byebyebye")) { // "bye"°¡ ÀÔ·ÂµÇ¸é ¸Ş½ÃÁö Àü¼Û ÈÄ ¿¬°á Á¾·á
+				outputMessage = stin.readLine(); // í‚¤ë³´ë“œì—ì„œ í•œ í–‰ì˜ ë¬¸ìì—´ ì½ìŒ
+				if (outputMessage.equalsIgnoreCase("byebyebye")) { // "bye"ê°€ ì…ë ¥ë˜ë©´ ë©”ì‹œì§€ ì „ì†¡ í›„ ì—°ê²° ì¢…ë£Œ
 					out.write(outputMessage);
 					out.flush();
 					break;
 				}
-				out.write("Å¬¶óÀÌ¾ğÆ®>"+outputMessage+"\n"); // Å°º¸µå¿¡¼­ ÀĞÀº ¹®ÀÚ¿­ Àü¼Û
+				out.write("í´ë¼ì´ì–¸íŠ¸>"+outputMessage+"\n"); // í‚¤ë³´ë“œì—ì„œ ì½ì€ ë¬¸ìì—´ ì „ì†¡
 				out.flush();
-				String inputMessage = in.readLine(); // ¼­¹ö¿¡¼­ ÇÑ ÇàÀÇ ¹®ÀÚ¿­ ÀĞÀ½
-				System.out.println(inputMessage); // ¼­¹ö°¡ º¸³½ ¸Ş½ÃÁö È­¸é¿¡ Ãâ·Â
+				String inputMessage = in.readLine(); // ì„œë²„ì—ì„œ í•œ í–‰ì˜ ë¬¸ìì—´ ì½ìŒ
+				System.out.println(inputMessage); // ì„œë²„ê°€ ë³´ë‚¸ ë©”ì‹œì§€ í™”ë©´ì— ì¶œë ¥
 			}
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
 		} finally {
 			try {
-				socket.close(); // Å¬¶óÀÌ¾ğÆ® ¼ÒÄÏ ´İ±â
+				socket.close(); // í´ë¼ì´ì–¸íŠ¸ ì†Œì¼“ ë‹«ê¸°
 			} catch (IOException e) {
-				System.out.println("¼­¹ö¿Í Ã¤ÆÃ Áß ¿À·ù°¡ ¹ß»ıÇß½À´Ï´Ù.");
+				System.out.println("ì„œë²„ì™€ ì±„íŒ… ì¤‘ ì˜¤ë¥˜ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤.");
 			}
 		}
 	}
