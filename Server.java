@@ -3,36 +3,34 @@ import java.net.*;
 
 public class Server {
 	public static void main(String[] args) {
-		BufferedReader in = null;
-		BufferedReader stin = null;
-		BufferedWriter out = null;
 		ServerSocket listener = null;
 		Socket socket = null;
+		
 		try {
-			listener = new ServerSocket(9999); // ¼­¹ö ¼ÒÄÏ »ı¼º
-			socket = listener.accept(); // Å¬¶óÀÌ¾ğÆ®·ÎºÎÅÍ ¿¬°á ¿äÃ» ´ë±â
-			System.out.println("¿¬°áµÊ");
-			in = new BufferedReader(new InputStreamReader(socket.getInputStream())); // Å¬¶óÀÌ¾ğÆ®·ÎºÎÅÍÀÇ ÀÔ·Â ½ºÆ®¸²
-			stin = new BufferedReader(new InputStreamReader(System.in)); // Å°º¸µå·ÎºÎÅÍÀÇ ÀÔ·Â ½ºÆ®¸²
-			out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())); // Å¬¶óÀÌ¾ğÆ®·ÎÀÇ Ãâ·Â ½ºÆ®¸²
+			listener = new ServerSocket(9999); // ì„œë²„ ì†Œì¼“ ìƒì„±
+			socket = listener.accept(); // í´ë¼ì´ì–¸íŠ¸ë¡œë¶€í„° ì—°ê²° ìš”ì²­ ëŒ€ê¸°
+			System.out.println("ì—°ê²°ë¨");
+			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream())); // í´ë¼ì´ì–¸íŠ¸ë¡œë¶€í„°ì˜ ì…ë ¥ ìŠ¤íŠ¸ë¦¼
+			BufferedReader stin = new BufferedReader(new InputStreamReader(System.in)); // í‚¤ë³´ë“œë¡œë¶€í„°ì˜ ì…ë ¥ ìŠ¤íŠ¸ë¦¼
+			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())); // í´ë¼ì´ì–¸íŠ¸ë¡œì˜ ì¶œë ¥ ìŠ¤íŠ¸ë¦¼
 			String inputMessage;
 			while (true) {
-				inputMessage = in.readLine(); // Å¬¶óÀÌ¾ğÆ®¿¡¼­ ÇÑ ÇàÀÇ ¹®ÀÚ¿­ ÀĞÀ½
-				if (inputMessage.equalsIgnoreCase("bye")) // Å¬¶óÀÌ¾ğÆ®°¡ "bye"¸¦ º¸³»¸é ¿¬°á Á¾·á
+				inputMessage = in.readLine(); // í´ë¼ì´ì–¸íŠ¸ì—ì„œ í•œ í–‰ì˜ ë¬¸ìì—´ ì½ìŒ
+				if (inputMessage.equalsIgnoreCase("bye")) // í´ë¼ì´ì–¸íŠ¸ê°€ "bye"ë¥¼ ë³´ë‚´ë©´ ì—°ê²° ì¢…ë£Œ
 					break;
-				System.out.println(inputMessage); // Å¬¶óÀÌ¾ğÆ®°¡ º¸³½ ¸Ş½ÃÁö È­¸é¿¡ Ãâ·Â
-				String outputMessage = stin.readLine(); // Å°º¸µå¿¡¼­ ÇÑ ÇàÀÇ ¹®ÀÚ¿­ ÀĞÀ½
-				out.write("¼­¹ö>" + outputMessage+"\n"); // Å°º¸µå¿¡¼­ ÀĞÀº ¹®ÀÚ¿­ Àü¼Û
+				System.out.println(inputMessage); // í´ë¼ì´ì–¸íŠ¸ê°€ ë³´ë‚¸ ë©”ì‹œì§€ í™”ë©´ì— ì¶œë ¥
+				String outputMessage = stin.readLine(); // í‚¤ë³´ë“œì—ì„œ í•œ í–‰ì˜ ë¬¸ìì—´ ì½ìŒ
+				out.write("ì„œë²„>" + outputMessage+"\n"); // í‚¤ë³´ë“œì—ì„œ ì½ì€ ë¬¸ìì—´ ì „ì†¡
 				out.flush();
 			}
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
 		} finally {
 			try {
-				socket.close(); // Å¬¶óÀÌ¾ğÆ®¿Í Åë½Å¿ë ¼ÒÄÏ ´İ±â
-				listener.close(); // ¼­¹ö ¼ÒÄÏ ´İ±â
+				socket.close(); // í´ë¼ì´ì–¸íŠ¸ì™€ í†µì‹ ìš© ì†Œì¼“ ë‹«ê¸°
+				listener.close(); // ì„œë²„ ì†Œì¼“ ë‹«ê¸°
 			} catch (IOException e) {
-				System.out.println("Å¬¶óÀÌ¾ğÆ®¿Í Ã¤ÆÃ Áß ¿À·ù°¡ ¹ß»ıÇß½À´Ï´Ù.");
+				System.out.println("í´ë¼ì´ì–¸íŠ¸ì™€ ì±„íŒ… ì¤‘ ì˜¤ë¥˜ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤.");
 			}
 		}
 	}
