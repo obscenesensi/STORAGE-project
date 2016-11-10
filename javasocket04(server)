@@ -1,0 +1,52 @@
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+public class Server {
+	public static void main(String[] args) {
+		try {
+			// 서버 소켓을 열고, 포트 9000번
+			ServerSocket s_socket = new ServerSocket(9000);
+			System.out.println("Client accept!!");
+			// 클라이언트 대기한다.
+			Socket c_socket = s_socket.accept();
+
+
+			// 클라이언트 주소 가져온다.
+			InetAddress addr = c_socket.getInetAddress();
+			System.out.println(addr.getHostAddress() + 
+"로 부터 접속했습니다.");
+			/*
+			 * Stream* 문자를 보내고 받는 것을 Stream에 
+넣어서 Stream데이터를 Byte배열 같은 데이터 구조로
+			 * 전송한다.
+			 */
+			InputStream in = c_socket.getInputStream();
+			OutputStream out = c_socket.getOutputStream();
+			BufferedReader br = new BufferedReader(
+new InputStreamReader(in));
+			PrintWriter pw = new PrintWriter(
+new OutputStreamWriter(out));
+			// String 형식을 담아서 출력시킨다.
+			String message = null;
+			while ((message = br.readLine()) != null) {
+				System.out.println("client : " + message);
+				// OutputStream에 담아서 메세지를 보낸다.
+				pw.println(message);
+				//Stream에 대한 모든 버퍼를 지운다.
+				pw.flush();
+			}
+			//다 닫아준다.
+			br.close();
+			pw.close();
+			c_socket.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
