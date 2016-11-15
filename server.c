@@ -1,116 +1,109 @@
-#include<stdio.h>
-#include<winsock2.h>
-#include<conio.h>
+////ÃâÃ³: http://remocon33.tistory.com/465
 
-#pragma comment(lib,"ws2_32.lib")
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <Windows.h>
+#include <process.h>
 
-void main()
-{
+#define BUF_SIZE 100
+#define MAX_CLNT 256
+
+unsigned WINAPI HandleClient(void* arg);//¾²·¹µå ÇÔ¼ö
+void SendMsg(char* msg,int len);//¸Ş½ÃÁö º¸³»´Â ÇÔ¼ö
+void ErrorHandling(char* msg);
+
+int clientCount=0;
+SOCKET clientSocks[MAX_CLNT];//Å¬¶óÀÌ¾ğÆ® ¼ÒÄÏ º¸°ü¿ë ¹è¿­
+HANDLE hMutex;//¹ÂÅØ½º
+
+int main(){
 	WSADATA wsaData;
-	SOCKET s, cs;
-	struct sockaddr_in sin;
-	struct sockaddr_in cli_addr;
-	int size = sizeof(cli_addr);
-	int nTimeOut = 200;
-	char buff[1000], data[1000];
-	char ID[100];
-	int ret;
+	SOCKET serverSock,clientSock;
+	SOCKADDR_IN serverAddr,clientAddr;
+	int clientAddrSize;
+	HANDLE hThread;
 
-	if (WSAStartup(WINSOCK_VERSION, &wsaData) != 0)
-	{
-		printf("WSAStartup ì‹¤íŒ¨, ì—ëŸ¬ì½”ë“œ = %d \n", WSAGetLastError());
-		return;
+	char port[100];
+
+	printf("Input port number : ");
+	gets(port);
+/*
+	if(argc!=2){
+		printf("Usage : %s <port>\n",argv[0]);
+		exit(1);
 	}
+	*/
+	if(WSAStartup(MAKEWORD(2,2),&wsaData)!=0) //À©µµ¿ì ¼ÒÄÏÀ» »ç¿ëÇÏ°Ú´Ù´Â »ç½ÇÀ» ¿î¿µÃ¼Á¦¿¡ Àü´Ş
+		ErrorHandling("WSAStartup() error!");
 
-	s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	hMutex=CreateMutex(NULL,FALSE,NULL);//ÇÏ³ªÀÇ ¹ÂÅØ½º¸¦ »ı¼ºÇÑ´Ù.
+	serverSock=socket(PF_INET,SOCK_STREAM,0); //ÇÏ³ªÀÇ ¼ÒÄÏÀ» »ı¼ºÇÑ´Ù.
 
+	memset(&serverAddr,0,sizeof(serverAddr));
+	serverAddr.sin_family=AF_INET;
+	serverAddr.sin_addr.s_addr=htonl(INADDR_ANY);
+	serverAddr.sin_port=htons(atoi(port));
 
-	if (s == INVALID_SOCKET)
-	{
-		printf("ì†Œì¼“ ìƒì„± ì‹¤íŒ¨, ì—ëŸ¬ì½”ë“œ = %d \n", WSAGetLastError());
-		WSACleanup(); return;
+	if(bind(serverSock,(SOCKADDR*)&serverAddr,sizeof(serverAddr))==SOCKET_ERROR) //»ı¼ºÇÑ ¼ÒÄÏÀ» ¹èÄ¡ÇÑ´Ù.
+		ErrorHandling("bind() error");
+	if(listen(serverSock,5)==SOCKET_ERROR)//¼ÒÄÏÀ» ÁØºñ»óÅÂ¿¡ µĞ´Ù.
+		ErrorHandling("listen() error");
+
+	printf("listening...\n");
+
+	while(1){
+		clientAddrSize=sizeof(clientAddr);
+		clientSock=accept(serverSock,(SOCKADDR*)&clientAddr,&clientAddrSize);//¼­¹ö¿¡°Ô Àü´ŞµÈ Å¬¶óÀÌ¾ğÆ® ¼ÒÄÏÀ» clientSock¿¡ Àü´Ş
+		WaitForSingleObject(hMutex,INFINITE);//¹ÂÅØ½º ½ÇÇà
+		clientSocks[clientCount++]=clientSock;//Å¬¶óÀÌ¾ğÆ® ¼ÒÄÏ¹è¿­¿¡ ¹æ±İ °¡Á®¿Â ¼ÒÄÏ ÁÖ¼Ò¸¦ Àü´Ş
+		ReleaseMutex(hMutex);//¹ÂÅØ½º ÁßÁö
+		hThread=(HANDLE)_beginthreadex(NULL,0,HandleClient,(void*)&clientSock,0,NULL);//HandleClient ¾²·¹µå ½ÇÇà, clientSockÀ» ¸Å°³º¯¼ö·Î Àü´Ş
+		printf("Connected Client IP : %s\n",inet_ntoa(clientAddr.sin_addr));
 	}
+	closesocket(serverSock);//»ı¼ºÇÑ ¼ÒÄÏÀ» ²ö´Ù.
+	WSACleanup();//À©µµ¿ì ¼ÒÄÏÀ» Á¾·áÇÏ°Ú´Ù´Â »ç½ÇÀ» ¿î¿µÃ¼Á¦¿¡ Àü´Ş
+	return 0;
+}
 
+unsigned WINAPI HandleClient(void* arg){
+	SOCKET clientSock=*((SOCKET*)arg); //¸Å°³º¯¼ö·Î¹ŞÀº Å¬¶óÀÌ¾ğÆ® ¼ÒÄÏÀ» Àü´Ş
+	int strLen=0,i;
+	char msg[BUF_SIZE];
 
-
-	sin.sin_family = AF_INET;
-	sin.sin_addr.s_addr = htonl(ADDR_ANY);
-	sin.sin_port = htons(10000);
-
-
-	if (bind(s, (struct sockaddr*)&sin, sizeof(sin)) == SOCKET_ERROR)
-
-	{
-		printf("ë°”ì¸ë“œ ì‹¤íŒ¨, ì—ëŸ¬ì½”ë“œ = %d \n", WSAGetLastError());
-		closesocket(s); WSACleanup(); return;
-	}
-
-	if (listen(s, SOMAXCONN) != 0)
-	{
-		printf("ë¦¬ìŠ¨ëª¨ë“œ ì„¤ì •ì‹¤íŒ¨, ì—ëŸ¬ì½”ë“œ= %d \n", WSAGetLastError());
-		closesocket(s); WSACleanup(); return;
-
-	}
-
-	puts("ì±„íŒ…ì„œë²„ë¥¼ ì‹œì‘í•©ë‹ˆë‹¤.");
-
-	cs = accept(s, (struct sockaddr*)&cli_addr, &size);
-
-	if (cs == INVALID_SOCKET)
-
-	{
-		printf("ì ‘ì†ìŠ¹ì¸ì‹¤íŒ¨, ì—ëŸ¬ì½”ë“œ = %d \n", WSAGetLastError());
-		closesocket(s); WSACleanup(); return;
-	}
-	printf("ì±„íŒ…ì— ì‚¬ìš©í•  ë³„ëª… : ");
-	gets(ID);
-	puts("ë©”ì‹œì§€ë¥¼ ì…ë ¥:");
-	size = sizeof(int);
-	setsockopt(cs, SOL_SOCKET, SO_RCVTIMEO, (char*)&nTimeOut, size);
-
-
-
-	while (1)
-	{
-		if (kbhit())
-		{
-			gets(buff);
-			if (strcmp(buff, "END") == 0)
-			{
-				send(s, "END", 3, 0);
-				break;
-
-			}
-
-			sprintf(data, "%s: %s", ID, buff);
-
-			if (send(cs, data, strlen(data), 0) < strlen(data))
-			{
-				printf("ì „ì†¡ ì‹¤íŒ¨, ì—ëŸ¬ì½”ë“œ = %u \n", WSAGetLastError());
-				closesocket(cs); closesocket(s); WSACleanup(); return;
-			}
+	while((strLen=recv(clientSock,msg,sizeof(msg),0))!=0){ //Å¬¶óÀÌ¾ğÆ®·ÎºÎÅÍ ¸Ş½ÃÁö¸¦ ¹ŞÀ»¶§±îÁö ±â´Ù¸°´Ù.
+		if(!strcmp(msg,"q")){
+			send(clientSock,"q",1,0);
+			break;
 		}
-		memset(data, 0, sizeof data);
-		ret = recv(cs, data, 1000, 0);
-		if (ret == 0 || WSAGetLastError() == WSAETIMEDOUT) continue;
+		SendMsg(msg,strLen);//SendMsg¿¡ ¹ŞÀº ¸Ş½ÃÁö¸¦ Àü´ŞÇÑ´Ù.
+	}
 
-		if (ret == SOCKET_ERROR)
-		{
-			printf("ìˆ˜ì‹  ì‹¤íŒ¨, ì—ëŸ¬ ì½”ë“œ = %u \n", WSAGetLastError());
-			closesocket(cs); closesocket(s); WSACleanup(); return;
-
+	printf("client left the chat\n");
+	//ÀÌ ÁÙÀ» ½ÇÇàÇÑ´Ù´Â °ÍÀº ÇØ´ç Å¬¶óÀÌ¾ğÆ®°¡ ³ª°¬´Ù´Â »ç½ÇÀÓ µû¶ó¼­ ÇØ´ç Å¬¶óÀÌ¾ğÆ®¸¦ ¹è¿­¿¡¼­ Á¦°ÅÇØÁà¾ßÇÔ
+	WaitForSingleObject(hMutex,INFINITE);//¹ÂÅØ½º ½ÇÇà
+	for(i=0;i<clientCount;i++){//¹è¿­ÀÇ °¹¼ö¸¸Å­
+		if(clientSock==clientSocks[i]){//¸¸¾à ÇöÀç clientSock°ªÀÌ ¹è¿­ÀÇ °ª°ú °°´Ù¸é
+			while(i++<clientCount-1)//Å¬¶óÀÌ¾ğÆ® °³¼ö ¸¸Å­
+				clientSocks[i]=clientSocks[i+1];//¾ÕÀ¸·Î ¶¯±ä´Ù.
+			break;
 		}
-		puts(data);
+	}
+	clientCount--;//Å¬¶óÀÌ¾ğÆ® °³¼ö ÇÏ³ª °¨¼Ò
+	ReleaseMutex(hMutex);//¹ÂÅØ½º ÁßÁö
+	closesocket(clientSock);//¼ÒÄÏÀ» Á¾·áÇÑ´Ù.
+	return 0;
+}
 
-	}
-	if (closesocket(cs) != 0 || closesocket(s) != 0)
-	{
-		printf("ì†Œì¼“ ì œê±° ì‹¤íŒ¨, ì—ëŸ¬ì½”ë“œ = %u \n", WSAGetLastError());
-		WSACleanup(); return;
-	}
-	if (WSACleanup() != 0)
-	{
-		printf("WSACleanup ì‹¤íŒ¨, ì—ëŸ¬ì½”ë“œ = %u \n", WSAGetLastError());
-		return;
-	}
+void SendMsg(char* msg,int len){ //¸Ş½ÃÁö¸¦ ¸ğµç Å¬¶óÀÌ¾ğÆ®¿¡°Ô º¸³½´Ù.
+	int i;
+	WaitForSingleObject(hMutex,INFINITE);//¹ÂÅØ½º ½ÇÇà
+	for(i=0;i<clientCount;i++)//Å¬¶óÀÌ¾ğÆ® °³¼ö¸¸Å­
+		send(clientSocks[i],msg,len,0);//Å¬¶óÀÌ¾ğÆ®µé¿¡°Ô ¸Ş½ÃÁö¸¦ Àü´ŞÇÑ´Ù.
+	ReleaseMutex(hMutex);//¹ÂÅØ½º ÁßÁö
+}
+void ErrorHandling(char* msg){
+	fputs(msg,stderr);
+	fputc('\n',stderr);
+	exit(1);
 }

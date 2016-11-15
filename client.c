@@ -1,96 +1,107 @@
-#include<stdio.h>
-#include<winsock2.h>
-#include<conio.h>
+//ÃâÃ³: http://remocon33.tistory.com/465
 
-#pragma comment(lib,"ws2_32.lib")
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <Windows.h>
+#include <process.h>
 
-void main()
-{
+#define BUF_SIZE 100
+#define NAME_SIZE 20
+
+unsigned WINAPI SendMsg(void* arg);//¾²·¹µå Àü¼ÛÇÔ¼ö
+unsigned WINAPI RecvMsg(void* arg);//¾²·¹µå ¼ö½ÅÇÔ¼ö
+void ErrorHandling(char* msg);
+
+char name[NAME_SIZE]="[DEFAULT]";
+char msg[BUF_SIZE];
+
+int main(){
 	WSADATA wsaData;
-	SOCKET s;
-	struct sockaddr_in sin;
-	int size;
-	int nTimeOut = 200;
-	char buff[1000], data[1000];
-	char ID[100];
-	int ret;
+	SOCKET sock;
+	SOCKADDR_IN serverAddr;
+	HANDLE sendThread,recvThread;
 
-	if (WSAStartup(WINSOCK_VERSION, &wsaData) != 0)
-	{
-		printf("WSAStartup ì‹¤íŒ¨, ì—ëŸ¬ì½”ë“œ = %d \n", WSAGetLastError());
-		return;
+	char myIp[100];
+	char port[100];
+	char inputName[100];
+	/*
+	if(argc!=4){
+		printf("Usage : %s <IP> <port> <name>\n",argv[0]);
+		exit(1);
 	}
+	*/
+	printf("Input server IP : ");
+	gets(myIp);
 
-	s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	printf("Input server port : ");
+	gets(port);
 
+	printf("Input your name : ");
+	gets(inputName);
 
-	if (s == INVALID_SOCKET)
-	{
-		printf("ì†Œì¼“ ìƒì„± ì‹¤íŒ¨, ì—ëŸ¬ì½”ë“œ = %d \n", WSAGetLastError());
-		WSACleanup(); return;
-	}
+	if(WSAStartup(MAKEWORD(2,2),&wsaData)!=0)// À©µµ¿ì ¼ÒÄÏÀ» »ç¿ëÇÑ´Ù°í ¿î¿µÃ¼Á¦¿¡ ¾Ë¸²
+		ErrorHandling("WSAStartup() error!");
 
-	puts("ì±„íŒ… í´ë¼ì´ì–¸íŠ¸ë¥¼ ì‹œì‘í•©ë‹ˆë‹¤.");
+	sprintf(name,"[%s]",inputName);
+	sock=socket(PF_INET,SOCK_STREAM,0);//¼ÒÄÏÀ» ÇÏ³ª »ı¼ºÇÑ´Ù.
 
-	sin.sin_family = AF_INET;
-	sin.sin_addr.s_addr = inet_addr("210.119.33.89");
-	sin.sin_port = htons(10000);
+	memset(&serverAddr,0,sizeof(serverAddr));
+	serverAddr.sin_family=AF_INET;
+	serverAddr.sin_addr.s_addr=inet_addr(myIp);
+	serverAddr.sin_port=htons(atoi(port));
 
+	if(connect(sock,(SOCKADDR*)&serverAddr,sizeof(serverAddr))==SOCKET_ERROR)//¼­¹ö¿¡ Á¢¼ÓÇÑ´Ù.
+		ErrorHandling("connect() error");
 
-	if (connect(s, (struct sockaddr*)&sin, sizeof(sin)) != 0)
-	{
-		printf("ì ‘ì† ì‹¤íŒ¨, ì—ëŸ¬ì½”ë“œ = %u \n", WSAGetLastError());
-		closesocket(s); WSACleanup(); return;
-	}
+	//Á¢¼Ó¿¡ ¼º°øÇÏ¸é ÀÌ ÁÙ ¾Æ·¡°¡ ½ÇÇàµÈ´Ù.
 
-	size = sizeof(int);
-	setsockopt(s, SOL_SOCKET, SO_RCVTIMEO, (char*)&nTimeOut, size);
+	sendThread=(HANDLE)_beginthreadex(NULL,0,SendMsg,(void*)&sock,0,NULL);//¸Ş½ÃÁö Àü¼Û¿ë ¾²·¹µå°¡ ½ÇÇàµÈ´Ù.
+	recvThread=(HANDLE)_beginthreadex(NULL,0,RecvMsg,(void*)&sock,0,NULL);//¸Ş½ÃÁö ¼ö½Å¿ë ¾²·¹µå°¡ ½ÇÇàµÈ´Ù.
 
-	printf("ì±„íŒ…ì— ì‚¬ìš©í•  ë³„ëª… : ");
-	gets(ID);
-	puts("ë©”ì‹œì§€ë¥¼ ì…ë ¥:");
+	WaitForSingleObject(sendThread,INFINITE);//Àü¼Û¿ë ¾²·¹µå°¡ ÁßÁöµÉ¶§±îÁö ±â´Ù¸°´Ù./
+	WaitForSingleObject(recvThread,INFINITE);//¼ö½Å¿ë ¾²·¹µå°¡ ÁßÁöµÉ¶§±îÁö ±â´Ù¸°´Ù.
+	//Å¬¶óÀÌ¾ğÆ®°¡ Á¾·á¸¦ ½ÃµµÇÑ´Ù¸é ÀÌÁÙ ¾Æ·¡°¡ ½ÇÇàµÈ´Ù.
+	closesocket(sock);//¼ÒÄÏÀ» Á¾·áÇÑ´Ù.
+	WSACleanup();//À©µµ¿ì ¼ÒÄÏ »ç¿ëÁßÁö¸¦ ¿î¿µÃ¼Á¦¿¡ ¾Ë¸°´Ù.
+	return 0;
+}
 
-	while (1)
-	{
-		if (kbhit())
-		{
-			gets(buff);
-			if (strcmp(buff, "END") == 0)
-			{
-				send(s, "END", 3, 0);
-				break;
-
-			}
-
-			sprintf(data, "%s: %s", ID, buff);
-
-			if (send(s, data, strlen(data), 0) < strlen(data))
-			{
-				printf("ì „ì†¡ ì‹¤íŒ¨, ì—ëŸ¬ì½”ë“œ = %u \n", WSAGetLastError());
-				closesocket(s); WSACleanup(); return;
-			}
+unsigned WINAPI SendMsg(void* arg){//Àü¼Û¿ë ¾²·¹µåÇÔ¼ö
+	SOCKET sock=*((SOCKET*)arg);//¼­¹ö¿ë ¼ÒÄÏÀ» Àü´ŞÇÑ´Ù.
+	char nameMsg[NAME_SIZE+BUF_SIZE];
+	while(1){//¹İº¹
+		fgets(msg,BUF_SIZE,stdin);//ÀÔ·ÂÀ» ¹Ş´Â´Ù.
+		if(!strcmp(msg,"q\n")){//q¸¦ ÀÔ·ÂÇÏ¸é Á¾·áÇÑ´Ù.
+			send(sock,"q",1,0);//nameMsg¸¦ ¼­¹ö¿¡°Ô Àü¼ÛÇÑ´Ù.
 		}
-		memset(data, 0, sizeof data);
-		ret = recv(s, data, 1000, 0);
-		if (ret == 0 || WSAGetLastError() == WSAETIMEDOUT) continue;
+		sprintf(nameMsg,"%s %s",name,msg);//nameMsg¿¡ ¸Ş½ÃÁö¸¦ Àü´ŞÇÑ´Ù.
+		send(sock,nameMsg,strlen(nameMsg),0);//nameMsg¸¦ ¼­¹ö¿¡°Ô Àü¼ÛÇÑ´Ù.
+	}
+	return 0;
+}
 
-		if (ret == SOCKET_ERROR)
-		{
-			printf("ìˆ˜ì‹  ì‹¤íŒ¨, ì—ëŸ¬ ì½”ë“œ = %u \n", WSAGetLastError());
-			closesocket(s); WSACleanup(); return;
-
+unsigned WINAPI RecvMsg(void* arg){
+	SOCKET sock=*((SOCKET*)arg);//¼­¹ö¿ë ¼ÒÄÏÀ» Àü´ŞÇÑ´Ù.
+	char nameMsg[NAME_SIZE+BUF_SIZE];
+	int strLen;
+	while(1){//¹İº¹
+		strLen=recv(sock,nameMsg,NAME_SIZE+BUF_SIZE-1,0);//¼­¹ö·ÎºÎÅÍ ¸Ş½ÃÁö¸¦ ¼ö½ÅÇÑ´Ù.
+		if(strLen==-1)
+			return -1;
+		nameMsg[strLen]=0;//¹®ÀÚ¿­ÀÇ ³¡À» ¾Ë¸®±â À§ÇØ ¼³Á¤
+		if(!strcmp(nameMsg,"q")){
+			printf("left the chat\n");
+			closesocket(sock);
+			exit(0);
 		}
-		puts(data);
-		if (strcmp(data, "END") == 0) break;
+		fputs(nameMsg,stdout);//ÀÚ½ÅÀÇ ÄÜ¼Ö¿¡ ¹ŞÀº ¸Ş½ÃÁö¸¦ Ãâ·ÂÇÑ´Ù.
 	}
-	if (closesocket(s) != 0)
-	{
-		printf("ì†Œì¼“ ì œê±° ì‹¤íŒ¨, ì—ëŸ¬ì½”ë“œ = %u \n", WSAGetLastError());
-		WSACleanup(); return;
-	}
-	if (WSACleanup() != 0)
-	{
-		printf("WSACleanup ì‹¤íŒ¨, ì—ëŸ¬ì½”ë“œ = %u \n", WSAGetLastError());
-		return;
-	}
+	return 0;
+}
+
+void ErrorHandling(char* msg){
+	fputs(msg,stderr);
+	fputc('\n',stderr);
+	exit(1);
 }
