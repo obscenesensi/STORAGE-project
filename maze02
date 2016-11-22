@@ -1,0 +1,64 @@
+#include <stdio.h>
+#define MAX 999
+
+int dat[MAX][MAX] = {0,};
+int chk[MAX][MAX] = {0,};
+int x,y,sw=0;
+
+// 파일 입력부
+void file_input() {
+ int i,j;
+ char temp;
+ FILE *fp;
+ fp = fopen("input.txt","r");
+
+ for(i=1;!feof(fp);i++) { //가로 세로 길이를 읽자
+  for(j=1;!feof(fp);j++) {
+   fscanf(fp,"%c",&temp);
+   if(temp=='\n') break;
+   dat[i][j] = int(temp - '0'); // 1 : 벽 , 0 : 길
+  }
+ }
+ x = i; y = j - 1; //가로 x, 세로 y   j는 다시 한번 더 돌기에 -1 해줌
+ fclose(fp);
+ 
+ // 0 이 벽이면 필요 없음.
+ for(i=0;i<=x;i++) {
+  dat[i][0] = 1 ;// 겉을 벽으로 둘러쌈. 좌우
+  dat[i][y] = 1;
+ }
+ for(i=0;i<=y;i++) {
+  dat[0][i] = 1 ;// 겉을 벽으로 둘러쌈. 상하
+  dat[x][i] = 1;
+ }
+}
+//처리및 출력부 (재귀)
+void back(int i,int j) {       //i 세로,  j 가로
+
+ if(dat[i][j] == 0) 
+ {
+if(i == 3 && j == 6) //출구 좌표이면
+{
+sw = 1; //미로 찾음
+}
+else if(chk[i][j] == 0) //체크 현재위치가 0이면
+{
+chk[i][j] = 1; //현재위치를 1로하고  
+                                       //(현재위치를 1로 해주지 않으면 다음 차례에서 검색을 할 시에 지나온 길을 되돌아간다)
+if(!sw) back(i+1,j  ); //아래 확인
+if(!sw) back(i  ,j+1); //오른쪽 확인  
+if(!sw) back(i  ,j-1); //왼쪽확인
+if(!sw) back(i-1,j  ); //위 확인 
+  
+ 
+chk[i][j] = 0; //1로 만들어준 위치를 다시 원위치 시켜주자.
+}
+ }
+ if(sw) printf("(%d,%d) <- ",i,j);
+}
+void main() {
+ file_input();
+ back(1,1);
+ if(sw == 0) printf("미로를 찾을 수 없습니다. \n");
+ else printf("[START]\n"); 
+}
