@@ -1,0 +1,70 @@
+#include <stdio.h>
+#include <math.h>
+
+#define MAX 128             //배열의 크기를 매크로 상수로 선언
+
+int Mabangjin(int arr[][MAX], int);        //함수를 선언
+
+int main(void)
+{
+ int  arr[MAX][MAX] = {0,};        //배열의 초기화
+ int  size;
+
+ printf("배열의 크기 입력 => (단, 홀수)");     
+ scanf("%d", &size);
+
+ if(size % 2 == 0)           //짝수일 경우 에러 메시지 출력
+ {
+  printf("짝수의 배열은 마방진을 구할 수 없습니다.\n");
+  return 0;
+ } 
+ 
+ Mabangjin(arr, size);          //함수 호출
+
+ return 0;
+}
+
+int Mabangjin(int arr[][MAX], int size)
+{
+ int  i, j;            //index변수 선언
+ int  key;            //key변수 선언
+ int  k, l;            //변하는 index변수 선언
+
+ arr[0][(size-1)/2] = 1;          //첫행의 가운데를 1로 세팅
+ key = 2;             //배열에 들어갈 key변수를 2로 초기화
+ i = 0;             //행의 index를 초기화
+ j = (size-1)/2;           //열의 index를 초기화
+
+ while(key <= pow(size, 2))         //key가 size제곱의 크기 보다 클때 까지
+ {
+  k = (i - 1) % size;         
+  if(k == -1)            //k == -1일 경우(대각선의 위 행의 값이 없을 경우)
+   k = size - 1;
+  
+  l = (j - 1) % size;         //l == -1일 경우(대각선의 위 열의 값이 없을 경우)
+  if(l == -1)  
+   l = size - 1;
+
+  if(arr[k][l] != 0)          //배열의 값이 있을 경우
+   i = (i + 1) % size;
+  
+  else             //배열의 값이 없을 경우
+  {
+   i = k;
+   j = l;
+  }
+
+  arr[i][j] = key;         //배열이 key 값을 대입
+  key++;             //key값을 증가
+ }
+ 
+ for(i = 0; i < size; i++)
+ {
+  for(j = 0; j < size; j++)
+   printf("%3d", arr[i][j]);       //배열의 값을 출력
+  printf("\n");
+ }
+ return 0;
+}
+
+ 
