@@ -1,0 +1,190 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>     // 미로 생성시 랜덤 함수 사용
+
+#define MAX_STACK_SIZE 100   // 최대 스택 개수
+#define FALSE 0      // 미로 찾기 실패시
+#define TRUE 1      // 미로 찾기 성공시
+#define MAX 22      // 최대 미로의 크기 (MAX-2 : 벽 2개를 제외)
+#define ROW 10      // 미로의 행
+#define COL 10      // 미로의 열
+
+typedef struct
+{
+ short int row;
+ short int col;
+ short int dir; 
+} element;
+
+element stack[MAX_STACK_SIZE];  // 스택을 전역으로 설정
+
+typedef struct
+{
+ short int vert;
+ short int horiz;
+} offsets;
+
+offsets move[8];     // 방향을 지시하는 구조체 배열
+
+void path(int (*)[MAX]);   // 미로 찾기를 하는 함수
+element del(int *);     // 스택을 빼는 함수
+void add(int *,element);   // 스택을 추가하는 함수
+
+void main()
+{ 
+ int i, j, maze[MAX][MAX]; 
+ srand((unsigned)time(NULL)); // 랜덤 함수를 이용하기 위함
+
+ for(i = 0; i < ROW;i++) 
+ {
+  for(j = 0;j < COL;j++) 
+  {
+   maze[i][j] = rand()%2; // 미로를 0, 1의 랜덤으로 초기화 함
+  }
+ }
+ 
+ for(i = 0; i < COL; i++)  // 미로의 가장 자리를 1로 만들어 벽을 만들어 줌 
+ {
+  
+  maze[0][i]=1; 
+  maze[ROW-1][i]=1;
+ }
+ 
+ for(i = 0; i < ROW; i++) 
+ { 
+  maze[i][COL-1] =1; 
+  maze[i][0]=1;
+ }
+ 
+ maze[1][1]=0;    // 미로의 입구 설정
+ maze[ROW-2][COL-2]=0;  // 미로의 출구 설정
+  
+ printf("미로 출력\n\n");
+ 
+ for(i = 0; i < ROW; i++) // 생성된 미로를 출력
+ { 
+  for(j = 0;j < COL; j++)  
+  { 
+   printf("%2d",maze[i][j]);
+  }
+  printf("\n");
+ }
+ 
+ //move 값 초기화      
+ move[0].vert=-1;   // 북
+ move[0].horiz=0;
+
+    move[1].vert=-1;   // 북동
+ move[1].horiz=1;     
+
+ move[2].vert=0;    // 동
+ move[2].horiz=1;     
+
+ move[3].vert=1;    // 남동
+ move[3].horiz=1;  
+
+ move[4].vert=1;    // 남
+ move[4].horiz=0;      
+ 
+ move[5].vert=1;    // 남서
+ move[5].horiz=-1;     
+ 
+ move[6].vert=0;    // 서 
+ move[6].horiz=-1;     
+ 
+ move[7].vert=-1;   // 북서
+ move[7].horiz=-1;
+ 
+ path(maze);  // 미로찾기 
+ 
+}
+
+void path(int (*maze)[MAX])
+{ 
+ int i, j, top,row, col, next_row, next_col, dir = 1, mark[MAX][MAX], found = FALSE;
+ element position;
+ 
+ for(i = 0; i < MAX; i++)
+ { 
+  for(j = 0; j < MAX; j++)  
+  { 
+   mark[i][j]=0;  // mark 값 초기화 
+  }
+ }
+ 
+ mark[1][1]=1;    // 시작 위치를 1로 표시(처음으로 돌아오는 것을 방지)
+ top=0;
+ 
+ stack[0].row =1; stack[0].col =1; stack[0].dir=1;  // 스택 초기값 설정
+ 
+ while(top > -1 && !found)
+ {
+  position = del(&top); 
+  row = position.row; col = position.col; dir = position.dir;
+  
+  while(dir < 8 && !found) 
+  {  
+   next_row = row + move[dir-1].vert;  // 다음 위치를 지정
+   next_col = col + move[dir-1].horiz;  // 다음 위치를 지정
+      
+   // 출구를 찾았을 경우
+   if(next_row == ROW-2 && next_col == COL-2)
+   { 
+    found = TRUE;  
+   }
+   
+   // 가리킨 방향이 0일 경우 이동
+   else if (!maze[next_row][next_col] && !mark[next_row][next_col]) 
+   {
+    mark[next_row][next_col] = 1; 
+    position.row = row; position.col=col; position.dir= ++dir;
+    add(&top,position); 
+    row = next_row; col = next_col; dir =0; 
+   }
+    
+   // 0이 있는 방향이 있을 때까지 dir로 방향을 수정
+   else
+   {
+    ++dir;  
+   }
+  }
+ }            
+ 
+ // 출구를 찾았을 경우
+ if(found)  
+ { 
+  printf("\nThe path is : \n");
+  printf("row  col\n");
+  
+  for (i = 0; i <= top; i++)
+  { 
+   printf("%2d%5d\n",stack[i].row,stack[i].col); 
+  }
+  
+  printf("%2d%5d\n",row,col);
+  printf("%2d%5d\n",ROW-2,COL-2);
+ }            
+ 
+ // 출구를 찾지 못했을 경우
+ else printf("\nThe maze does not have path\n");
+}
+
+element del(int *top)
+{
+ if(*top==-1)       // TOP이 -1이면 스택이 없음을 표시
+ {
+  printf("stack is empty.\n");               
+ }            
+ return stack[(*top)--];     // 스택의 값을 제거
+}
+
+void add(int *top, element thing)
+{ 
+ if(*top>=MAX_STACK_SIZE-1)    // 스택보다 더 많은 값이 들어갔을 경우
+ {
+  printf("Stack is Full\n");
+  exit(1); 
+ }
+ stack[++*top]=thing;     // 스택에 값을 추가
+ 
+}
