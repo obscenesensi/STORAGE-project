@@ -1,0 +1,669 @@
+#include <stdio.h>
+#include <conio.h>
+#include <Windows.h>
+
+#define none 0
+#define black 1
+#define white 2
+#define special_black 4
+#define special_white 5
+
+typedef struct node{
+int x;
+int y;
+struct node *next;
+struct node *prev;
+}node;
+
+void *make_turn(int, int, node *);
+void *save(int, node *);
+void *load(node *);
+
+main(){
+
+char key;
+int board[19][19];
+int count = 0, j, i = 0;
+node *plist = NULL, *temp = NULL;
+//int bcnt = 0, wcnt = 0;
+//int bmax = 0, wmax = 0;
+
+for (i = 0; i < 19; i++){
+for (j = 0; j < 19; j++){
+board[i][j] = 0;
+}
+}
+
+while (1){
+system("cls");
+
+//기본 현재 상황 출력
+for (i = 0; i < 19; i++){
+for (j = 0; j < 19; j++){
+if (board[i][j] % 3 == black){
+printf("B");
+}
+else if (board[i][j] % 3 == white){
+printf("W");
+}
+else{
+printf("+");
+}
+}
+printf("\n");
+}
+
+//좌표 입력 받기
+if (count % 2 == 0){
+do{
+do{
+printf("Input location to put Black Stone in 1 ~ 19 : ");
+scanf("%d %d", &i, &j);
+} while (!(i > 0 && i < 20 && j > 0 && j < 20));
+i = i - 1;
+j = j - 1;
+if (board[i][j] != none){
+printf("There is already other stone in there\n\n");
+}
+} while (!(board[i][j] == none));
+
+board[i][j] = black;
+}
+else{
+do{
+do{
+printf("Input location to put White Stone in 1 ~ 19 : ");
+scanf("%d %d", &i, &j);
+} while (!(i > 0 && i < 20 && j > 0 && j < 20));
+i = i - 1;
+j = j - 1;
+if (board[i][j] != none){
+printf("There is already other stone in there\n\n");
+}
+} while (!(board[i][j] == none));
+board[i][j] = white;
+}
+
+//노드 만들기
+count = count + 1;
+if (plist == NULL){
+}
+else if (plist->next != NULL){
+temp = plist;
+while (plist->next != NULL){
+plist = plist->next;
+}
+while (temp != plist){
+plist = plist->prev;
+free(plist->next);
+}
+temp = NULL;
+}
+else{
+}
+
+plist = make_turn(i, j, plist);
+system("cls");
+
+//기본 현재 상황 출력
+for (i = 0; i < 19; i++){
+for (j = 0; j < 19; j++){
+if (board[i][j] % 3 == black){
+printf("B");
+}
+else if (board[i][j] % 3 == white){
+printf("W");
+}
+else{
+printf("+");
+}
+}
+printf("\n");
+}
+
+if (count >= 361){
+printf("There is no empty place to input stone\n\n");
+return 0;
+}
+else {
+undo:
+printf("\nS. save, L. load, U. undo, R. cancle undo, C.continue\n");
+key = _getch();
+
+switch (key)
+{
+case 's':
+plist = save(count, plist);
+system("cls");
+
+//기본 현재 상황 출력
+for (i = 0; i < 19; i++){
+for (j = 0; j < 19; j++){
+if (board[i][j] % 3 == black){
+printf("B");
+}
+else if (board[i][j] % 3 == white){
+printf("W");
+}
+else{
+printf("+");
+}
+}
+printf("\n");
+}
+printf("\n\nGame Saved\n\n");
+goto undo;
+break;
+case 'l':
+//초기화
+for (i = 0; i < 19; i++){
+for (j = 0; j < 19; j++){
+board[i][j] = none;
+}
+}
+
+while (plist->prev != NULL){
+plist = plist->prev;
+free(plist->next);
+}
+plist = NULL;
+
+plist = load(plist);
+count = 0;
+
+while (plist->prev != NULL){
+plist = plist->prev;
+}
+while (plist->next != NULL){
+i = plist->x;
+j = plist->y;
+if (count % 2 == 0){
+board[i][j] = black;
+}
+else{
+board[i][j] = white;
+}
+count = count + 1;
+plist = plist->next;
+}
+
+i = plist->x;
+j = plist->y;
+if (count % 2 == 0){
+board[i][j] = black;
+}
+else{
+board[i][j] = white;
+}
+
+count = count + 1;
+system("cls");
+
+//기본 현재 상황 출력
+for (i = 0; i < 19; i++){
+for (j = 0; j < 19; j++){
+if (board[i][j] % 3 == black){
+printf("B");
+}
+else if (board[i][j] % 3 == white){
+printf("W");
+}
+else{
+printf("+");
+}
+}
+printf("\n");
+}
+goto undo;
+break;
+case 'u':
+if (plist->prev == NULL){
+printf("There is no previous turn\n");
+}
+else{
+i = plist->x;
+j = plist->y;
+board[i][j] = none;
+plist = plist->prev;
+count = count - 1;
+}
+system("cls");
+
+//기본 현재 상황 출력
+for (i = 0; i < 19; i++){
+for (j = 0; j < 19; j++){
+if (board[i][j] % 3 == black){
+printf("B");
+}
+else if (board[i][j] % 3 == white){
+printf("W");
+}
+else{
+printf("+");
+}
+}
+printf("\n");
+}
+goto undo;
+break;
+case 'r':
+if (plist->next == NULL){
+printf("There is no next turn\n");
+}
+else{
+plist = plist->next;
+i = plist->x;
+j = plist->y;
+if (count % 2 == 0){
+board[i][j] = black;
+}
+else{
+board[i][j] = white;
+}
+count = count + 1;
+}
+system("cls");
+
+//기본 현재 상황 출력
+for (i = 0; i < 19; i++){
+for (j = 0; j < 19; j++){
+if (board[i][j] % 3 == black){
+printf("B");
+}
+else if (board[i][j] % 3 == white){
+printf("W");
+}
+else{
+printf("+");
+}
+}
+printf("\n");
+}
+goto undo;
+break;
+default:
+break;
+}
+
+//do{
+// printf("\n\n1. arr/low Black White stone print\n2. printing maximum continued stone\n3. printing maximum cross stone\n4. switching stone in location\n0. continue to input stone\n\n");
+// scanf("%d", &i);
+// switch (i)
+// {
+// case 1: //오목판의 가로, 세로줄에 대해 흰돌의 개수와 검은돌의 개수를 출력
+// system("cls");
+//
+// //기본 현재 상황 출력 복사 및 응용
+// //가로
+// for (i = 0; i < 19; i++){
+// bcnt = 0;
+// wcnt = 0;
+// for (j = 0; j < 19; j++){
+// if (board[i][j] % 3 == black){
+// printf("B");
+// bcnt = bcnt + 1;
+// }
+// else if (board[i][j] % 3 == white){
+// printf("W");
+// wcnt = wcnt + 1;
+// }
+// else{
+// printf("+");
+// }
+// }
+// printf(" B : %d, W : %d", bcnt, wcnt);
+// printf("\n");
+// }
+// //세로
+// for (i = 0; i < 19; i++){
+// bcnt = 0;
+// wcnt = 0;
+// for (j = 0; j < 19; j++){
+// if (board[j][i] % 3 == black){
+// bcnt = bcnt + 1;
+// }
+// else if (board[j][i] % 3 == white){
+// wcnt = wcnt + 1;
+// }
+// else{
+// }
+// }
+// printf("%dline. B : %d, W : %d",i + 1, bcnt, wcnt);
+// printf("\n");
+// }
+//
+// i = 1;
+// break;
+// case 2: //오목판의 가로, 세로줄에 대해 가장 많이 연속으로 놓여진 돌의 종류와 개수 출력
+// system("cls");
+//
+// //가로
+// for (i = 0; i < 19; i++){
+// bcnt = 0;
+// wcnt = 0;
+// bmax = 0;
+// wmax = 0;
+// for (j = 0; j < 19; j++){
+// if (board[i][j] % 3 == black){
+// printf("B");
+// bcnt = bcnt + 1;
+// wcnt = 0;
+// if (bcnt > bmax){
+// bmax = bcnt;
+// }
+// }
+// else if (board[i][j] % 3 == white){
+// printf("W");
+// wcnt = wcnt + 1;
+// bcnt = 0;
+// if (wcnt > wmax){
+// wmax = wcnt;
+// }
+// }
+// else{
+// bcnt = 0;
+// wcnt = 0;
+// printf("+");
+// }
+// }
+// if (bmax>0 || wmax > 0){
+// if (bmax > wmax){
+// printf(" B : %d", bmax);
+// }
+// else if (bmax < wmax){
+// printf(" W : %d", wmax);
+// }
+// else{
+// printf(" B : %d, W : %d", bmax, wmax);
+// }
+// }
+// printf("\n");
+// }
+// //세로
+// for (i = 0; i < 19; i++){
+// bcnt = 0;
+// wcnt = 0;
+// bmax = 0;
+// wmax = 0;
+// for (j = 0; j < 19; j++){
+// if (board[j][i] % 3 == black){
+// bcnt = bcnt + 1;
+// wcnt = 0;
+// if (bcnt > bmax){
+// bmax = bcnt;
+// }
+// }
+// else if (board[j][i] % 3 == white){
+// wcnt = wcnt + 1;
+// bcnt = 0;
+// if (wcnt > wmax){
+// wmax = wcnt;
+// }
+// }
+// else{
+// bcnt = 0;
+// wcnt = 0;
+// }
+// }
+//
+// if (bmax>0 || wmax > 0){
+// if (bmax > wmax){
+// printf("%dline B : %d", i + 1, bmax);
+// printf("\n");
+// }
+// else if (bmax < wmax){
+// printf("%dline W : %d", i + 1, wmax);
+// printf("\n");
+// }
+// else{
+// printf("%dline. B : %d, W : %d", i + 1, bmax, wmax);
+// printf("\n");
+// }
+// }
+// }
+//
+// i = 2;
+// break;
+// case 3: //오목판의 대각선 줄에 대하여, 그 줄에서 가장 많이 연속으로 놓여진 돌의 종류와 개수 출력
+// system("cls");
+//
+// //기본 현재 상황 출력
+// for (i = 0; i < 19; i++){
+// for (j = 0; j < 19; j++){
+// if (board[i][j] % 3 == black){
+// printf("B");
+// }
+// else if (board[i][j] % 3 == white){
+// printf("W");
+// }
+// else{
+// printf("+");
+// }
+// }
+// printf("\n");
+// }
+//
+// bcnt = 0;
+// wcnt = 0;
+// bmax = 0;
+// wmax = 0;
+//
+// //우측 상단 역슬래쉬 방향
+// for (i = 18; i > 0 ; i--){
+// for (j = 0; j <= 18 - i; j++){
+// if (board[i+j][j] % 3 == black){
+// bcnt = bcnt + 1;
+// wcnt = 0;
+// if (bcnt > bmax){
+// bmax = bcnt;
+// }
+// }
+// else if (board[i+j][j] % 3 == white){
+// wcnt = wcnt + 1;
+// bcnt = 0;
+// if (wcnt > wmax){
+// wmax = wcnt;
+// }
+// }
+// else{
+// bcnt = 0;
+// wcnt = 0;
+// }
+// }
+// if (bmax>0 || wmax > 0){
+// if (bmax > wmax){
+// printf(" B : %d\n", bmax);
+// }
+// else if (bmax < wmax){
+// printf(" W : %d\n", wmax);
+// }
+// else{
+// printf(" B : %d, W : %d\n", bmax, wmax);
+// }
+// }
+// }
+//
+// //중앙 역슬래쉬 방향
+// for (i = 0; i < 19; i++){
+// if (board[i][i] % 3 == black){
+// bcnt = bcnt + 1;
+// wcnt = 0;
+// if (bcnt > bmax){
+// bmax = bcnt;
+// }
+// }
+// else if (board[i][i] % 3 == white){
+// wcnt = wcnt + 1;
+// bcnt = 0;
+// if (wcnt > wmax){
+// wmax = wcnt;
+// }
+// }
+// else{
+// bcnt = 0;
+// wcnt = 0;
+// }
+// }
+// if (bmax>0 || wmax > 0){
+// if (bmax > wmax){
+// printf(" B : %d\n", bmax);
+// }
+// else if (bmax < wmax){
+// printf(" W : %d\n", wmax);
+// }
+// else{
+// printf(" B : %d, W : %d\n", bmax, wmax);
+// }
+// }
+//
+// //좌측 하단 역슬래쉬 방향
+// for (i = 1; i < 19; i++){
+// for (j = 0; j < 19 - i; j++){
+// if (board[i + j][j] % 3 == black){
+// bcnt = bcnt + 1;
+// wcnt = 0;
+// if (bcnt > bmax){
+// bmax = bcnt;
+// }
+// }
+// else if (board[i + j][j] % 3 == white){
+// wcnt = wcnt + 1;
+// bcnt = 0;
+// if (wcnt > wmax){
+// wmax = wcnt;
+// }
+// }
+// else{
+// bcnt = 0;
+// wcnt = 0;
+// }
+// }
+// if (bmax>0 || wmax > 0){
+// if (bmax > wmax){
+// printf(" B : %d\n", bmax);
+// }
+// else if (bmax < wmax){
+// printf(" W : %d\n", wmax);
+// }
+// else{
+// printf(" B : %d, W : %d\n", bmax, wmax);
+// }
+// }
+// }
+//
+// i = 3;
+// break;
+// case 4: //2번에서 모든 가로 줄에 대해서는 가장 많이 연속으로 놓여진 돌의 좌표 + 다른 모양으로 표시
+//
+//
+// i = 4;
+// break;
+// default:
+//
+// i = 0;
+// break;
+// }
+//} while (i > 0 && i < 5);
+};
+}
+
+return 0;
+}
+
+void *make_turn(int a, int b, node *p){
+
+node *pnew = NULL;
+pnew = (node *)malloc(sizeof(node));
+
+if (!pnew){
+printf("Memmory Error!!\n");
+exit(1);
+}
+else{
+pnew->x = a;
+pnew->y = b;
+
+if (p == NULL){
+pnew->prev = NULL;
+pnew->next = NULL;
+p = pnew;
+}
+else{
+p->next = pnew;
+pnew->prev = p;
+pnew->next = NULL;
+p = pnew;
+}
+}
+
+return p;
+}
+
+void *save(int count, node *p){
+
+if (count == 1){
+FILE *fp;
+fp = fopen("save.txt", "w");
+
+fprintf(fp, "%d\n", count);
+fprintf(fp, "%d %d\n", p->x, p->y);
+fclose(fp);
+}
+else{
+while (p->prev != NULL){
+p = p->prev;
+}
+
+FILE *fp;
+fp = fopen("save.txt", "w");
+
+fprintf(fp, "%d\n", count);
+
+do{
+fprintf(fp, "%d %d\n", p->x, p->y);
+p = p->next;
+} while (p->next != NULL);
+fprintf(fp, "%d %d\n", p->x, p->y);
+
+fclose(fp);
+}
+
+return p;
+}
+
+void *load(node *p){
+FILE *fp;
+int count;
+
+fp = fopen("save.txt", "r");
+fscanf(fp, "%d", &count);
+
+for (int i = 0; i < count; i++){
+node *pnew;
+pnew = (node *)malloc(sizeof(node));
+
+if (!pnew){
+printf("Memmory Error!!\n");
+exit(1);
+}
+else{
+fscanf(fp, "%d %d", &pnew->x, &pnew->y);
+
+if (p == NULL){
+pnew->prev = NULL;
+pnew->next = NULL;
+p = pnew;
+}
+else{
+p->next = pnew;
+pnew->prev = p;
+pnew->next = NULL;
+p = pnew;
+}
+}
+}
+
+fclose(fp);
+
+return p;
+}
