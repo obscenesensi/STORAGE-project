@@ -1,0 +1,248 @@
+#include <stdio.h>
+#include <conio.h>
+#include <Windows.h>
+
+#define b 1
+#define w -1
+#define n 0
+
+void draw_board(int);
+void stone_check(int);
+void calculate_stone(int, int, int);
+//calculate_stone 돌 계산을 위한 전역변수
+int sum = 0, max = 0, blank = 0, before_board = 0;
+
+int main(void){
+int x = 0, y = 0;
+int turn = 0;
+int board[19][19] = {
+{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, //01
+{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, //02
+{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, //03
+{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, //04
+{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, //05
+{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, //06
+{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, //07
+{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, //08
+{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, //09
+{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, //10
+{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, //11
+{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, //12
+{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, //13
+{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, //14
+{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, //15
+{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, //16
+{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, //17
+{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, //18
+{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } //19
+};
+
+while (1)
+{
+system("cls");
+draw_board(board);
+turn = turn + 1;
+
+//좌표입력
+do{
+printf("input position [>],[V] ( 1 ~ 19 ) : ");
+scanf("%d %d", &x, &y);
+x--;
+y--;
+if (board[x][y] != 0){
+printf("There is another stone !!\n\n");
+x = 100;
+y = 100;
+}
+else{
+}
+} while (!(x > -1 && x<19 && y>-1 && y < 19));
+//홀수면 검은돌, 짝수면 흰돌 처리
+if (turn % 2 == b){
+board[x][y] = b;
+}
+else{
+board[x][y] = w;
+}
+
+stone_check(board);
+}
+
+return 0;
+}
+
+void draw_board(int board[][19]){
+for (int i = 0; i < 19; i++){
+for (int j = 0; j < 19; j++){
+if (board[i][j] == n){
+printf(" .");
+}
+else if (board[i][j] == b){
+printf(" X");
+}
+else if (board[i][j] == w){
+printf(" O");
+}
+else{
+printf("\n\nPrinting Board ERROR !!\n\n");
+exit(1);
+}
+}
+printf("\n");
+}
+}
+
+void stone_check(int board[][19]){
+
+//가로 체크
+for (int i = 0; i < 19; i++)
+{
+for (int j = 0; j < 19; j++)
+{
+calculate_stone(board, i, j);
+}
+}
+
+//세로 체크
+for (int j = 0; j < 19; j++)
+{
+for (int i = 0; i < 19; i++)
+{
+calculate_stone(board, i, j);
+}
+}
+
+//왼쪽->오른쪽 대각선 체크
+int i = 18, j = 0, count = 1;
+while (count != 0)
+{
+if (i > 18 || j > 18)
+{
+if (i > j)
+{
+count = count + 1;
+i = i - count - 1;
+j = 0;
+}
+else
+{
+count = count - 1;
+j = j - count - 1;
+i = 0;
+}
+}
+else
+{
+calculate_stone(board, i, j);
+i++;
+j++;
+}
+}
+
+//오른쪽->왼쪽 대각선 체크
+count = 0;
+while (count < 37)
+{
+if (count < 19)
+{
+i = 0;
+j = count;
+}
+else if (count > 18)
+{
+i = count - 18;
+j = 18;
+}
+else
+{
+printf("Right -> Left arrow default setting ERROR!!\n\n");
+}
+
+while (!(i > count || i > 18))
+{
+calculate_stone(board, i, j);
+i++;
+j--;
+}
+
+count++;
+}
+}
+
+void calculate_stone(int board[][19], int i, int j){
+
+if (board[i][j] == n)
+{ //빈칸을 만났을 때
+if (before_board == n)
+{ //이전 칸이 빈칸일 경우
+sum = 0;
+max = 0;
+blank = 0;
+before_board = board[i][j];
+}
+else
+{ //이전 칸에 돌이 있을 경우
+if (blank == 0)
+{
+blank++;
+max = 0;
+before_board = board[i][j];
+}
+else if (blank == 1)
+{
+sum = max;
+blank = 1;
+max = 0;
+before_board = board[i][j];
+}
+else
+{
+printf("\n\nBlank_Counter ERROR !!\n\n");
+exit(1);
+}
+}
+}
+else
+{ //돌을 만났을 때
+if ((before_board > 0 && board[i][j] < 0) || (before_board < 0 && board[i][j] > 0))
+{ //이전 칸이 다른 돌
+sum = board[i][j];
+max = board[i][j];
+blank = 0;
+before_board = board[i][j];
+}
+else if ((before_board > 0 && board[i][j] > 0) || (before_board < 0 && board[i][j] < 0))
+{ //이전 칸이 같은 돌
+sum = sum + board[i][j];
+max = max + board[i][j];
+before_board = board[i][j];
+}
+else
+{ //이전 칸이 빈칸
+if ((sum > 0 && board[i][j] < 0) || (sum < 0 && board[i][j] > 0) || sum == 0)
+{ //빈칸 이전의 돌이 현재 돌과 다른 돌일 경우 + sum이 0일 경우
+blank = 0;
+sum = board[i][j];
+max = board[i][j];
+before_board = board[i][j];
+}
+else if ((sum > 0 && board[i][j] > 0) || (sum < 0 && board[i][j] < 0))
+{ //빈칸 이전의 돌이 현재 돌과 같은 돌일 경우
+sum = sum + board[i][j];
+max = max + board[i][j];
+before_board = board[i][j];
+}
+else
+{ //ERROR
+printf("\n\nSum != board[i][j] ERROR !!\n\n");
+exit(1);
+}
+}
+}
+if (sum > 2 || sum < -2)
+{ //3개 이상인 위치 좌표 출력
+printf("\nAlert!! (%d,%d) is Danger!!\nPress Any Key to Continue...\n", i + 1, j + 1);
+getch();
+}
+else{}
+}
