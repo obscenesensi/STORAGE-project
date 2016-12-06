@@ -1,0 +1,38 @@
+<%@ page language="java" contentType="text/html; charset=EUC-KR"
+    pageEncoding="EUC-KR"%>
+
+    
+<%@ page import="java.sql.*" %>
+
+<%
+	Connection conn = null;
+	PreparedStatement pstmt = null;
+	String query = null;
+	ResultSet rs = null;
+	
+	String serverIP = "203.230.19.154";
+	String port = "3306";
+	String dbName = "hp2015";
+	String dbid = "hpuser";
+	String dbpw = "hp2015-2";
+	
+	try {
+		String jdbcUrl = "jdbc:mysql://"
+				+serverIP+":"+port+"/"+dbName;
+		Class.forName("com.mysql.jdbc.Driver");
+		
+		conn =
+				DriverManager.getConnection(jdbcUrl, dbid, dbpw);
+	/*	
+		if(conn != null)
+			out.print("DB connected.");
+		
+		else
+			out.print("Connection fail.");
+	*/
+	
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+
+%>
