@@ -1,0 +1,33 @@
+    static public void Q5()
+    {
+        System.out.print(" 두 수를 입력하시오. : ");
+        int col = scan.nextInt(); // 입력 범위: 3 ~ 8
+        int row = scan.nextInt(); // 입력 범위: 3 ~ 8
+
+        for(int c = 0; c < col; c++) {
+            int 행별첫열의값 = 0;
+
+            // 홀수행과 짝수행을 구별하기 위한 구문
+            if( (c & 1) == 0 ) {
+                // 홀수행 { 5, 5 입력시, 1, 11, 21 }
+
+                // c, row, 숫자 상수의 조합; - 짝수행을 참고
+                //
+                행별첫열의값 =  row * c; /* 0 대신 알맞은 코드를 작성하시오. */
+                for( int r = 1; r <= row; r++ ) {
+                    System.out.format(" %2d ", 행별첫열의값 + r);
+                }
+            }
+            else {
+                // 짝수행 { 5, 5 입력시, 10, 20 }
+
+                행별첫열의값 = row * (c + 1);
+                for( int r = 0; r < row; r++ ) {
+                    // 짝수행은 열간 어떻게 변화하고 있나? - 홀수 행을 참고
+                    // 
+                    System.out.format(" %2d ", 행별첫열의값 - r); /* 0 대신 알맞은 코드를 작성하시오. */
+                }
+            }
+            System.out.println();
+        }
+    }
