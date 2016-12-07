@@ -1,0 +1,27 @@
+   static public void Q6()
+    {
+        int coinUnit[] = { 500, 100, 50, 10 };
+        int money; // 거스름돈
+        int num; // 동전 단위당 환전할 동전 개수
+
+        while( true ) {
+            System.out.print("입력 범위: 1 ~ 10억\n>> 수 입력 : ");
+            // 입력 범위: 10 ~ 1억
+            money = scan.nextInt();
+            if( (money%10) != 0 )
+                System.out.println("\t10의 배수가 아닙니다. 다시 입력해주세요.");
+            else
+                break;
+        }
+
+        // moeny를 배열 coinUnit에 담겨져 있는 동전단위 만큼 반복해야 함.
+        // 그래야 입력 받은 거스름돈을 각 동전 단위별로 개수를 확인 할 수 있음.
+        for( int i = 0; i < coinUnit.length; i++ ) { /* 조건식에 알맞은 코드를 작성하시오. */
+            //
+            // 거스름돈을 각 동전 단위로 나눠야 그 동전 단위가 몇 개 필요한지 알 수 있음
+            //
+            num = money / coinUnit[i]; /* 0 대신 알맞은 코드를 작성하시오. */
+            money %= coinUnit[i]; 
+            System.out.format(" %4d 원의 개수 : %3d\n", coinUnit[i], num);
+        }
+    }
