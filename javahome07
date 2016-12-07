@@ -1,0 +1,31 @@
+    static public void Q7()
+    {
+        int rand = (new java.util.Random()).nextInt(101);
+        int counter = 0, num = 0;
+
+        // System.in은 키보드를 의미함.
+        // 즉, 키보드로 부터 어떠한 값을 입력 받겠다.
+        Scanner scan = new Scanner(System.in);
+        while( true ) {
+            try{
+                System.out.format(" %3d번째 시도 : ", (counter + 1));
+                num = scan.nextInt();
+                counter++;
+
+                if( num == rand ) {
+                    System.out.format("\n\n정답!\n 시도횟수는 %d번 입니다.\n", counter);
+                    break;
+                } else if( num > rand ) {
+                    System.out.println("\t작은 수를 입력하세요.");
+                } else if( num < rand ) {
+                    System.out.println("\t더 큰 수를 입력하세요.");
+                }
+            }
+
+                catch( java.util.InputMismatchException e ) {
+                System.out.println("\t숫자만 입력하세요.");
+                scan.nextLine();
+            }
+        }
+    }
+}
