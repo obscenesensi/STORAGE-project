@@ -1,0 +1,10 @@
+static public void Q1()
+    {
+        for( int i = 1; i <= 9; i++ ) {
+            for( int j = 0; j < 8; j++ ) {
+                // i, j를 이용; 3*j + i 등과 같이
+                System.out.format(" %3d", i * (j+2)); /* 0 대신 다른 값을 넣으시오. */
+            }
+            System.out.println();
+        }
+    }
