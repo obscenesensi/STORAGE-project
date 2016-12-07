@@ -1,0 +1,24 @@
+    static public void Q2()
+    {
+        System.out.print("입력 범위: 1 ~ 1,000,000\n>> 수 입력 : ");
+        int num = scan.nextInt(); // 1 ~ 1,000,000까지 입력
+        int rev = 0; // 역수
+        int sum = 0;
+
+        while( num != 0 ) {
+            sum += (num % 10);
+            rev += (num % 10);
+            ///System.err.format(" %d, %d\n", sum, rev);
+
+            // 각 단계별 num을 어떻게 해야하나?
+            num /= 10; /* 알맞은 코드를 작성하시오. */
+            if( num == 0 ) {
+                break;
+            } else {
+                // 역수; 각 단계별 곱해야 할 수
+                rev = rev * 10; /* 알맞은 코드를 입력하세요. */
+            }
+        }
+
+        System.out.format(" 역순: %d, 합계: %3d\n", rev, sum);
+    }
