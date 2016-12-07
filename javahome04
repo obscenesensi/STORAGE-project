@@ -1,0 +1,23 @@
+    static public void Q4()
+    {
+        System.out.print("입력 범위: 3 ~ 7\n>> 수 입력 : ");
+        int num = scan.nextInt(); // 3~7 사이의 숫자들만 입력 
+        int tri[] = new int[(num*(num+1)) >> 1]; // 삼각수; 검색
+        int count = 1;
+
+        for( int i = 0; i < num; i++ ) {
+            for( int j = 0; j <= i; j++, count++ ) {
+                tri[count-1] = count;
+            }
+        }
+
+        // 역순으로 출력하려면 배열 tri의 마지막 인덱스를 count에 저장해야 함.
+        count = tri.length-1; /* 0 대신 알맞은 코드를 작성하시오. */
+        for( int i = 0; i < num; i++ ) {
+            for( int j = num - i; j > 0; j-- ) {
+                // 배열 tri의 인덱스를 점차 감소시켜야 함.
+                // 한 줄이 될 수도 있고, 두 줄이 될 수도 있음
+                System.out.format(" %2d ", tri[count--]); /* 0 대신 알맞은 코드를 작성하시오. */
+            }
+            System.out.println();
+        }
