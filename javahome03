@@ -1,0 +1,46 @@
+   static public void Q3()
+    {
+        int max_index = 0; // 최고값이 저장되어 있는 인덱스
+        int ar[] = new int[6];
+
+        // 중복 발생 없이 int 타입의 변수 6개를 입력 받음
+        for( int i = 0; i < ar.length; i++ ) {
+            // 1~50 사이의 수를 입력 받기 위한 방법
+            // 랜덤으로 
+            ar[i] = (new java.util.Random()).nextInt(50) + 1;
+            // 직접 입력
+            //ar[i] = scan.nextInt();
+
+            if( i >= 1 ) { // 중복 검사는 두 번째 요소부터 실시
+                for( int j = 0; j < i; j++ ) {
+                    if( ar[j] == ar[i] ) {
+                        i--;
+                        System.out.println(" 중복이므로, 다시 입력 받습니다.\n");
+                        continue;
+                    }
+                }
+            }
+        }
+        System.out.format("\n %3d, %3d, %3d", ar[0], ar[1], ar[2]);
+        System.out.format(", %3d, %3d, %3d\n", ar[3], ar[4], ar[5]);
+
+        // @입력예시:
+        //           4, 2, 1, 3, 5, 6 <= 실제값
+        //           0, 1, 2, 3, 4, 5 <= 인덱스
+        // ar[0]은 4, ar[4]는 5임.
+        //
+        // @설명: max_index의 값이 변경되는 시점
+        //  반복문은 0부터 5까지 총 6번 반복되며, 
+        //  최고값이 저장되어 있는 인덱스를 max_index에 저장
+        // 
+        for( int i = 1; i < ar.length; i++ ) {
+            /* 0 < 1 대신 알맞은 코드를 작성하시오. */
+            // 조건문 안에 있는 주석으로 처리된 출력문을 참고
+            if( ar[max_index] < ar[i] ) {
+                //System.err.format(" ar[%d] = %d, ar[%d] = %d\n", max_index, ar[max_index], i, ar[i]);
+                max_index = i; /* 0 대신 알맞은 코드를 작성하시오. */
+            }
+        }
+
+        System.out.format("\n %d번째 요소의 값이 최대값 : %3d입니다.\n", (max_index+1), ar[max_index]);
+    }
