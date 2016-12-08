@@ -1,0 +1,245 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <mutex>
+#include <future>
+#include <chrono>
+#include <random>
+#include <utility>
+#include <assert.h>
+
+
+using namespace std;
+
+
+class SharedCounterBase
+{
+public:
+    SharedCounterBase()
+        :shared_counter_(1)
+    {}
+
+    void inc_counter()
+    {
+        shared_counter_.fetch_add(1);
+    }
+
+    void dec_counter()
+    {
+        if(shared_counter_.fetch_sub(1) == 1)
+        {
+            assert(shared_counter_.load() == 0);
+            this->destroy();
+        }
+    }
+
+    uint64_t use_count() const
+    {
+        return shared_counter_.load();
+    }
+
+    virtual ~SharedCounterBase() = default;
+
+    virtual void destroy() = 0;
+private:
+    SharedCounterBase(const SharedCounterBase& ) = delete;
+    SharedCounterBase& operator=(const SharedCounterBase& ) = delete;
+
+    atomic<uint64_t> shared_counter_;
+};
+
+
+template<class T>
+class DefaultSharedCounter: public SharedCounterBase
+{
+public:
+    explicit DefaultSharedCounter(T* ptr)
+        :SharedCounterBase(),
+        ptr_(ptr)
+    {}
+
+    virtual void destroy() override
+    {
+        delete ptr_;
+    }
+private:
+    T* ptr_;
+};
+
+
+template<class T, class D>
+class SharedCounterWithDeleter: public SharedCounterBase
+{
+public:
+    SharedCounterWithDeleter(T* ptr, D deleter)
+        :ptr_(ptr),
+        deleter_(deleter)
+    {}
+
+    virtual void destroy() override
+    {
+        deleter_(ptr_);
+    }
+private:
+    T* ptr_;
+    D deleter_;
+};
+
+
+template<class T>
+class SharedPtr
+{
+public:
+    SharedPtr()
+        :ptr_(nullptr),
+        ctrl_(nullptr)
+    { }
+
+    template<class P, class = typename enable_if<is_convertible<P*, T*>::value>::type>
+        explicit SharedPtr(P* ptr)
+        :ptr_(ptr),
+        ctrl_(new DefaultSharedCounter<P>(ptr))
+    { }
+
+    SharedPtr(const SharedPtr& rhs)
+        :ptr_(rhs.ptr_),
+        ctrl_(rhs.ctrl_)
+    {
+        if(ctrl_) ctrl_->inc_counter();
+    }
+
+    template<class Y, class = typename enable_if<
+        is_convertible<Y*, T*>::value>::type>
+    SharedPtr(const SharedPtr<Y>& rhs)
+        :ptr_(rhs.ptr_),
+        ctrl_(rhs.ctrl_)
+    {
+        if(ctrl_) ctrl_->inc_counter();
+    }
+
+    template<class Y, class = typename enable_if<
+        is_convertible<Y*, T*>::value>::type>
+    SharedPtr& operator=(const SharedPtr<Y>& rhs)
+    {
+        SharedPtr(rhs).swap(*this);
+        return *this;
+    }
+
+    SharedPtr& operator=(const SharedPtr& rhs)
+    {
+        SharedPtr(rhs).swap(*this);
+        return *this;
+    }
+
+    ~SharedPtr()
+    {
+        if(ctrl_) ctrl_->dec_counter();
+    }
+
+    void swap(SharedPtr& rhs)
+    {
+        if(&rhs != this)
+        {
+            using std::swap;
+            swap(ptr_, rhs.ptr_);
+            swap(ctrl_, rhs.ctrl_);
+        }
+    }
+
+    T* get() const
+    {
+        return ptr_;
+    }
+
+    uint64_t use_count() const
+    {
+        return ctrl_? ctrl_->use_count(): 0;
+    }
+
+    bool unique() const
+    {
+        return use_count() == 1;
+    }
+
+    operator bool() const
+    {
+        return !!ptr_;
+    }
+
+    typename add_lvalue_reference<T>::type operator*() const
+    {
+        return *ptr_;
+    }
+
+    T* operator->() const
+    {
+        return ptr_;
+    }
+private:
+    template<class Y> friend class SharedPtr;
+
+    T* ptr_;
+    SharedCounterBase* ctrl_;
+};
+
+
+class A
+{
+public:
+    ~A()
+    {
+        cout << "~A" << endl;
+    }
+
+    void foo()
+    {
+        cout << "A::foo" << endl;
+    }
+};
+
+class B
+{
+public:
+    ~B()
+    {
+        cout << "~B" << endl;
+    }
+};
+
+class D: public B
+{
+public:
+    ~D()
+    {
+        cout << "~D" << endl;
+    }
+};
+
+
+int main(int argc, char* argv[])
+{
+    SharedPtr<A> pa{new A()};
+    assert(pa.unique());
+    pa->foo();
+    (*pa).foo();
+
+    SharedPtr<D> pvd;
+
+    SharedPtr<D> pb{new D()};
+    {
+        SharedPtr<B> pbb = pb;
+        assert(pbb.use_count() == 2);
+
+        SharedPtr<void> pvb = pb;
+        assert(pvb.use_count() == 3);
+    }
+
+    {
+        SharedPtr<B> pi;
+        pi = SharedPtr<B>(new B);
+        assert(pi.use_count() == 1);
+
+        pi = SharedPtr<B>(new B);
+    }
+    assert(pb.unique());
+}
