@@ -1,0 +1,20 @@
+#include <stdio.h>
+#include <string.h>
+#define N 10
+
+typedef struct rec {
+	long id;
+	char name[50];
+} RECORD;
+
+main() {
+	RECORD recs[N];
+	int i;
+	for(i = 0; i < N; i++) {
+		recs[i].id = (long) i;
+		// copy a string into char array
+		strcpy(recs[i].name, "<record description>");
+		printf("%d\t%s\n", recs[i].id, recs[i].name);
+	}
+
+}
