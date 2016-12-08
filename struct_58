@@ -1,0 +1,9 @@
+const Student& operator = (const Student& instance) {
+    if(name != NULL)
+        delete[] name;
+    name = new char[10];
+    strcpy(name, instance.name);
+    sex = instance.sex;
+    age = instance.age;
+    totalPoint = instance.totalPoint;
+}
