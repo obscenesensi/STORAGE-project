@@ -1,0 +1,61 @@
+#include <iostream>
+
+#include <windows.h>
+
+#include "Memory.hpp"
+
+class Interval {
+public:
+    Interval () :
+        initial (GetTickCount ()) { }
+
+    unsigned getTick () {
+        return GetTickCount () - initial;
+    }
+
+private:
+    unsigned initial;
+};
+
+class Fps {
+public:
+    Fps () :
+        fpsCount (0), fpsCounter (0) { }
+
+    void update () {
+        ++fpsCount;
+
+        if (timeInterval.getTick() > 1000) {
+            fpsCounter = fpsCount;
+
+            fpsCount = 0;
+            timeInterval = Interval ();
+        }
+    }
+
+    unsigned getFps () {
+        return fpsCounter;
+    }
+
+private:
+    unsigned fpsCount, fpsCounter;
+    Interval timeInterval;
+};
+
+int main ()
+{
+    Fps fps;
+
+    while (true) {
+    const_ptr <std::string> cp (new std::string ("222"));
+    smart_ptr <std::string> sp (new std::string ("ddd2as"));
+
+    fps.update ();
+
+    std::cout << "fps: " << fps.getFps() << std::endl;
+    system ("cls");
+    }
+
+    return 0;
+}
+
