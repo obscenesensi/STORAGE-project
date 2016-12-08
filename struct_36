@@ -1,0 +1,37 @@
+#include <stdio.h>
+#include <string.h>
+
+// total = 4 + 1 + 4 + 4 = 13 bytes
+struct Student {
+    char* name;   // 4 bytes
+    char sex;   // 1 byte
+    int age;   // 4 bytes
+    float totalPoint; // 4 bytes
+
+    Student() {
+        name = new char[10];
+        strcpy(name, "sontx");
+        sex = 1;
+        age = 20;
+        totalPoint = 7.0;
+    }
+
+    Student(const char* stname, char stsex, int stage, float stpoint) {
+        name = new char[10];
+        strcpy(name, stname);
+        sex = stsex;
+        age = stage;
+        totalPoint = stpoint;
+    }
+    
+    ~Student() {
+        delete[] name;
+    }
+};
+
+int main() {
+    Student* student1 = new Student();
+    Student student2 = *student1;
+    delete student1;
+    printf("%s\n", student2.name);
+}
