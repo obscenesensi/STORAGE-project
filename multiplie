@@ -1,0 +1,14 @@
+#include <stdio.h>
+
+int main(void)
+{
+       int num1,num2;
+ 
+       printf("두 수를 입력하시오. (ex.8 4)\n>> ");
+       scanf("%d %d",&num1,&num2); //두수를 입력받음 
+ 
+      printf("두 수의 곱은 %d, 두 수를 나눈 몫은 %d 입니다.\n",num1*num2,num1/num2); 
+      //곱과 나눗셈을 출력
+ 
+      return 0;
+}
