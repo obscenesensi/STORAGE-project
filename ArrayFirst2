@@ -1,0 +1,9 @@
+#include <stdio.h>
+#include <string.h>
+int main()
+{
+    char name[20]="ITnG by LZena";
+    printf("문자열 길이 : %d \n",strlen(name));
+    printf("배열의 크기 : %d ",sizeof(name));
+    return 0;
+}
