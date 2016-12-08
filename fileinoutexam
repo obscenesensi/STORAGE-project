@@ -1,0 +1,18 @@
+#include <stdio.h>
+ 
+int main()
+{
+     char buffer[20];
+     char temp[20]="File I/O binary";
+      
+     FILE *handleWrite=fopen("Test.dat","wb");
+     fwrite(temp, 1, 13, handleWrite);
+     fclose(handleWrite);
+ 
+     FILE *handleRead=fopen("Test.dat","rb");
+     fread(buffer,1,13,handleRead);
+     printf("%s",buffer);
+     fclose(handleRead);
+ 
+     return 0;
+}
