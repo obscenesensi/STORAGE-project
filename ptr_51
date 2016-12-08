@@ -1,0 +1,195 @@
+/**
+ *  Examples to illustrate the basic usage of unique_ptr , as well as the 
+ *  the traps and best practice.
+ *  
+ *  pierrchen.blogspot.com
+ *
+ *  Reference: 
+ *  Scott Meyers <<Effective Modern C++>>
+ *  https://www.chromium.org/developers/smart-pointer-guidelines
+ *  https://herbsutter.com/2013/06/05/gotw-91-solution-smart-pointer-parameters/
+ */
+
+#include <cassert>
+#include <iostream>
+#include <memory>
+#include <vector>
+
+class Foo {
+public:
+    Foo(int i) : m(i) { std::cout << "Foo::Foo " << m << std::endl; }
+    ~Foo()     { std::cout << "Foo::~Foo " << m << std::endl; }
+    int value() { return m; }
+private:
+    int m;
+};
+
+/**
+ *  Problem or confuse when accepting and/or returning a raw pointer.
+ */
+
+// Who will take the ownership of the foo? How long
+// should we keep foo valid/alive?
+// Keeping it until the function returned is obviously not enough
+// since the callee may save the object somewhere and use it late.
+void useFooButNotSureOfTheLifeTimeOfFoo(Foo * foo) {
+}
+
+// Who will take the ownership of the returned foo?
+Foo* returnFoo() {
+    return new Foo(0);
+}
+
+/**
+ * Use unique_ptr as the input parameters and/or return value and 
+ * to indicate the ownership transfer.
+ */
+
+// If a function returns an unique_ptr, it means
+// the caller is should take care of the ownership of the
+// returned object.
+std::unique_ptr<Foo> makeFoo(int i ) {
+    return std::unique_ptr<Foo> {new Foo(i)};
+}
+
+// If a function takes a unique_ptr, it means it will take the 
+// ownership of the argument. It is also called sink function.
+// self documenting and compiler will enforce the caller to 
+// explicitly move the ownership to the callee.
+void consumeFoo(std::unique_ptr<Foo> foo) {
+    std::cout << __FUNCTION__ << " use " << foo->value() 
+        << std::endl;
+
+    // The Foo managed by foo will be destroyed when
+    // this function exit
+    std::cout << "Exit consumeFoo and "
+        "foo " << foo->value() << " will be destroyed soon." 
+        << std::endl;
+}
+
+// Use raw pointer when there is no ownership transfer
+void useFoo(Foo * foo) {
+    // use foo
+}
+
+// pass by (const) reference when the input can't be NULL
+void useFooReference(const Foo &foo) {
+
+}
+
+// Pass by unique_ptr reference, no ownership transfer.
+// Don't use it, use raw pointer or reference instead. 
+// see 4. Pass uniue_ptr by reference
+void useFooByUniPtrReference(const std::unique_ptr<Foo> &foo) {
+
+}
+
+/**
+ * Examples to illustrate the basic usage of unique_ptr and best practice.
+ */
+int main()
+{
+    {
+        // 1. Crete an unique_ptr object
+        std::unique_ptr<Foo> p1(new Foo(1));    // p1 owns Foo 1
+        std::unique_ptr<Foo> p2(makeFoo(2));    // p2 owns Foo 2
+
+        // 2. Pass the object and ownership to callee
+        // consumeFoo(p1);         // Compile Error : unique_ptr can't be copied (copy constructor deleted)
+        consumeFoo(std::move(p1)); // unique_ptr can only be moved, to indicate explicit ownership transfer
+        consumeFoo(makeFoo(3));    // Fine, makeFoo returns rvalue, consumeFoo will own it
+        // consumeFoo(new Foo(4)); // Compile Error : can't convert raw pointer to unique_ptr<Foo>
+        consumeFoo(std::unique_ptr<Foo> (new Foo(4))); // Fine, no need use std::move on temporary
+
+        Foo *p5 = new Foo(5);
+        consumeFoo(std::unique_ptr<Foo>(p5));   // Fine, we can wrap a normal pointer
+
+        // delete p5;                           // DONT! But nothing will prevent you from crashing yourself 
+                                                // if you want or you don't understand what you are writing.
+     
+        // 3. Stack allocated object and unique_ptr
+        // Don't do pass stack allocated object to unique_ptr.
+        // It compiles but will *CRASH* since when p5 out of scope
+        // it will try to delete it!
+        Foo foo5(5);
+        // std::unique_ptr<Foo> p5(&foo5);   
+
+        // 4. Pass unique_ptr reference
+        { // create a scope of p7
+            std::unique_ptr<Foo> p7(new Foo(7));
+            { 
+            useFooByUniPtrReference(p7);       // Not ownership transfer when passing unique_ptr reference
+                                               // Foo 7 will be destroyed in useFooByUniPtrReference
+            std::cout << "Foo 7 still alive after returning from useFooByUniPtrReference" << std::endl;
+            }
+        } // scope of p7
+
+        std::cout << "Foo 7 is just destroyed" << std::endl;
+
+        // It is ugly, and more importantly, it will crash when trying to
+        // pass a stack allocated object.
+        // useFooByUniPtrReference(std::unique_ptr<Foo>(&foo5));
+        
+        // Passing stack object is perfect fine with raw pointer.
+        useFoo(&foo5);
+    }
+
+    std::cout << "Foo 1 , 2 were destroyed before this line" << std::endl;
+
+    // 5. move object ownership
+    std::unique_ptr<Foo> p3(makeFoo(3));
+    {
+        // std::unique_ptr<Foo> p4 = p3           // Compile Error : again, unique_ptr can't be copied
+        std::unique_ptr<Foo> p4 = std::move(p3);  // now p4 owns Foo 3
+        p3 = std::move(p4);                       // ownership returns to p3
+        std::unique_ptr<Foo> pt = std::move(p3);  // move ownership of Foo3 to pt
+    }
+
+    // Foo3 is owned by pt and and since pt's scope ends in previous } ,
+    // Foo 3 will be destroyed before
+    std::cout << "Foo 3 is destroyed before this line" << std::endl;
+
+    // demonstrate managing object in container using unique_ptr
+    // and the usage of unique_ptr member functions: release, 
+    // reset and operator=
+    
+    // 6. put unique_ptr in container
+    { // begin of the scope of p10
+    std::unique_ptr<Foo> p10;                 // Don't worry about this line at the moment..
+    {// create a scope for foos
+        std::vector<std::unique_ptr<Foo> > foos;
+        {
+            std::cout << "Foo 5 ,6 will be created" << std::endl;
+            std::unique_ptr<Foo> p5(makeFoo(5));
+            std::unique_ptr<Foo> p6(makeFoo(6));
+            // foos.push_back(p5);            // compile error: unique_ptr can't copy (copy constructor deleted)
+            foos.push_back(std::move(p5));    // Foo 5 ownership transfer to foos
+            foos.push_back(std::move(p6));
+            foos.push_back(makeFoo(7));       // It is OK, since makeFoo(7) return an rvalue
+
+            Foo *pp5 = foos[0].release();     // [release] release ownership of Foo 5 (to return value)
+            delete pp5;                       // you have to delete it manually, otherwise, memory leak
+            assert(foos[0].get() == nullptr);
+
+            std::cout << "Foo 6 will be deleted" << std::endl;
+            foos[1].reset();                  // release ownership of Foo 6 and delete it
+            assert(foos[1].get() == nullptr);
+
+            std::cout << "Foo 8 will be created and Foo 7 will deleted" << std::endl;
+            foos[2].reset(new Foo(8));        // [reset] release ownership of Foo 7 and delete it, and own Foo 8
+
+            std::cout << "Foo 9 will be created and Foo 8 will deleted" << std::endl;
+            foos[2] = makeFoo(9);             // [operator=] same as foos[2].reset(makeFoo(9))
+
+            foos.push_back(makeFoo(10));     // add a new , see how it will be deleted
+
+            // we can 
+            p10 = std::move(foos[3]);        // move the ownership of Foo 10 out of the container
+                                             // Foo 10 will NOT be destroyed when foos out of scope
+                                             // since it is now owned by p10, which has longer lifetime.
+        }
+        std::cout << "All elements holds in Foos will be deleted, e,g Foo 9" << std::endl;
+    } // scope of foos ends here
+        std::cout << "Foo 10 will not be deleted before this line" << std::endl;
+    } // scope of p10 ends here
+}
