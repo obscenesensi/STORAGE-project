@@ -1,0 +1,12 @@
+#include <stdio.h>
+
+int main(int argc, char *argv[]) {
+
+	char foo = 'C';
+	char bar = 'A';
+
+	puts(foo - bar);
+
+	return 0;
+
+}
