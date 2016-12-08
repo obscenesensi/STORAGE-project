@@ -1,0 +1,31 @@
+#include <stdio.h>
+#include <string.h>
+
+int strend(char* s, char* t) {
+    int x;
+    int diff;
+    diff = strlen(s) - strlen(t);
+    if (diff < 0) {
+        return 0;
+    }
+    s += diff;
+    while (*s == *t && *s != '\0') {
+        ++s && ++t;
+    }
+    if (*s == '\0') {
+        return 1;
+    }
+    return 0;
+}
+
+int main(void) {
+    char *word1 = "Helloroflhello";
+    char *word2 = "roflhello";
+    char *word3 = "roflhello";
+    char *word4 = "I-Love-Boobies";
+
+    printf("%d\n", strend(word1, word2));
+    printf("%d\n", strend(word2, word3));
+    printf("%d\n", strend(word1, word4));
+    }
+    
