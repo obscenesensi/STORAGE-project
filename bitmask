@@ -1,0 +1,28 @@
+ 
+#include <stdio.h>
+ 
+int main(void)
+{
+             int num; //숫자
+             int mask = 1; //비교시 사용할 숫자
+             int i; //for문에서 사용할 숫자2
+ 
+             printf("임의의 정수 입력 : ");
+             scanf("%d",&num); //정수 입력
+             printf("입력한 수의 내부 저장 표현(이진수)는 다음과 같습니다.\n\n\t");
+ 
+             for(i=32;i>0;i--)  //for문
+             {
+                           (i%8)?printf(""):printf(" ");;
+                           printf("%d",(num & (mask << i-1))?1:0);
+             }
+ 
+             printf("\n\n");
+            
+             mask = 0xff; //하위 1바이트를 1로 설정
+             printf("값 %d를 하위 1바이트 값을 16진수로 출력 : %x\n",num,(num & mask));
+             mask = 0xffff; //하위 2바이트를 1로 설정
+             printf("값 %d를 하위 2바이트 값을 16진수로 출력 : %04x\n",num,(num & mask));
+ 
+             return 0;
+}
