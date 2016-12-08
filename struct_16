@@ -1,0 +1,115 @@
+#define __STDC_LIMIT_MACROS
+#define __STDC_CONSTANT_MACROS
+
+#include <llvm/IR/IRBuilder.h>
+#include <llvm/IR/LLVMContext.h>
+#include <llvm/IR/Module.h>
+#include <llvm/IR/Verifier.h>
+#include <llvm/Support/TargetSelect.h>
+#include <llvm/Support/TargetRegistry.h>
+#include <llvm/Target/TargetMachine.h>
+#include <llvm/ExecutionEngine/ExecutionEngine.h>
+#include <llvm/ExecutionEngine/GenericValue.h>
+#include <llvm/IR/LegacyPassManager.h>
+#include <llvm/Support/raw_os_ostream.h>
+#include <iostream>
+
+typedef struct {
+    float x;
+    float y;
+} cfloat;
+
+extern "C" float cabs(cfloat val)
+{
+    printf("%f, %f\n", val.x, val.y);
+    return sqrtf(val.x * val.x + val.y * val.y);
+}
+
+extern "C" float cabsptr(cfloat *val)
+{
+    printf("%f, %f\n", val->x, val->y);
+    return sqrtf(val->x * val->x + val->y * val->y);
+}
+
+int main(int argc, char **aargs)
+{
+    llvm::InitializeNativeTarget();
+    llvm::InitializeNativeTargetAsmPrinter();
+    llvm::InitializeNativeTargetAsmParser();
+
+    llvm::LLVMContext context;
+    llvm::IRBuilder<> builder(context);
+
+    auto i32t = llvm::Type::getInt32Ty(context);
+    auto f32t = llvm::Type::getFloatTy(context);
+    auto c8ptrt = llvm::Type::getInt8PtrTy(context);
+
+    auto cfloat_type = llvm::StructType::create(context, {f32t, f32t}, "cfloat");
+
+    auto machine = std::unique_ptr<llvm::TargetMachine>(llvm::EngineBuilder().selectTarget());
+
+    auto module = llvm::make_unique<llvm::Module>("Test_Module", context);
+    auto m = module.get();
+    m->setDataLayout(machine->createDataLayout());
+
+    std::vector<llvm::Type *> cabs_inputs = {cfloat_type};
+    auto cabsType = llvm::FunctionType::get(f32t, cabs_inputs, false);
+    auto cabsFunc = m->getOrInsertFunction("cabs", cabsType);
+
+    std::vector<llvm::Type *> cabsptr_inputs = {cfloat_type->getPointerTo()};
+    auto cabsptrType = llvm::FunctionType::get(f32t, cabsptr_inputs, false);
+    auto cabsptrFunc = m->getOrInsertFunction("cabsptr", cabsptrType);
+
+    std::vector<llvm::Type *> inputs = {i32t, c8ptrt->getPointerTo()};
+    auto functionType = llvm::FunctionType::get(i32t, inputs, false);
+    auto function = llvm::Function::Create(functionType, llvm::Function::ExternalLinkage, "test", m);
+
+    const char *names[] = { "argc", "args" };
+    std::map<std::string, llvm::Value *> values;
+    int idx = 0;
+    for (auto &farg : function->args()) {
+        farg.setName(names[idx]);
+        values[names[idx]] = &farg;
+        idx++;
+    }
+    builder.SetInsertPoint(llvm::BasicBlock::Create(context, "entry", function));
+    auto args  = values["args"];
+    auto argloc0 = builder.CreateConstGEP1_64(args, 0, "argloc0");
+    auto argloc1 = builder.CreateConstGEP1_64(args, 1, "argloc1");
+    auto arg0    = builder.CreateLoad(argloc0, "arg0");
+    auto iptr    = builder.CreatePointerCast(arg0, cfloat_type->getPointerTo(), "iptr");
+    auto arg1    = builder.CreateLoad(argloc1, "arg1");
+    auto optr    = builder.CreatePointerCast(arg1, llvm::Type::getFloatPtrTy(context), "optr");
+    auto ival    = builder.CreateLoad(iptr, "ival");
+    auto oval    = builder.CreateCall(cabsFunc, {ival}, "oval");
+    auto oval2   = builder.CreateCall(cabsptrFunc, {iptr}, "oval2");
+    auto res     = builder.CreateStore(oval, optr);
+    builder.CreateRet(values["argc"]);
+
+    std::cout << "--LLVM IR--" << std::endl;
+    m->dump();
+
+    llvm::verifyFunction(*function);
+    auto engine = llvm::EngineBuilder(std::move(module))
+        .setEngineKind(llvm::EngineKind::JIT)
+        .create();
+
+    // Create a function pass manager for this engine
+    llvm::legacy::FunctionPassManager *fpm = new llvm::legacy::FunctionPassManager(m);
+    fpm->doInitialization();
+    for(auto &func : *m) {
+        fpm->run(func);
+    }
+    engine->finalizeObject();
+
+    std::vector<llvm::GenericValue> Args(2);
+    Args[0].IntVal = llvm::APInt(32, 2, true);;
+    cfloat inval = {300, -400};
+    float  outval = -1;
+    std::vector<void *> fargs{&inval, &outval};
+    Args[1] = llvm::GenericValue(&fargs[0]);
+
+    llvm::GenericValue outVal = engine->runFunction(function, Args);
+    std::cout << outval << std::endl;
+    return 0;
+    }
