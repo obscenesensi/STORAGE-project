@@ -1,0 +1,15 @@
+#include <cstdio>
+#include <cstring>
+int main() {
+  char str[1000005];
+  while (scanf("%s", str) != EOF && strcmp(str, ".")) {
+    int len = strlen(str), ans, flag = 1;
+    for (int i = 1, j; i <= len / 2 && flag; ++i)
+      if (str[i] == str[0] && len % i == 0)
+        for (j = i, flag = 0, ans = 1; j < len && !flag; j = j + i, ++ans)
+          for (int k = j; k < j + i && !flag; ++k)
+            if (str[k % i] != str[k]) flag = 1;
+    printf("%d\n", (flag ? 1 : ans));
+  }
+  return 0;
+}
