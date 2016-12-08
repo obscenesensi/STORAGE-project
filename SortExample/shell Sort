@@ -1,0 +1,21 @@
+void shell_sort(int a[], int n) //셀정렬 함수 
+{
+int i, j,k,h,v;
+for(h=n/2; h>0; h/=2)
+{
+for(i=0; i<h; i++)
+{
+for(j=i+h; j<n; j+=h)
+{
+v=a[j];
+k=j;
+while(k>h-1 && a[k-h]>v)
+{
+a[k]=a[k-h];
+k-=h;
+}
+a[k]=v;
+}
+}
+}
+}
