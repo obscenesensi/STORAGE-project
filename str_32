@@ -1,0 +1,46 @@
+#include <string>
+#include <iostream>
+
+using namespace std;
+
+void reverseStr(string& str);
+string recursiveReverseStr(string& str);
+
+int main()
+{
+	string str = "Georgy";
+
+	cout << "Word to reverse: " << str << endl;
+
+	cout << "Non-recursive: ";
+	reverseStr(str);
+	cout << str;
+
+	cout << endl << "Recursive: ";
+	str = recursiveReverseStr(str);
+	cout << str;
+	
+	cout << endl;
+	system("Pause");
+	return 0;
+}
+
+void reverseStr(string& str)
+{
+	int size = static_cast<int>(str.size());
+	for (int i = 0; i < size / 2; i++)
+	{
+		char temp = str[i];
+		str[i] = str[size - i - 1];
+		str[size - i - 1] = temp;
+	}
+}
+
+string recursiveReverseStr(string& str)
+{
+	int size = static_cast<int>(str.size());
+	if (size == 0)
+		return "";
+	else
+		return str[size - 1] + recursiveReverseStr(str.substr(0, size-1));
+}
