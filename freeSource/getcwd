@@ -1,0 +1,16 @@
+#include <stdio.h>
+#include <direct.h>   //getcwd
+ 
+#ifndef _MAX_PATH
+#define _MAX_PATH 260
+#endif
+ 
+int main( )
+{
+    char strBuffer[_MAX_PATH] = { 0, };
+    char *pstrBuffer = NULL;
+ 
+    pstrBuffer = getcwd( strBuffer, _MAX_PATH );
+ 
+    return 0;
+}
