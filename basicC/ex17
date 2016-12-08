@@ -1,0 +1,30 @@
+#include <stdio.h>
+
+double sqrtInteger(int num);
+
+int main(void)
+{
+    int max, i;
+
+    printf("몇까지 계산할까요: ");
+    scanf("%d", &max);
+
+    for (i = 1; i <= max; i++)
+    {
+        printf("%d의 제곱근: %.2f\n", i, sqrtInteger(i));
+    }
+
+    return 0;
+}
+
+double sqrtInteger(int num)
+{
+    double temp = 1;
+
+    while (-0.01 > (temp * temp - num) || (temp * temp - num) > 0.01)
+    {
+        temp = 0.5 * (temp + num / temp);
+    }
+
+    return temp;
+}
