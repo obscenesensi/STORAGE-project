@@ -1,0 +1,109 @@
+/**
+ * This code pieces shows how to use the intrusive_ptr in the boost 1.55
+ *
+ */  
+#include <boost/smart_ptr.hpp>
+#include <boost/smart_ptr/intrusive_ref_counter.hpp>
+
+/**
+ * Define our own counter and the intrusive_ptr_add_ref(),  intrusive_ptr_release()
+ * function for  intrusive_ptr<Test1>
+ */ 
+class Test1 {
+public:
+	Test1( int i = 0)
+	:i_( i )
+	{
+		std::cout << "Test1::Test1()" << std::endl;
+	}
+
+	~Test1() {
+		std::cout << "Test1::~Test1()" << std::endl;
+	}
+		
+	int increaseCount() {
+		return ++count;
+	}
+	
+	int decreaseCount() {
+		return --count;
+	}
+	
+	int getI() const {
+		return i_;
+	}
+	
+	void setI( int i ) {
+		this->i_ = i;
+	}
+private:
+	int i_;
+	int count;
+};
+
+/**
+ * define the intrusive_ptr_add_ref() function for the class Test1
+ */ 
+void intrusive_ptr_add_ref( Test1* p ) {
+	p->increaseCount();
+}
+
+/**
+ * define the intrusive_ptr_release() function for the class Test1
+ */ 
+void intrusive_ptr_release( Test1* p ) {
+	if( p->decreaseCount() <= 0 ) {
+		delete p;
+	}
+}
+
+
+/**
+ * derived from boost::intrusive_ref_counter, the boost::intrusive_ref_counter helps
+ * the derived class manages the reference counter.  
+ * 
+ * boost already defines intrusive_ptr_add_ref() and intrusive_ptr_release() function 
+ * for the classes derived from boost::intrusive_ref_counter class.
+ *
+ * So no intrusive_ptr_add_ref() and  intrusive_ptr_release() defined anymore for this class. 
+ *
+ */  
+class Test2: public boost::intrusive_ref_counter<Test2> {
+public:
+	Test2( int i = 0 )
+	:i_( i )
+	{
+		std::cout << "Test2::Test2()" << std::endl;
+	}
+	
+	~Test2() {
+		std::cout << "Test2::~Test2()" << std::endl;
+	}
+	
+	int getI() const {
+		return i_;
+	}
+	
+	void setI( int i ) {
+		this->i_ = i;
+	}
+private:
+	int i_;
+};
+
+boost::intrusive_ptr<Test1> createTest1() {
+	return boost::intrusive_ptr<Test1>( new Test1() ); 
+}
+
+
+
+int main( int argc, char** argv ) {
+	boost::intrusive_ptr<Test1> p1 = createTest1();
+	boost::intrusive_ptr<Test2> p2( new Test2() );
+
+	p1->setI( 10 );
+	p2->setI( 9 );
+	
+	std::cout << p1->getI() << std::endl;
+	std::cout << p2->getI() << std::endl;	
+}
