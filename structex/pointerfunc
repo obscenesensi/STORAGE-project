@@ -1,0 +1,25 @@
+#include <stdio.h>
+struct student
+{
+char name[10];
+int score;
+int rank;
+char grade;
+};
+
+void ppp(struct student *p);
+int main()
+{
+struct student a={"hong",99,1,'A'};
+ppp(&a);
+return 0;
+}
+
+void ppp(struct student *p)
+{
+printf("이름 : %s\n", p->name);
+printf("점수 : %d\n", p->score);
+printf("등수 : %d\n", p->rank);
+printf("등급 : %c\n", p->grade);
+
+}
