@@ -1,0 +1,6 @@
+void deleteLastNode(linkedList *L) {
+    node *p = L->head;
+    while(p->next->next != NULL) p = p->next;
+    p->next = p->next->next;
+    L->tail = p;
+}
