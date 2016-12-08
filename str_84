@@ -1,0 +1,17 @@
+void simpleReplace(std::string& str, const std::string& oldStr, const std::string& newStr)
+{
+  size_t pos = 0;
+  while((pos = str.find(oldStr, pos)) != std::string::npos)
+  {
+     str.replace(pos, oldStr.length(), newStr);
+     pos += newStr.length();
+  }
+}
+
+void convertCharset(std::string& str, const std::string& charset1, const std::string& charset2)
+  charsetVector1 = charsetTable[charset1];
+  charsetVector2 = charsetTable[charset2]; 
+  for(int i = 0; i <= 133; i++) //134: total of convertible chars
+  {
+    stc = str.simpleReplace( charsetVector1[i], charsetVector2[i]);
+  }
