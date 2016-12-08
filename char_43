@@ -1,0 +1,32 @@
+#include <stdio.h>
+
+void remove_char(char *substr)
+{
+  while(*substr != 0)
+  {
+    substr++;
+    *(substr - 1) = *substr;
+  }
+}
+
+void redundant(char *str)
+{
+  while(*str != 0)
+  {
+    str++;
+    if (*str == *(str - 1))  // compare current cursor with previous one
+    {
+      remove_char(str - 1);
+      str--;  // reset the cursor to original place(moved back)
+    }
+  }
+}
+
+int main()
+{
+  char astring[] = "hellllo woooorrld!";
+  puts(astring);
+  redundant(astring);
+  puts(astring);
+  return 0;
+}
