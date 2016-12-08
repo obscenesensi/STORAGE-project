@@ -1,0 +1,38 @@
+#include <iostream>
+ 
+using namespace std;
+ 
+class A
+{
+private:
+    int num1, num2;
+public:
+    A() { } // 디폴트 생성자
+    A(int num1, int num2) : num1(num1), num2(num2) { }
+    void ShowData() { cout << num1 << ", " << num2 << endl; }
+};
+ 
+class B
+{
+private:
+    int num1, num2;
+public:
+    B() { }
+    B(int num1, int num2) : num1(num1), num2(num2) { }
+    void ShowData() { cout << num1 << ", " << num2 << endl; }
+};
+ 
+int main()
+{
+    A a1(10, 50);
+    A a2;
+    B b1(10, 20);
+    B b2;
+ 
+    a2 = a1;
+    b2 = b1;
+ 
+    a2.ShowData();
+    b2.ShowData();
+    return 0;
+}
