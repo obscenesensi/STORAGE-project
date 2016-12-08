@@ -1,0 +1,10 @@
+class Student
+{
+private:
+   int age;
+public:
+   Student(int age) {
+      age = age; // ?
+   }
+   // ..
+}
