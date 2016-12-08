@@ -1,0 +1,5 @@
+
+  if (entry->text_max_length == 0)
+    max_length = 2047;
+  else
+    max_length = MIN (2047, entry->text_max_length);
