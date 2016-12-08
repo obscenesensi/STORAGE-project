@@ -1,0 +1,8 @@
+#include <stdio.h>
+ 
+int main()
+{
+    const double PI = 3.14;
+    double pi = 3.14;
+    pi = 3.15;
+}
