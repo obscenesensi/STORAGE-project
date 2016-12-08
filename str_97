@@ -1,0 +1,31 @@
+#include <iostream>
+using namespace std;
+
+void swap(string &ptr, int i, int j){
+  char tmp=ptr[i];
+  ptr[i]=ptr[j];
+  ptr[j]=tmp;
+}
+
+void perm(string &str, int start, int end){
+  if(start==(end-1)){
+    cout<<str<<endl;
+    return;
+  } 
+  
+  for(int i=start; i<end; i++){
+    swap(str,start,i);
+    perm(str,start+1,end);
+    swap(str,start,i);
+  }
+  
+}
+
+int main() {
+
+  string str("1234");
+  
+  perm(str, 0, str.size());
+
+  return 0;
+}
