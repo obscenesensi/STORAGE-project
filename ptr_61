@@ -1,0 +1,32 @@
+#include <memory>
+#include <iostream>
+using namespace std;
+
+struct A
+{
+	~A() // not virtual
+	{
+		cout << "~A" << endl;
+	}
+};
+
+struct B : public A
+{
+	~B() // not virtual
+	{
+		cout << "~B" << endl;
+	}
+};
+
+shared_ptr<A> MakeB()
+{
+	return std::make_shared<B>();
+}
+
+int main()
+{
+	shared_ptr<A> a = MakeB();
+	a.reset(); // will this call ~B?
+
+	return 0;
+}
