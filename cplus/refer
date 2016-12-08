@@ -1,0 +1,17 @@
+#include <iostream>
+ 
+using namespace std;
+ 
+int main()
+{
+    int num=50;
+    int &num1 = num;
+    int &num2 = num;
+    int &num3 = num2;
+ 
+    cout << "num: " << &num << endl;
+    cout << "num1: " << &num1 << endl;
+    cout << "num2: " << &num2 << endl;
+    cout << "num3: " << &num3 << endl;
+    return 0;
+}
