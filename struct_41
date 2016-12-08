@@ -1,0 +1,59 @@
+
+#include <iostream>
+#include <string>
+#include <unordered_map>
+#include <vector>
+
+enum container_material { plastic, metal, materialCount };
+enum container_purpose { eating, storage, purposeCount };
+enum container_color { red, green, blue, colorCount };
+
+struct container {
+    container_material material;
+    container_purpose purpose;
+    container_color color;
+
+    std::string render() {
+        return
+            "material: " + std::to_string(this->material) +
+            " purpose: " + std::to_string(this->purpose) +
+            " color: " + std::to_string(this->color);
+    }
+
+    /* required by unordered_map */
+    bool operator ==(const container& other) const {
+        return (this->material == other.material) &&
+            (this->purpose == other.purpose) &&
+            (this->color == other.color);
+    }
+};
+
+/* required to hash a container */
+template<> struct std::hash<container> {
+    std::size_t operator()(const container& c) const {
+        return std::hash<int>()(c.material) ^
+            std::hash<int>()(c.purpose) ^
+            std::hash<int>()(c.color);
+    }
+};
+
+int main() {
+    /* declare the cache */
+    auto cache = std::unordered_map<container, std::string>();
+
+    /* insert some elements into the cache */
+    std::vector<container> containersToRender = {{plastic, eating, green}, {metal, storage, blue}};
+    for (auto c: containersToRender) {
+        cache.insert({c, c.render()});
+    }
+
+    container someContainer = {plastic, eating, green};
+    container nonExistantContainer = {metal, eating, red};
+
+    /* look for some elements */
+    if (cache.count(someContainer) > 0) { std::cout << cache.find(someContainer)->second << std::endl; }
+    if (cache.count(nonExistantContainer) > 0) { std::cout << cache.find(nonExistantContainer)->second << std::endl; }
+
+    return 0;
+    /* stdout: material: 0 purpose: 0 color: 1 */
+}
