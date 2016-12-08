@@ -1,0 +1,9 @@
+struct student //구조체
+{
+	char name[10];
+	int kor;
+	int eng;
+	int math;
+	double avg;
+	char grade;
+}st[3];
