@@ -1,0 +1,8 @@
+int length(char * array){
+    int len=0,i=0;
+    while(1){
+        if(array[i]=='\0') return len;
+        len++;
+        i++;
+    }
+}
