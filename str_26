@@ -1,0 +1,24 @@
+void ReverseRange(char *str, int n){
+  for (int i = 0; i < n / 2; ++i){
+    char tmp = str[i];
+    str[i] = str[n - i - 1];
+    str[n - i - 1] = tmp;
+  }
+}
+
+void ReverseByWord(char *str, int n){
+  if (str == NULL || n < 3){
+    return;
+  }
+
+  ReverseRange(str, n);
+
+  for (int i = 0; i < n; ++i){
+    if (str[i] != ' '){
+      int p = i + 1;
+      while(str[p] != ' ' && p < n) ++p;
+      ReverseRange(str + i, p - i);
+      i = p;
+    }
+  }
+}
