@@ -1,0 +1,32 @@
+#include <stdarg.h>
+/*
+ * Returns a char** similar to argv
+ */
+char **argv(int count, ...)
+{
+    va_list args;
+    int i;
+    char **argv = malloc(count * sizeof(char*));
+    char *temp;
+    va_start(args, count);
+    for (i = 0; i < count; i++) {
+        temp = va_arg(args, char*);
+        argv[i] = malloc(sizeof(temp));
+        argv[i] = temp;
+    }
+    va_end(args);
+    return argv;
+}
+/*
+ * With this you can create argv like values to pass data to functions
+ */
+void args(int count, char **argv)
+{
+    // argv[0] == "testing"
+    // ...
+}
+void example()
+{
+    char **argv = argv(4, "testing", "1...", "2...", "3...");
+    args(4, argv);
+}
