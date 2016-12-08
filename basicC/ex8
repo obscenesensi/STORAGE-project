@@ -1,0 +1,11 @@
+int num;
+printf("자연수를 입력하세요: ");
+scanf("%d", &num);
+if (num % 2 == 0)
+{
+    printf("%d는 2의 배수입니다!\n", num);
+}
+if (num % 3 == 0)
+{
+    printf("%d는 3의 배수입니다!\n", num);
+}
