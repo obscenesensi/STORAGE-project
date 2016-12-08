@@ -1,0 +1,19 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+ 
+int main (int *argc , char ** argv) {
+ 
+int fd;
+ 
+fd = open("/root/System_Programming/test.txt", O_RDONLY);
+if (fd == -1)
+        printf ("FD Error.... \n");
+        else
+                printf ("FD Success...!!! FD is : %d \n" , fd);
+ 
+close(fd);
+ 
+}
