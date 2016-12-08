@@ -1,0 +1,220 @@
+#ifndef UTIL_SHARED_PTR_H_INCLUDED
+#define UTIL_SHARED_PTR_H_INCLUDED
+
+// for swap in C++03
+#include <algorithm>
+
+// for swap in C++11
+#include <utility>
+
+#include <new>
+#include <cassert>
+
+// detail to implement shared_ptr
+namespace detail {
+
+class sp_counted_base {
+    long use_count_;
+
+public:
+    sp_counted_base() : use_count_(1) { }
+    virtual ~sp_counted_base() { }
+    void add() { ++use_count_; }
+    void release() {
+        if (--use_count_ == 0) {
+            destroy();
+            delete this;
+        }
+    }
+    virtual void destroy() = 0;
+};
+
+template<class T>
+class sp_counted_impl_p : public sp_counted_base {
+    T* p_;
+
+public:
+    sp_counted_impl_p(T* p) : p_(p) { }
+    virtual void destroy() { delete p_; }
+};
+
+template<class T, class D>
+class sp_counted_impl_pd : public sp_counted_base {
+    T* p_;
+    D d_;
+
+public:
+    sp_counted_impl_pd(T* p, D d) : p_(p), d_(d) { }
+    virtual void destroy() { d_(p_); }
+};
+
+class shared_count {
+    sp_counted_base* pi_;
+
+public:
+    shared_count() : pi_(0) { }
+
+    template<class U>
+    explicit shared_count(U* p) {
+        if (p != 0) {
+            try {
+                pi_ = new detail::sp_counted_impl_p<U>(p);
+            } catch (...) {
+                delete p;
+                throw;
+            }
+        }
+    }
+
+    template<class U, class D>
+    shared_count(U* p, D d) {
+        if (p != 0) {
+            try {
+                pi_ = new detail::sp_counted_impl_pd<U, D>(p, d);
+            } catch (...) {
+                d(p);
+                throw;
+            }
+        }
+    }
+
+    ~shared_count() {
+        if (pi_ != 0) pi_->release();
+    }
+
+    shared_count(const shared_count& r) : pi_(r.pi_) {
+        if (pi_ != 0) pi_->add();
+    }
+
+    shared_count& operator=(const shared_count& r) {
+        sp_counted_base* tmp = r.pi_;
+
+        if (tmp != pi_) {
+            if (tmp != 0) tmp->add();
+            if (pi_ != 0) pi_->release();
+            pi_ = tmp;
+        }
+        return *this;
+    }
+
+    void swap(shared_count& r) { // nothrow
+        sp_counted_base* tmp = r.pi_;
+        r.pi_ = pi_;
+        pi_ = tmp;
+    }
+};
+
+struct static_cast_tag {};
+struct const_cast_tag {};
+struct dynamic_cast_tag {};
+
+template<class T>
+struct shared_ptr_traits {
+    typedef T& reference;
+};
+
+template<>
+struct shared_ptr_traits<void> {
+    typedef void reference;
+};
+
+} // detail
+
+// shared ownership pointer
+template<class T>
+class shared_ptr {
+private:
+    typedef shared_ptr<T> this_type;
+
+public:
+    typedef T element_type;
+    typedef T value_type;
+    typedef T* pointer;
+    typedef typename detail::shared_ptr_traits<T>::reference reference;
+
+    shared_ptr() : px(0), pn() { }
+
+    template<class Y>
+    explicit shared_ptr(Y * p) : px(p), pn(p) { }
+
+    template<class Y, class D>
+    shared_ptr(Y* p, D d) : px(p), pn(p, d) { }
+
+    template<class Y>
+    shared_ptr(const shared_ptr<Y>& r) : px(r.px), pn(r.pn) { }
+
+    template<class Y>
+    shared_ptr(const shared_ptr<Y>& r, detail::static_cast_tag)
+      : px(static_cast<element_type*>(r.px)), pn(r.pn) {
+    }
+
+    template<class Y>
+    shared_ptr(const shared_ptr<Y>& r, detail::const_cast_tag)
+      : px(const_cast<element_type*>(r.px)), pn(r.pn) {
+    }
+
+    template<class Y>
+    shared_ptr& operator=(const shared_ptr<Y>& r) {
+        px = r.px;
+        pn = r.pn;
+        return *this;
+    }
+
+    void reset() {
+        this_type().swap(*this);
+    }
+
+    template<class Y>
+    void reset(Y * p) {
+        this_type(p).swap(*this);
+    }
+
+    template<class Y, class D>
+    void reset(Y* p, D d) {
+        this_type(p, d).swap(*this);
+    }
+
+    reference operator*() const { // never throws
+        assert(px);
+        return *px;
+    }
+
+    T* operator->() const { // never throws
+        assert(px);
+        return px;
+    }
+
+    T* get() const { // never throws
+        return px;
+    }
+
+    // implicit conversion to "bool"
+    typedef T* this_type::*unspecified_bool_type;
+
+    operator unspecified_bool_type() const { // never throws
+        return px == 0? 0: &this_type::px;
+    }
+
+    void swap(shared_ptr<T>& other) { // never throws
+        std::swap(px, other.px);
+        pn.swap(other.pn);
+    }
+
+private:
+    template<class Y> friend class shared_ptr;
+
+    T* px;                      // contained pointer
+    detail::shared_count pn;    // reference counter
+};
+
+template<class T, class U>
+shared_ptr<T> static_pointer_cast(const shared_ptr<U>& r) {
+    return shared_ptr<T>(r, detail::static_cast_tag());
+}
+
+template<class T, class U>
+shared_ptr<T> const_pointer_cast(const shared_ptr<U>& r) {
+    return shared_ptr<T>(r, detail::const_cast_tag());
+}
+
+#endif // UTIL_SHARED_PTR_H_INCLUDED
