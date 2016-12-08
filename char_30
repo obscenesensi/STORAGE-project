@@ -1,0 +1,14 @@
+void byteToHex(char b, char* out1, char* out2) {
+  char lowerFour = b & 0xF;
+  if (lowerFour < 0xA) {
+    *out1 = '0' + lowerFour;
+  } else {
+    *out1 = 'a' + lowerFour - 0xA;
+  }
+  char upperFour = b >> 4;
+  if (upperFour < 0xA) {
+    *out2 = '0' + upperFour;
+  } else {
+    *out2 = 'a' + upperFour - 0xA;
+  }
+}
