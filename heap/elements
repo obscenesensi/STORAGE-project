@@ -1,0 +1,27 @@
+element delete_max_heap(HeapType *h)
+{
+        int parent, child;
+        element item, temp; //임시 요소를 담는 구조체 선언
+ 
+        item = h->heap[1]; //힙의 첫번째 즉 삭제할 요소를 item에 담아놓는다.
+        temp = h->heap[(h->heap_size)--]; //temp에 주인공이 될 '말단 값' 집어넣는다.
+        parent= 1; //말단이 위치할 자리이다.
+        child = 2; //말단의 자식 인덱스다.
+ 
+        while( child <= h->heap_size ) //자식 index가 heap의 크기보다 크면 안된다.
+        {
+               // 왼쪽자식과 오른쪽자식과 크기를 비교해서 크다면 인덱스를 변경해주는 부분
+               if( (child < h->heap_size ) && (h->heap[child].key) < h->heap[child+1].key)
+                       child++; 
+ 
+               if(temp.key >= h->heap[child].key)  
+                   //주인공 '말단'의 값과 비교대상 자식 값과 비교한다.
+                       break;  //말단'의 능력(값)이 크면 그대로 멈춘다.
+ 
+               parent = child; //주인공보다 자식값이 크면 현재 위치 parent 에 child를 위치
+               child = child*2; //그리고 자식위치에는 자식의*2 즉, 자식의 자식인 손자를 위치
+        }
+ 
+        h->heap[parent] = temp; //현재 주인공을 parent 즉 현재 가르키고있는 위치에 그대로 둔다.
+        return item; //코드윗줄에서 미리 담았던 값을 리턴한다.
+}
