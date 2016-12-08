@@ -1,0 +1,19 @@
+#include <stdio.h>
+struct student
+{
+char name[10];
+int score;
+int rank;
+char grade;
+};
+int main()
+{
+struct student a={"hong",99,1,'A'};
+struct student *p;
+p=&a;
+
+
+printf("이름 : %s\n",a.name);
+printf("P이름 : %s\n",p->name);
+return 0;
+}
