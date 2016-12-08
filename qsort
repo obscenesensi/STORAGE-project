@@ -1,0 +1,30 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+
+#define MAX_COUNT 10
+
+int compare(const void *a , const void *b);
+
+int main(void){
+        int i;
+        char arr[MAX_COUNT][7] = {
+                "사과","바나나","딸기","감자","호두",
+                "나무","라디오","오리","자두","커피"
+        };
+
+        qsort(arr , MAX_COUNT , sizeof(arr[0]) , compare);
+
+        printf("\n");
+        for(i = 0 ; i < MAX_COUNT ; i++){
+                printf("%s\n" , arr[i]);
+        }
+        printf("\n");
+
+        return 0;
+}
+
+int compare(const void *a , const void *b){
+        return strcmp( (char*)a , (char*)b );
+}
