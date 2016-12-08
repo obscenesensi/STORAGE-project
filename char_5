@@ -1,0 +1,25 @@
+char moji = 'uu';  /*error*/
+
+char moji = "uu";
+printf("%c");      /*error*/
+
+char moji = "uu";
+printf("%s");      /*error*/
+
+char moji[3] = "uu";   
+printf("%c");      /*実行結果 a */
+
+char moji[3] = "uu";
+printf("%s");      /*実行結果 uu */
+
+char moji =  97   
+printf("%c");      /*実行結果 a */
+
+char moji =  98
+printf("%c");      /*実行結果 b */
+
+char moji =  97
+printf("%s");      /*プログラム停止kikenda*/
+
+char moji[3] ="97"
+printf("%s");      /*実行結果 97 */
