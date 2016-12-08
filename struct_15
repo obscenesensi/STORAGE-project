@@ -1,0 +1,89 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+struct row {
+    int id;
+    int group;
+    
+    int math;
+    int programming;
+    int history;
+    
+    string name; // ф
+    string surname; // и
+    string patronymic; // о
+    
+    int getPoints();
+};
+
+int row::getPoints() {
+    return (this->math + this->programming + this->history);
+}
+
+void readFileTo(vector<row> &rows) {
+    string inputPath = "input.txt"; // path to input file
+    ifstream is(inputPath);
+    
+    int minPoints = 100; // min points for passing session
+    
+    if (is) {
+        while (!is.eof()) {
+            row row;
+            
+            is >> row.id;
+            
+            is >> row.surname;
+            is >> row.name;
+            is >> row.patronymic;
+            
+            is >> row.group;
+            
+            is >> row.math;
+            is >> row.programming;
+            is >> row.history;
+            
+            if (row.getPoints() >= minPoints) {
+                rows.push_back(row);
+            }
+        }
+    }
+    else {
+        cout << "Can not open file for reading: " << inputPath << endl;
+    }
+    
+    is.close();
+}
+
+void writeRows(vector<row> rows) {
+    string outputPath = "output.txt"; // path to output file
+    ofstream os(outputPath);
+    
+    if (os) {
+        for (int i = 0; i < rows.size(); i++) {
+            os
+                << rows[i].id << ' '
+                << rows[i].surname << ' ' << rows[i].name << ' ' << rows[i].patronymic << ' '
+                << rows[i].group << ' '
+                << rows[i].math << ' ' << rows[i].programming << ' ' << rows[i].history << ' '
+                << endl;
+        }
+    }
+    else {
+        cout << "Can not open file for writing: " << outputPath << endl;
+    }
+    
+    os.close();
+}
+
+int main() {
+    vector<row> rows;
+    
+    readFileTo(rows);
+    writeRows(rows);
+    
+    return 0;
+}
