@@ -1,0 +1,28 @@
+std::string substr_cut(std::string& input_str, int len)
+{
+    std::string output_str;
+    if (input_str.size() > len)
+    {
+        int i = 0;
+        for (; i<len; ++i)
+        {
+            int byte_num = 0;
+            for (unsigned char mask = 0x80; mask; mask = mask>>1)
+            {
+                if ((input_str[i] & mask) != 0)
+                {
+                    ++byte_num;
+                }
+                else
+                    break;
+            }
+            if (byte_num > 0)
+            {
+                i += byte_num - 1;
+            }
+        }
+        output_str = input_str.substr(0, i);
+        return output_str;
+    }
+    return input_str;
+}
