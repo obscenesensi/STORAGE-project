@@ -1,0 +1,18 @@
+#ifndef MALLOC_UNIQUE_PTR_H
+#define MALLOC_UNIQUE_PTR_H
+
+/*
+idea borrowed from http://www.codeproject.com/Articles/820931/Using-std-unique-ptr-RAII-with-malloc-and-free
+*/
+
+#include<memory>
+
+template<typename T>
+using malloc_unique_ptr = std::unique_ptr<T, decltype(std::free)*>;
+
+template<typename T>
+inline malloc_unique_ptr<T> make_malloc_unique(size_t sz) {
+    return malloc_unique_ptr<T>{ reinterpret_cast<T*>(std::malloc(sizeof(T) * sz)), std::free) };
+}
+
+#endif
