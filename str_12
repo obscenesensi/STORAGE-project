@@ -1,0 +1,29 @@
+#include "stdafx.h"
+#include <string>
+#include <iostream>
+
+
+void reverse(char*);
+int main()
+{
+  using namespace std;
+	char str[] = "This is a test";
+	int size = strlen(str);
+	reverse(str);
+	cout<<str<<endl;
+	return 0;
+}
+void reverse(char* str)
+{
+	char *start = str;
+	char *end = start+strlen(str)-1;
+
+	while(start<end)
+	{
+		char temp = *end;
+		*end = *start;
+		*start=temp;
+		start++;
+		end--;
+	}
+}
