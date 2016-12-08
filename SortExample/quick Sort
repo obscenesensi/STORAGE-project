@@ -1,0 +1,26 @@
+void quick_sort(int a[], int n) // 퀵정렬 함수 
+{
+int v, t;
+int i, j;
+
+if(n>1)
+{
+v=a[n-1];
+i=-1;
+j=n-1;
+while(1)
+{
+while(a[++i]<v);
+while(a[--j]>v);
+if(i>=j) break;
+t=a[i];
+a[i]=a[j];
+a[j]=t;
+}
+t=a[i];
+a[i]=a[n-1];
+a[n-1]=t;
+quick_sort(a,i);
+quick_sort(a+i+1, n-i-1);
+}
+}
