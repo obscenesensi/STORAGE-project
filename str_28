@@ -1,0 +1,43 @@
+#include <cstdio>
+#include <cstring>
+#include <cstdlib>
+using namespace std;
+
+void replace(char *str)
+{
+	int n = 0;
+	int i;
+	for(i = 0; str[i] != '\0'; i++)
+		if(str[i] == ' ')
+			n++;
+	if(n == 0)
+		return;
+	str = (char *)realloc(str, (i + 2 * n) * sizeof(char));
+	int j = i - 2, k = i + 2*n - 2;
+	while(j >= 0)
+	{
+		if(str[j] != ' ')
+		{
+			str[k] = str[j];
+			j--;
+			k--;
+		}
+		else
+		{
+			str[k--] = '0';
+			str[k--] = '2';
+			str[k--] = '%';
+			j--;
+		}
+	}
+	str[i + n - 1];
+}
+
+int main()
+{
+	char *str = (char *)malloc(100 * sizeof(char));
+	fgets(str, 100, stdin);
+	replace(str);
+	printf("%s\n", str);
+	return 0;
+}
