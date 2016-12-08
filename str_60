@@ -1,0 +1,58 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "dynastring.h"
+
+void
+dsAddChar(DynaString *str, char c)
+{
+	*(str->content+str->idx) = c;
+	str->idx++;
+}
+
+void
+dsAddNul(DynaString *str)
+{
+	*(str->content+str->idx) = '\0';
+	str->idx++;
+}
+
+void
+dsClear(DynaString *str)
+{
+	realloc(str->content, BUFSIZ);
+	if (str->content == NULL) { boom(); }
+	str->idx = 0;
+	str->size = BUFSIZ;
+	memset(str->content, '\0', str->size);
+}
+
+void
+dsEmbiggen(DynaString *str)
+{
+	int size = str->size * 2;
+	str->content = realloc(str->content, size);
+	if (str->content == NULL) { boom(); }
+	str->size = size;
+}
+
+void
+dsFree(DynaString *str)
+{
+	if (str->content != NULL) { free(str->content); }
+	str->idx = 0;
+	str->size = 0;
+	free(str);
+}
+
+void
+dsInit(DynaString *str)
+{
+	str->size = 0;
+	str->idx = 0;
+
+	str->content = malloc(sizeof(char)*BUFSIZ);
+	if (str->content == NULL) { boom(); }
+
+	str->size = BUFSIZ;
+}
