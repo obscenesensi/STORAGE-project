@@ -1,0 +1,13 @@
+#include <stdio.h>
+ 
+int main()
+{
+ int i=0; // i를 0으로 초기화, 초기화 하지 않으면 쓰레기값으로 초기화 됨
+ 
+ while (i<100) {
+  printf("호출 횟수: %d\n", i);
+  i++; // 후위증가 연산자, i의 값을 1씩 증가시킴
+ }
+ 
+ return 0;
+} 
