@@ -1,0 +1,12 @@
+void write_pgm(unsigned short id, unsigned char *buf, int width, int height) {
+	char filename[1024];
+	sprintf(filename, "%simage_%d.pgm", destinationPrefix, id);
+
+	FILE *fp = fopen(filename, "wb");
+
+	if (fp) {
+		fprintf(fp, "P5\n%d %d\n%d\n", width, height, 0xFF);
+		fwrite(buf, width * height, 1, fp);
+		fclose(fp);
+	}
+}
