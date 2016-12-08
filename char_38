@@ -1,0 +1,11 @@
+#include "stdio.h"
+
+int main(void) {
+    // Disable stdout buffering
+    setvbuf(stdout, NULL, _IONBF, 0);
+    char received[50];
+    printf("say something:");
+    scanf("%s", received);
+    printf("you said %s", received);
+    return 0;
+}
