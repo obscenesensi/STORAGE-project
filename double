@@ -1,0 +1,39 @@
+#include <stdio.h>
+ 
+double c_interest(int a,int n,double r); //복리로 계산해주는 함수
+double mypow(double m,int n); //제곱승을 구하는 함수
+ 
+int main(void)
+{
+           int money, year; //원금과 년수
+           double rate; //이율
+ 
+           printf("이자를 계산할 다음 세 항목을 입력하시오\n");
+           printf("1.원금 입력 : ");
+           scanf("%d",&money); //원금 입력
+           printf("2.년수 입력 : ");
+           scanf("%d",&year); //년수 입력
+           printf("3.이율(%%) 입력 : ");
+           scanf("%lf",&rate); //이율 입력
+ 
+           printf("복리 계산 총액은 %.2lf원입니다.\n", c_interest(money,year,rate)); //결과 출력
+ 
+           return 0;
+}
+ 
+/*함수정의*/
+double c_interest(int a,int n,double r)
+{
+           return a*mypow(1+(r*0.01),n);
+}
+//////////////////////////////////////////
+double mypow(double m, int n)
+{
+           int i; //for문용
+           double total = 1; //총합
+ 
+           for(i=0;i<n;i++)
+                     total *= m;
+ 
+           return total;
+}
