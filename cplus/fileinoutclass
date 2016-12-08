@@ -1,0 +1,59 @@
+#include <iostream>
+#include <fstream>
+
+
+#define MAX_SIZE 1000
+
+using namespace std;
+
+char line[MAX_SIZE];
+
+
+class fileInput{
+private:
+        int lineNum;
+        int messageNum;
+public:
+        void input(ifstream &infile, ofstream &outfile);
+        void showLine();
+};
+
+void fileInput::input(ifstream &infile , ofstream &outfile){
+        while(!infile.eof()){
+                infile.getline(line , MAX_SIZE);
+                lineNum++;
+
+                if(!strncmp(line, "<__message__>", 13)){
+                        messageNum++;
+                        outfile << line << endl;
+                }
+        }
+}
+void fileInput::showLine(){
+        cout << endl;
+        cout << "입력파일의 총 라인 수 : " << lineNum << endl;
+        cout << "메세지 필드의 수 : " << messageNum << endl;
+        cout << endl;
+}
+
+int  main(){
+        ifstream infile("text.txt");
+        ofstream outfile("output.txt");
+
+        fileInput fl;
+// 파일 스트림을 인자값으로 넘긴다
+        fl.input(infile , outfile);
+        fl.showLine();
+
+        infile.close();
+        outfile.close();
+
+        ifstream infile2("output.txt");
+        while(!infile2.eof()){
+                infile2.getline(line , MAX_SIZE);
+                cout << line << endl;
+        }
+
+        infile.close();
+        return 0;
+}
