@@ -1,0 +1,90 @@
+#include <iostream>
+#include <string>
+#include <cctype>
+#define forn(i, n) for(int i = 0; i<(n); i++)
+
+using namespace std;
+
+void to_anchient (string& str)
+{
+    int koldunstvo = 0;
+    forn(i, str.size())
+    {
+        int pos_s = str.find("s");
+        if (pos_s == str.size())
+        {
+            str.erase(pos_s, 1);
+            str.insert(pos_s, "th");
+        }
+        else if (pos_s > 0  && str[pos_s + 1] != 'h')
+        {
+            str.erase(pos_s, 1);
+            str.insert(pos_s, "th");
+        }
+        if (pos_s == 0)
+        {
+            str[0] = '+';
+            koldunstvo++;
+        }
+    }
+    int pos_oo = str.find("oo");
+    if (koldunstvo == 1) str[0] = 's';
+    koldunstvo = 0;
+    //
+    int pos_e = str.find("e");
+    if (pos_e == 0)
+    {
+        str.erase(pos_e, 1);
+        str.insert(pos_e, "ae");
+    }
+    int pos_E = str.find("E");
+    if (pos_E == 0)
+    {
+        str.erase(pos_E, 1);
+        str.insert(pos_E, "Ae");
+    }
+    //
+    int pos_Oo = str.find("Oo");
+    if (pos_Oo == 0)
+    {
+        koldunstvo++;
+        str[0] = 'o';
+    }
+    forn(i, str.size())
+    {
+        int pos_oo = str.find("oo");
+        if (pos_oo >= 0)
+        {
+            str.erase(pos_oo, 2);
+            str.insert(pos_oo, "ou");
+        }
+        if (str.size() - pos_oo >= 2)
+        {
+            int j = pos_oo + 2;
+            while(str[j] == 'o')
+            {
+                str[j] = '+';
+                j++;
+            }
+        }
+    }
+    forn (i, str.size())
+    {
+        if (str[i] == '+') str[i] = 'o';
+    }
+    if (koldunstvo == 1) str[0] = 'O';
+}
+
+int main()
+{
+    int n;
+    cin >>n;
+    string mas[n];
+    forn(i, n) cin >>mas[i];
+    forn(i, n)
+    {
+        to_anchient(mas[i]);
+        cout <<mas[i] <<endl;
+    }
+    return 0;
+}
