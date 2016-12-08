@@ -1,0 +1,25 @@
+#include <stdio.h>
+#include <direct.h>       //mkdir, rename
+ 
+int main( )
+{
+    char strOldFolder[] = "d:\\TestOldFolder";
+    char strNewFolder[] = "d:\\TestNewFolder";
+ 
+    //테스트 폴더를 만든다.
+    mkdir( strOldFolder );
+     
+    //이름을 바꾸고 결과를 리턴 받는다.
+    int nResult = rename( strOldFolder, strNewFolder );
+ 
+    if( nResult == 0 )
+    {
+        printf( "이름 변경 성공" );
+    }
+    else if( nResult == -1 )
+    {
+        perror( "이름 변경 실패 - " );
+    }
+ 
+    return 0;
+}
