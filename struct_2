@@ -1,0 +1,69 @@
+#include <iostream>
+#include <string.h>
+using namespace std;
+
+struct ski_resorts {
+    char name[1024];
+    int height;
+    char elevator[1024];
+    int complexity;
+    char climbing_routes[1024];
+};
+
+int main() {
+    ski_resorts* ski_resort = new ski_resorts[0];
+
+    cout << "Введите информацию о трех горнолыжных курортах:" << endl;
+    for (int i = 0; i < 3; ++i) {
+        cout << i +1 << " - ГК" << endl;
+        cout << "Название:";
+        cin >> ski_resort[i].name;
+        cout << "Высота горы:";
+        cin >> ski_resort[i].height;
+        cout << "Наличие подъемника:";
+        cin >> ski_resort[i].elevator;
+        cout << "Категория сложности:";
+        cin >> ski_resort[i].complexity;
+        cout << "Наличие альпинистских маршрутов:";
+        cin >> ski_resort[i].climbing_routes;
+        cout << endl;
+    }
+    cout << "Самая высокая гора, где есть альпинистский маршрут: ";
+    int climbing_routes = 0;
+    int climbing_routes_pointer = 0;
+    for (int i = 0; i < 3; ++i) {
+        if (strcmp(ski_resort[i].climbing_routes,"yes") == 0) {
+            if (ski_resort[i].height > climbing_routes) {
+                climbing_routes = ski_resort[i].height;
+                climbing_routes_pointer = i;
+            }
+        }
+    }
+    cout << ski_resort[climbing_routes_pointer].name << endl;
+
+    int complexity;
+    int height;
+    cout << "Введите категорию сложности:" ;
+    cin >> complexity;
+    cout << endl;
+    cout << "Курорты с категорией сложности не выше заданной, где есть поодъемники: " << endl;
+    for (int i = 0; i < 3; ++i) {
+        if (ski_resort[i].complexity <= complexity and (strcmp(ski_resort[i].elevator,"yes") == 0)) {
+            cout << ski_resort[i].name << endl;
+        }
+    }
+
+    cout << "Введите высоту:" ;
+    cin >> height;
+    cout << endl;
+    cout << "Введите категорию сложности:" ;
+    cin >> complexity;
+    cout << endl;
+    cout << "Курорты с категорией сложности не меньше заданной и категорией сложности не менее заданной: " << endl;
+    for (int i = 0; i < 3; ++i) {
+        if (ski_resort[i].complexity >= complexity and ski_resort[i].height >= height) {
+            cout << ski_resort[i].name << endl;
+        }
+    }
+    return 0;
+}
