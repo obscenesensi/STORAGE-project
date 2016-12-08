@@ -1,0 +1,33 @@
+#include <iostream>
+using namespace std;
+
+void rle(string str){
+	int i,j;
+	i = 0;
+	while(i < str.length()){
+		j = 1;
+		while(i+j < str.length() && str[i+j] == str[i]){
+			j += 1;
+		}
+		if(j > 3){
+			cout<<j<<"!"<<str[i];
+		}
+		else{
+			int count = j; 
+			while(count > 0){
+				cout<<str[i];
+				count -= 1;
+			}
+		}
+		i += j;
+	}
+	cout<<endl;
+}
+
+int main() {
+	string str;
+	while(getline(cin,str)){
+		rle(str);
+	}
+	return 0;
+}
