@@ -1,0 +1,114 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct named {
+    int dummy1;
+    char dummy2;
+};
+
+struct foo { int a; int b;};
+
+void foofun(int a, int b){
+    a+b;
+}
+
+void *foofun1(int a, int b){
+    a+b;
+    return NULL;
+}
+
+struct foo *foofun2(int a, int b){
+    struct foo *f;
+    f->a = 3;
+    f->b = 4; 
+    return f;
+}
+
+struct f {int a; int b;} *foofun3(int a, int b){
+    return NULL;
+}
+
+void *charchar1(char a, char b){ return (void *) 0xDE; }
+
+void *charchar2(char a, char b){ return (void *) 0xAD; }
+
+void *charchar3(char a, char b){ return (void *) 0xBE; }
+
+void *charchar4(char a, char b){ return (void *) 0xEF; }
+
+typedef long bar;
+typedef void *(*f1)(char, char);
+
+f1 *funchar(int a, int b){
+    void *(**resarr)(char, char) = malloc(sizeof(void *(*)(char, char)) * 4);
+    resarr[0] = charchar1;
+    resarr[1] = charchar2;
+    resarr[2] = charchar3;
+    resarr[3] = charchar4;
+    return resarr;
+}
+
+int main(void){
+    bar foobarfoo = 1223L;
+    static const int foo;
+    register int const bar;
+    int lolz = 0;
+
+    static const int ((((foo2))));
+    static void (*fun)(int, int);
+    fun = foofun;
+
+    static void (*((((fun1))))[8])(int, int);
+    static int (*fun2[8])(int, int);
+    static struct {int a; int b;} *(*fun3[8])(int, int);
+    static struct f *(*fun6[8])(int, int);
+    static struct foo *(*fun4[8])(int, int);
+    static void *(*fun5)(int, int);
+
+    fun4[0] = foofun2;
+    fun1[0] = foofun;
+    fun5 = foofun1;
+    fun6[0] = foofun3;
+
+    static struct f *(*funarr[1])(int, int) = 
+        { (struct f *(*)(int, int)) foofun3 };
+
+    /* array 8 of pointer to function (int, int) returning pointer to int */
+    int *(*foobar[8])(int, int);
+
+    /* array 8 of pointer to function (int, int) returning array of pointer
+       to function (char, char) returning pointer to void */
+    void *(**(*funarrsarr[1])(int, int))(char, char);
+
+    funarrsarr[0] = funchar;
+
+    for (lolz; lolz < 4; lolz++)
+        printf("%p", funarrsarr[0](1, 2)[lolz]('a', 'b'));
+    printf("\n");
+
+    static volatile const int scalar1;
+    static volatile const long scalar2;
+    static volatile const struct named struct1;
+    static volatile const struct anonymous {
+        char a; char b;
+    } struct2;
+    static volatile const struct {
+        char a; char b;
+    } struct3;
+    static volatile const struct {
+        char a; char b;
+        const volatile struct {
+            char c; char d;
+        } c;
+    } struct3_nested1;
+    static volatile const struct ref_01 {
+        char a; char b;
+        const volatile struct name_01{
+            char c; char d;
+            struct ref_01 *ref;
+        } c, d, e;
+    } struct3_nested2, str;
+    
+    return EXIT_SUCCESS;
+}
+
