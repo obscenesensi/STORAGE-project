@@ -1,0 +1,46 @@
+#include "hold.h"
+
+#include <cstdio>
+#include <memory>
+
+int main() {
+    Hold<std::shared_ptr<int>> hold;
+    std::weak_ptr<int> weak;
+    {
+        auto x = std::make_shared<int>(5);
+        hold = make_hold(x);
+        weak = x;
+    }
+    printf("%d\n", *weak.lock());
+    return 0;
+}
+
+*/
+holh.h
+/*
+
+//
+#pragma once
+
+#include <type_traits>
+#include <utility>
+
+template <typename Ptr>
+class Hold {
+ public:
+    Hold() = default;
+    Hold(Ptr p): p_(std::move(p)) {}
+    Hold(Hold&&) = default;
+    Hold& operator=(Hold&&) = default;
+    Hold(Hold const&) = delete;
+    Hold& operator=(Hold const&) = delete;
+ private:
+    Ptr p_;
+};
+
+template <typename Ptr>
+auto make_hold(Ptr&& p) -> Hold<typename std::remove_reference<Ptr>::type> {
+    return Hold<typename std::remove_reference<Ptr>::type>(
+        std::forward<Ptr>(p));
+}
+//
