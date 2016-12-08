@@ -1,0 +1,305 @@
+#pragma once
+
+template <typename defType>
+class defDeleter {
+public:
+
+    void operator () (defType *);
+
+private:
+    bool setState;
+};
+
+template <typename defType>
+void defDeleter <defType>::operator () (defType *getP) {
+    delete getP;
+}
+
+template <typename> class smart_ptr;
+
+template <typename getType>
+bool operator == (const smart_ptr <getType> &, const smart_ptr <getType> &);
+
+template <typename getType>
+bool operator == (const smart_ptr <getType> &, getType *);
+
+template <typename getType>
+bool operator == (getType *, const smart_ptr <getType> &);
+
+template <typename getType>
+bool operator != (const smart_ptr <getType> &, const smart_ptr <getType> &);
+
+template <typename ptrType>
+class smart_ptr {
+    friend bool operator == <ptrType> (const smart_ptr <ptrType> &, const smart_ptr <ptrType> &);
+    friend bool operator == <ptrType> (const smart_ptr <ptrType> &, ptrType *);
+    friend bool operator == <ptrType> (ptrType *, const smart_ptr <ptrType> &);
+    friend bool operator != <ptrType> (const smart_ptr <ptrType> &, const smart_ptr <ptrType> &);
+
+public:
+    static constexpr ptrType *null = nullptr;
+
+    smart_ptr ();
+
+    smart_ptr (ptrType *v);
+
+    smart_ptr (const smart_ptr <ptrType> &);
+
+    smart_ptr (ptrType *, void (*)(ptrType *));
+
+    ~smart_ptr ();
+
+    unsigned getCount ();
+
+    smart_ptr &reset ();
+    smart_ptr &reset (ptrType *);
+    smart_ptr &reset (const smart_ptr <ptrType> &);
+
+    smart_ptr &Swap (smart_ptr <ptrType> &);
+
+    ptrType *get ();
+
+
+    ptrType &operator * () const;
+    ptrType *operator -> () const;
+
+private:
+    ptrType *holdVal;
+
+    void (*fptr)(ptrType *v);
+
+    defDeleter <ptrType> vdeleter;
+
+
+    unsigned *refCount;
+
+    bool ifOwnDeleterSet = false;
+};
+
+template <typename getType>
+bool operator == (const smart_ptr <getType> &sp1, const smart_ptr <getType> &sp2) {
+    return sp1.holdVal == sp2.holdVal;
+}
+
+template <typename getType>
+bool operator == (const smart_ptr <getType> &sp1, getType *n) {
+    return sp1.holdVal == n;
+}
+
+template <typename getType>
+bool operator == (getType *n, const smart_ptr <getType> &sp2) {
+    return n == sp2.holdVal;
+}
+
+template <typename getType>
+bool operator != (const smart_ptr <getType> &sp1, const smart_ptr <getType> &sp2) {
+    return sp1.holdVal != sp2.holdVal;
+}
+
+template <typename ptrType>
+smart_ptr <ptrType>::smart_ptr () :
+                                holdVal (nullptr), refCount (new unsigned (0)) { }
+
+
+template <typename ptrType>
+smart_ptr <ptrType>::smart_ptr (ptrType *v) :
+                                holdVal (v), refCount (new unsigned (1)) { }
+
+template <typename ptrType>
+smart_ptr <ptrType>::smart_ptr (const smart_ptr <ptrType> &c_obj) :
+                                holdVal (c_obj.holdVal), refCount (c_obj.refCount) {
+                                                                ++*refCount;
+                                                            }
+
+template <typename ptrType>
+smart_ptr <ptrType> ::smart_ptr (ptrType *getVal, void (*f)(ptrType *r)) :
+                                holdVal (getVal), fptr (f), refCount (new unsigned (1)) {
+                                                    ifOwnDeleterSet = true;
+                                            }
+
+template <typename ptrType>
+smart_ptr <ptrType>::~smart_ptr () {
+                    if (*refCount <= 1) {
+                        if (!ifOwnDeleterSet)
+                            vdeleter (holdVal);
+                        else
+                            fptr (holdVal);
+                    } else
+                        *--refCount;
+                }
+
+template <typename ptrType>
+unsigned smart_ptr <ptrType>::getCount (){
+    return *refCount;
+}
+
+template <typename ptrType>
+ptrType &smart_ptr <ptrType>::operator * () const{
+    return *holdVal;
+}
+
+template <typename ptrType>
+ptrType *smart_ptr <ptrType>::operator -> () const {
+    return & this->operator * ();
+}
+
+template <typename ptrType>
+smart_ptr <ptrType> &smart_ptr <ptrType>::reset () {
+    holdVal = nullptr;
+    *--refCount;
+    return *this;
+}
+
+template <typename ptrType>
+smart_ptr <ptrType> &smart_ptr <ptrType>::reset (ptrType *ptrVal) {
+    holdVal = ptrVal;
+    *++refCount;
+    return *this;
+}
+
+template <typename ptrType>
+smart_ptr <ptrType> &smart_ptr <ptrType>::reset (const smart_ptr <ptrType> &getPtr) {
+    holdVal = getPtr.holdVal;
+    ++*refCount;
+
+    smart_ptr <ptrType> *nc_getPtr = const_cast <smart_ptr <ptrType>*> (&getPtr);
+    nc_getPtr->holdVal = nullptr;
+
+    return *this;
+}
+
+template <typename ptrType>
+smart_ptr <ptrType> &smart_ptr <ptrType>::Swap (smart_ptr <ptrType> &rhs) {
+    ptrType *temp = rhs.holdVal;
+    rhs.holdVal = this->holdVal;
+    this->holdVal = temp;
+    return *this;
+}
+
+template <typename ptrType>
+ptrType *smart_ptr <ptrType>::get () {
+    return holdVal;
+}
+
+/*********************************************************************************/
+/*************************** const_ptr *******************************************/
+
+template <typename> class const_ptr;
+
+template <typename getcPtrType>
+bool operator == (const const_ptr <getcPtrType> &, getcPtrType *);
+
+template <typename getcPtrType>
+bool operator == (getcPtrType *, const const_ptr <getcPtrType> &);
+
+template <typename cptrType>
+class const_ptr {
+    friend bool operator == <cptrType> (const const_ptr <cptrType> &, cptrType *);
+    friend bool operator == <cptrType> (cptrType *, const const_ptr <cptrType> &);
+
+public:
+    static constexpr cptrType *null = nullptr;
+
+    const_ptr ();
+
+    const_ptr (cptrType *);
+    const_ptr (cptrType *, void (*)(cptrType *));
+
+    ~const_ptr ();
+
+    const_ptr (const const_ptr <cptrType> &) = delete;
+    const_ptr &operator = (const const_ptr <cptrType> &) = delete;
+
+    cptrType &operator * () const;
+    cptrType *operator -> () const;
+
+    cptrType *release ();
+
+    const_ptr &reset ();
+    const_ptr &reset (cptrType *);
+
+    const_ptr &Swap (const_ptr <cptrType> &);
+
+    cptrType *get ();
+
+private:
+    cptrType *holdVal;
+    void (*cfptr) (cptrType *);
+
+    bool ifFunctionSet;
+
+    defDeleter <cptrType> DefDeleter;
+};
+
+template <typename getcPtrType>
+bool operator == (const const_ptr <getcPtrType> &lhs, getcPtrType *n) {
+    return lhs.holdVal == n;
+}
+
+template <typename getcPtrType>
+bool operator == (getcPtrType *n, const const_ptr <getcPtrType> &rhs) {
+    return n == rhs.holdVal;
+}
+
+template <typename cptrType>
+const_ptr <cptrType>::const_ptr () :
+                                holdVal (nullptr), cfptr (nullptr), ifFunctionSet (false) { }
+
+template <typename cptrType>
+const_ptr <cptrType>::const_ptr (cptrType *getPtr) :
+                                holdVal (getPtr), cfptr (nullptr), ifFunctionSet (false) { }
+
+template <typename cptrType>
+const_ptr <cptrType>::const_ptr (cptrType *getPtr, void (*getFunctionPtr) (cptrType *)) :
+                                holdVal (getPtr), cfptr (getFunctionPtr), ifFunctionSet (true) { }
+
+
+template <typename cptrType>
+const_ptr <cptrType>::~const_ptr () {
+                    if (!ifFunctionSet)
+                        DefDeleter (holdVal);
+                    else
+                        cfptr (holdVal);
+                }
+
+template <typename cptrType>
+cptrType &const_ptr <cptrType>::operator * () const {
+    return holdVal;
+}
+
+template <typename cptrType>
+cptrType *const_ptr <cptrType>::operator -> () const {
+    return &this->operator*();
+}
+
+template <typename cptrType>
+cptrType *const_ptr <cptrType>::release () {
+    cptrType *tempPtr = this->holdVal;
+    this->holdVal = nullptr;
+    return tempPtr;
+}
+
+template <typename cptrType>
+const_ptr <cptrType> &const_ptr <cptrType>::reset () {
+    this->holdVal = nullptr;
+    return *this;
+}
+
+template <typename cptrType>
+const_ptr <cptrType> &const_ptr <cptrType>::reset (cptrType *getPtr) {
+    this->holdVal = getPtr;
+    return *this;
+}
+
+template <typename cptrType>
+const_ptr <cptrType> &const_ptr <cptrType>::Swap (const_ptr <cptrType> &rhs) {
+    cptrType *tempPtr = rhs.holdVal;
+    rhs.holdVal = this->holdVal;
+    this->holdVal = tempPtr;
+    return *this;
+}
+
+template <typename cptrType>
+cptrType *const_ptr <cptrType>::get () {
+    return holdVal;
+}
