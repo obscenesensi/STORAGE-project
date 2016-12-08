@@ -1,0 +1,8 @@
+struct student{
+char name[10];
+int kor;
+int eng;
+int math;
+double avg;
+char grade;
+};
