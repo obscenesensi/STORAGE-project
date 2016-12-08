@@ -1,0 +1,5 @@
+bool ends_with(const std::string &str, const std::string &ending) {
+  if (str.length() < ending.length())
+    return false;
+  return str.compare(str.length() - ending.length(), ending.length(), ending) == 0;
+}
