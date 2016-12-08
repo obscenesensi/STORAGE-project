@@ -1,0 +1,21 @@
+#include <stdio.h>
+#include <string.h>
+
+union Color {
+    int value;
+    struct {
+        unsigned char a;
+        unsigned char r;
+        unsigned char g;
+        unsigned char b;
+    };
+};
+
+int main() {
+    Color color;
+    color.a = 0x22;
+    color.r = 0x1F;
+    color.g = 0x05;
+    color.b = 0xAC;
+    printf("%0.8X\n", color.value);
+}
