@@ -1,0 +1,25 @@
+#include <iostream>
+#include <stdlib.h>
+#include <string>
+using namespace std;
+
+
+#include <stdio.h>
+#include "queue.h"
+
+#define QSIZE 4
+
+int main() {
+	queue_t q;
+
+	queueInit(&q, QSIZE);
+	queuePush(&q, 1);
+	queuePush(&q, 2);
+	queuePush(&q, 3);
+	printf("%d \n\r", queuePop(&q));
+	queuePush(&q, 4);
+
+	cout << " " << endl;
+
+	system("pause");
+}
