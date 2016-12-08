@@ -1,0 +1,53 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 1024
+
+
+int retToken(char* ori[], char* ptr);
+int inputFile(char* source, char*arr[]);
+
+
+main(){
+        int index_ori, index_temp, data;
+        char* ori[MAX];
+        char* temp[MAX];
+
+        //함수를 이용한 배열에 값 입력하기
+        index_ori = inputFile("temp1.txt", ori);
+        index_temp = inputFile("temp2.txt", temp);
+
+        for(data = 0 ; data < index_ori ; data++){
+                // 두 텍스트를 비교하여 다르면 출력
+                if(strcmp(ori[data] , temp[data]) !=0 ){
+                        printf("%s \t %s \n " , ori[data], temp[data]);
+                }
+        }
+}
+
+// 파일 입력 함수
+int inputFile(char* source, char* arr[]){
+        FILE *fp = fopen(source , "r");
+        int buf_size = MAX*MAX;
+        char* inp = malloc(buf_size);
+        int     index = 0;
+
+        while(fgets(inp,buf_size, fp)){
+                index = retToken(arr, inp);
+        }
+        fclose(fp);
+        return index;
+}
+
+// 배열에 값 입력하는 함수
+int retToken(char* ori[] , char *inp){
+        int i = 0;
+        char* ptr = strtok(inp, ";");
+
+        while(ptr != NULL){
+                ori[i] = ptr;
+                ptr = strtok(NULL, ";");
+                i++;
+        }
+        return i;
+}
