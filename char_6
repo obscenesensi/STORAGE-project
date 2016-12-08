@@ -1,0 +1,79 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define SIZE    256
+#define NITEM   15
+
+int getData(char* line, char** t);
+void outputResult(FILE *fout, char** title, char** t, int N);
+int main(void) {
+    char s;
+    int i, j, N;
+
+    char **t = (char**)malloc(sizeof(char*)*NITEM);
+    char **title = (char**)malloc(sizeof(char*)*NITEM);
+    char* line = (char*)malloc(sizeof(char)*SIZE);
+
+    FILE *fp = fopen("Example_table.txt", "r");
+    FILE *fout = fopen("output.txt", "a");
+
+    if (!fp) {
+        perror("Error! Cannot find the file");
+        exit(1);
+    }
+
+    if (!fout) {
+        perror("Error! Cannot create the file");
+        exit(2);
+    }
+
+    fgets(line,SIZE,fp);
+    N = getData(line,t);
+
+    for (i=0; i<N; ++i) {
+        title[i] = malloc(strlen(t[i])+1);
+        strcpy(title[i], t[i]);
+    }
+
+    while(!feof(fp)) {
+        fgets(line,SIZE,fp);
+        j = getData(line, t);
+        if (j<=1) continue;
+        outputResult(stdout,title,t,j);
+        outputResult(fout,title,t,j);
+    }
+
+    for (i=0; i<N; ++i) {
+        free(title[i]);
+    }
+
+    free(line);
+    fclose(fp);
+    fclose(fout);
+    free(t);
+    free(title);
+    return 0;
+}
+
+
+int getData(char* line, char** t) {
+    int item=0;
+    char *c = strtok(line,"\n");
+    c = strtok(line,"\t");
+    t[item++] = c;
+    while (c != NULL && item < NITEM) {
+        c = strtok(NULL,"\t");
+        if (c!= NULL) t[item++] = c;
+    }
+
+    return item;
+}
+
+void outputResult(FILE *fout, char** title, char** t, int N) {
+    int i, a;
+    for (i=0; i<N;++i) {
+        fprintf(fout, "%s : %s ", title[i], t[i]);
+        if (i!=N-1) fprintf(fout, ", ");
+    }
+    fputc('\n',fout);
+}
