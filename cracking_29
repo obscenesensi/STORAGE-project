@@ -1,0 +1,29 @@
+
+import java.util.Stack;
+
+class MyQueue<T> {
+	// push stack
+	private Stack<T> s0;
+	// poll stack
+	private Stack<T> s1;
+	private int cur;
+
+	public MyQueue() {
+		cur = 0;
+		s0 = new Stack<T>();
+		s1 = new Stack<T>();
+	}
+
+	public void push(T element) {
+		s0.push(element);
+	}
+
+	public T poll() {
+		if (!s1.empty()) {
+			while(!s0.empty()) {
+				s1.push(s0.pop());
+			}
+		} 
+		return s1.pop();
+	}
+}
