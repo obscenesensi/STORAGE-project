@@ -1,0 +1,81 @@
+#include <iostream>
+#include <vector>
+#include <functional>
+#include <cmath>
+
+template <typename T>
+struct vec3 {
+    T x;
+    T y;
+    T z;
+    vec3() { }
+    vec3(const T &x, const T &y, const T &z) : x(x), y(y), z(z) { }
+
+    void apply(std::function<void (T &)> f) {
+        f(x); f(y); f(z);
+    }
+    template <typename Q>
+    vec3<Q> map(std::function<Q(T &)> f) {
+        return vec3<Q>(f(x), f(y), f(z));
+    }
+    template <typename Q>
+    vec3<Q> map(std::function<Q(const T &)> f) const {
+        return vec3<Q>(f(x), f(y), f(z));
+    }
+};
+
+template<typename T>
+std::ostream &operator<<(std::ostream &o, const vec3<T> &p) {
+    return o << "(" << p.x << ", " << p.y << ", " << p.z << ")";
+}
+
+template <template <typename> class Layout, typename T>
+class outer_array : public Layout<std::vector<T> > {
+    typedef typename std::vector<T>::size_type size_type;
+    typedef Layout<T &> reference;
+    typedef Layout<const T &> const_reference;
+
+public:
+    outer_array(size_type n) {
+        this->apply([n] (std::vector<T> &v) -> void {
+            v.resize(n);
+        });
+    }
+
+    const_reference operator[](size_type i) const {
+        return this->template map<const T &>([i] (const std::vector<T> &v) -> const T & {
+            return v[i];
+        });
+    }
+
+    reference operator[](size_type i) {
+        return this->template map<T &>([i] (std::vector<T> &v) -> T & {
+            return v[i];
+        });
+    }
+};
+
+int main() {
+    outer_array<vec3, double> v(10);
+
+    for (int i = 0; i < 10; i++) {
+        v.x[i] = i;
+        v.y[i] = 10 - i;
+        v.z[i] = 42;
+    }
+
+    for (int i = 0; i < 10; i++)
+        std::cout << v[i] << std::endl;
+
+    for (int i = 0; i < 10; i++) {
+        vec3<double &> it = v[i];
+        it.x = sin(0.1 * i);
+        it.y = cos(0.1 * i);
+        it.z = tan(0.1 * i);
+    }
+
+    for (int i = 0; i < 10; i++)
+        std::cout << v[i] << std::endl;
+
+    return 0;
+}
