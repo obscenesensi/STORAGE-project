@@ -1,0 +1,47 @@
+#include <stdlib.h>
+
+
+#define MAX 1024
+
+int main(int argc, char *argv[]){
+        FILE *fp ;
+        char* input;
+        char* temp_p;
+        char* line_p;
+        char** store;
+
+        int i , tmp, k = 0;
+
+        fp = fopen(argv[1] , "r");
+
+        input = (char*)malloc(sizeof(char) * MAX);
+        store = (char**)malloc(sizeof(char*) * MAX);
+
+        while(fgets(input, MAX, fp)){
+
+                if(strlen(input) != 1){
+                        store[i] = (char*)malloc(sizeof(char) * MAX);
+                        if((line_p = strchr(input, '\n')) != NULL)*line_p ='\0';
+                        strcpy(store[i] , input);
+                        i++;
+                }
+        }
+
+        for(k = 0 ; k < i ; k++){
+                for(tmp = k+1 ; tmp < i ; tmp++ ){
+                        if(strcmp(store[k] , store[tmp]) > 0){
+                                temp_p = store[k];
+                                store[k] = store[tmp] ;
+                                store[tmp] = temp_p;
+
+                        }
+                }
+        }
+
+        for(k = 0 ; k < i ; k++){
+                printf("%s\n" , store[k]);
+        }
+
+        fclose(fp);
+        return 0;
+}
