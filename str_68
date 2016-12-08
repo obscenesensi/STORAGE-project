@@ -1,0 +1,20 @@
+#include <set>
+#include <string>
+
+using namespace std;
+
+// ...
+
+set<string> setStr;
+string s = "A";
+
+setStr.insert(s);
+s = "B";
+setStr.insert(s);
+s = "C";
+setStr.insert(s);
+
+for(set<string>::const_iterator it = setStr.begin(); it != setStr.end(); ++it)
+{
+    cout << *it << endl;
+}
