@@ -1,0 +1,92 @@
+#if defined(_MSC_VER) && (_MSC_VER >= 1020)
+#pragma once
+#endif
+
+#ifndef __SCOPED_PTR_H__
+#define __SCOPED_PTR_H__
+
+#include <cassert>
+
+template<class T>
+class scoped_ptr
+{
+    T* m_ptr;
+public:
+    scoped_ptr() :
+        m_ptr(0)
+    {
+    }
+
+    scoped_ptr(T* ptr) : m_ptr(ptr)
+    {
+    }
+
+    ~scoped_ptr()
+    {
+        delete m_ptr;
+    }
+
+    scoped_ptr& operator = (T* ptr)
+    {
+        delete m_ptr;
+        m_ptr = ptr;
+        return *this;
+    }
+
+    bool operator !() const
+    {
+        return m_ptr == 0;
+    }
+
+    operator T*() { return m_ptr; }
+    operator T const*() const { return m_ptr; }
+};
+
+template<class T>
+class scoped_array
+{
+    T* m_ptr;
+public:
+    scoped_array() :
+        m_ptr(0)
+    {
+    }
+
+    scoped_array(T* ptr) : m_ptr(ptr)
+    {
+    }
+
+    ~scoped_array()
+    {
+        delete[] m_ptr;
+    }
+
+    scoped_array& operator = (T* ptr)
+    {
+        delete[] m_ptr;
+        m_ptr = ptr;
+        return *this;
+    }
+
+    T& operator[](size_t index)
+    {
+        assert(m_ptr);
+        return m_ptr[index];
+    }
+
+    T const& operator[](size_t index) const
+    {
+        assert(m_ptr);
+        return m_ptr[index];
+    }
+
+    bool operator !() const
+    {
+        return m_ptr == 0;
+    }
+
+    operator T*() { return m_ptr; }
+    operator T const*() const { return m_ptr; }
+};
+
+#endif // __SCOPED_PTR_H__
