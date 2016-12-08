@@ -1,0 +1,8 @@
+void ReverseString(char* str, int n) {
+  char* end = str + n - 1;
+  while (str < end) {
+    swap(*str, *end);
+    ++str;
+    --end;
+  }
+}
