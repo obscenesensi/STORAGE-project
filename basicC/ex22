@@ -1,0 +1,46 @@
+#include <stdio.h>
+ 
+void trans(int ,int ); //함수 선언
+ 
+int main(void)
+{
+           int a,b; //두 정수
+          
+           printf("정수 입력 : ");
+           scanf("%d",&a);
+           printf("진법입력(2,8,16) : ");
+           scanf("%d",&b);
+          
+           trans(a,b);
+          
+           return 0;
+}
+ 
+void trans(int a,int b) //진법변환 함수
+{         
+           int i,j = 0;
+           int mask = 1;
+           int temp;
+           if(b == 2) { //2진법일경우
+                     for(i=31;i>=0;i--) {
+                                temp = (a&mask<<i)?1:0;
+                                if(j==0 && temp==0)
+                                          continue;
+                                else if(j==0 && temp==1) {
+                                          printf("%d",temp);
+                                          j = 1;
+                                } else
+                                          printf("%d",temp);
+                     }
+           }
+          
+           else if(b == 8) //8진법으로
+                     printf("결과-> %o",a);
+           else if(b == 16) //16진법으로
+                     printf("결과-> %x",a);
+           else
+                     printf("잘못된 입력입니다.");
+           printf("\n");
+          
+           return ;
+}
