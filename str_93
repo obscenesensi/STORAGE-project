@@ -1,0 +1,258 @@
+#include <cstdio>
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+using namespace std;
+class vocabularies{
+	public:
+		bool occupied;
+		int count;
+		vector<string> words;
+};
+vector<vocabularies> dict;
+vector<vocabularies> candidate1;
+vector<vocabularies> candidate2;
+vector<string> ok;
+int hashcode(string str){
+	unsigned int temp = 0;
+	int hashmod = 97;
+	for(int i=(str.length())-1;i >= 0;i--){
+		temp = temp * hashmod + str[i];
+	}
+	return temp % 9999983;
+}
+
+int finddict(string str){
+	int found = 0;
+	int code = hashcode(str);
+	if(dict[code].occupied){
+		int pos = 0;
+			while(pos < dict[code].words.size() && found == 0){
+				if(str.compare(dict[code].words[pos]) == 0)found = 1;
+				pos++;
+			}
+	}
+	return found;
+}
+
+int ED2_hashcode(string str){
+	unsigned int temp = 0;
+	int hashmod = 97;
+	for(int i=(str.length())-1;i >= 0;i--){
+		temp = temp * hashmod + str[i];
+	}
+	return temp % 999983;
+}
+void ED2_insert(string str){
+	int code = ED2_hashcode(str);
+		if(candidate2[code].occupied){
+			int found = 0,pos = 0;
+			while(found != 1 && pos < candidate2[code].count){
+				if(str.compare(candidate2[code].words[pos]) == 0)found = 1;
+				pos++;
+			}
+			if(found != 1){
+				candidate2[code].count++;
+				candidate2[code].words.push_back(str);
+			}
+		}
+		else{
+			candidate2[code].occupied = 1;
+			candidate2[code].count = 1;
+			candidate2[code].words.push_back(str);
+		}
+		return;
+}
+void ED2(string str){
+	char temp;
+	for(char i='a';i<='z';i++){
+		for(int j=0;j<=str.length();j++){
+			str.insert(j,1,i);
+			ED2_insert(str);
+			str.erase(j,1);
+		}
+		for(int j=0;j<str.length();j++){
+			temp = str[j];
+			str[j] = i;
+			ED2_insert(str);
+			str[j] = temp;
+		}
+	}
+	for(int i=0;i<str.length();i++){
+		temp = str[i];
+		str.erase(i,1);
+		ED2_insert(str);
+		str.insert(i,1,temp);
+	}
+	for(int i=0;i<str.length()-1;i++){
+		temp = str[i];
+		str[i] = str[i+1];
+		str[i+1] = temp;
+		ED2_insert(str);
+		temp = str[i];
+		str[i] = str[i+1];
+		str[i+1] = temp;
+	}
+	return;
+}
+
+int ED1_hashcode(string str){
+	unsigned int temp = 0;
+	int hashmod = 33;
+	for(int i=(str.length())-1;i >= 0;i--){
+		temp = temp * hashmod + str[i];
+	}
+	return temp % 9973;
+}
+void ED1_insert(string str){
+	int code = ED1_hashcode(str);
+		if(candidate1[code].occupied){
+			int found = 0,pos = 0;
+			while(found != 1 && pos < candidate1[code].count){
+				if(str.compare(candidate1[code].words[pos]) == 0)found = 1;
+				pos++;
+			}
+			if(found != 1){
+				candidate1[code].count++;
+				candidate1[code].words.push_back(str);
+			}
+		}
+		else{
+			candidate1[code].occupied = 1;
+			candidate1[code].count = 1;
+			candidate1[code].words.push_back(str);
+		}
+		return;
+}
+void ED1(string str){
+	char temp;
+	for(char i='a';i<='z';i++){
+		for(int j=0;j<=str.length();j++){
+			str.insert(j,1,i);
+			ED1_insert(str);
+			str.erase(j,1);
+		}
+		for(int j=0;j<str.length();j++){
+			temp = str[j];
+			str[j] = i;
+			ED1_insert(str);
+			str[j] = temp;
+		}
+	}
+	for(int i=0;i<str.length();i++){
+		temp = str[i];
+		str.erase(i,1);
+		ED1_insert(str);
+		str.insert(i,1,temp);
+	}
+	for(int i=0;i<str.length()-1;i++){
+		temp = str[i];
+		str[i] = str[i+1];
+		str[i+1] = temp;
+		ED1_insert(str);
+		temp = str[i];
+		str[i] = str[i+1];
+		str[i+1] = temp;
+	}
+	for(int i=0;i<10000;i++){
+		if(candidate1[i].occupied){
+			for(int j=0;j<candidate1[i].count;j++){
+				ED2(candidate1[i].words[j]);
+			}
+		}
+	}
+	return;
+}
+
+bool cmp(string a,string b){
+	return (0 > (a.compare(b)));
+}
+
+int main(){
+	FILE *dictionary;
+	dictionary = fopen("/tmp2/dsa2016_hw5/cmudict-0.7b","r");
+	dict.reserve(10000000);
+	candidate1.reserve(10000);
+	candidate2.reserve(1000000);
+	char c;
+	string str;
+	while(c != '!')c = fgetc(dictionary);
+	while(c != EOF){
+		c = 0;
+		int flag = 0;
+		str.clear();
+		while(c != '\n' && c != EOF){
+			c = fgetc(dictionary);
+			if(flag == 0 && c == ' '){
+				flag = 1;
+				int code = hashcode(str);
+				if(dict[code].occupied){
+					dict[code].count++;
+					dict[code].words.push_back(str);
+				}
+				else {
+					dict[code].occupied = 1;
+					dict[code].count = 1;
+					dict[code].words.push_back(str);
+				}
+			}
+			if(flag == 0){
+				if(65 <= c && 90 >= c)str += (c + 32);
+				else str += c;
+			}
+		}
+	}
+	c = 0;
+	string original;
+	while(c != EOF){
+		original.clear();
+		for(int i=0;i<10000;i++){
+			candidate1[i].occupied = 0;
+			candidate1[i].count = 0;
+			candidate1[i].words.clear();
+		}
+		for(int i=0;i<1000000;i++){
+			candidate2[i].occupied = 0;
+			candidate2[i].count = 0;
+			candidate2[i].words.clear();
+		}
+		int length = 0;
+		int flag = 0;
+		c = 0;
+		while((c = getchar())){
+			if(c == ' ' || c == '\t')flag = 1;
+			if(c == '\n' && flag == 1)break;
+			else if(c == EOF)break;
+			if(flag == 0){
+				original.push_back(c);
+			}
+		}
+		if(flag == 1){
+			if(finddict(original)){
+				printf("%s ==> OK\n",original.c_str());
+			}
+			else{
+				vector <string>().swap(ok);
+				ED1(original);
+				for(int i=0;i<1000000;i++){
+					if(candidate2[i].occupied){
+						for(int j=0;j<candidate2[i].count;j++){
+							if(finddict(candidate2[i].words[j]))ok.push_back(candidate2[i].words[j]);
+						}
+					}
+				}
+				sort(ok.begin(),ok.end(),cmp);
+				printf("%s ==> ",original.c_str());
+				for(int i=0;i<ok.size();i++){
+					if(i == ok.size()-1)printf("%s",ok[i].c_str());
+					else printf("%s ",ok[i].c_str());
+				}
+				if(ok.size() == 0)printf("NONE");
+				printf("\n");
+			}
+		}
+	}
+	fclose(dictionary);
+	return 0;
+}
