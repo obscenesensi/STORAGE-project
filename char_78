@@ -1,0 +1,14 @@
+
+#include <string.h>
+#include <stdio.h>
+
+
+int main(void)
+{
+  char *str = "12345";
+	char *buf = malloc(5);
+
+	strcpy(buf, str);
+
+	return 0;
+}
