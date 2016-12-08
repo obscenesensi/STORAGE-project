@@ -1,0 +1,22 @@
+template <class T> struct GPU_Vector<T>::GPUArray
+{
+    GPUArray(){}
+};
+
+template <class T> GPU_Vector<T>::GPU_Vector(const SGVector<T> &vector)
+:gpuarray(std::unique_ptr<GPUArray>(new GPU_Vector<T>::GPUArray())) { }
+
+template struct GPU_Vector<int32_t>;
+template struct GPU_Vector<float64_t>;
+
+*/linalg.h
+
+template <class T> struct GPU_Vector : public BaseVector<T>
+{
+private:
+    struct GPUArray;
+    std::unique_ptr<GPUArray> gpuarray;
+..
+}  
+*/
+
