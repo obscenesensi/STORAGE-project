@@ -1,0 +1,77 @@
+#ifndef INTEFACE_PTR_02028740704872
+#define INTEFACE_PTR_02028740704872
+
+#include <type_traits>
+
+namespace detail
+{
+
+template <typename ...Ifaces>
+struct interface_ptr_impl
+{
+    template <typename T>
+    constexpr
+    interface_ptr_impl(T) {}
+};
+
+template <typename Iface, typename ...Ifaces>
+struct interface_ptr_impl<Iface, Ifaces...>
+    : interface_ptr_impl<Ifaces...>
+{
+    using base_type = interface_ptr_impl<Ifaces...>;
+
+    template <typename T>
+    constexpr
+    interface_ptr_impl(T ptr,
+                       typename std::enable_if<std::is_base_of<Iface, typename std::remove_pointer<T>::type>::value
+                                            || std::is_same<T, std::nullptr_t>::value>::type * = 0)
+        : base_type(ptr)
+        , ptr_(ptr)
+    {}
+
+    template <typename GetIface>
+    constexpr
+    GetIface * get(typename std::enable_if<std::is_same<GetIface, Iface>::value>::type * = 0) const
+    {
+        return ptr_;
+    }
+
+    template <typename GetIface>
+    constexpr
+    GetIface * get(typename std::enable_if<!std::is_same<GetIface, Iface>::value>::type * = 0) const
+    {
+        return base_type::template get<GetIface>();
+    }
+
+    Iface * ptr_;
+};
+
+}  // namespace detail
+
+template <typename ...Ifaces>
+struct interface_ptr
+    : detail::interface_ptr_impl<Ifaces...>
+{
+    using base_type = detail::interface_ptr_impl<Ifaces...>;
+
+    constexpr
+    interface_ptr()
+        : base_type(nullptr)
+    {}
+
+    template <typename T>
+    constexpr
+    interface_ptr(T * ptr)
+        : base_type(ptr)
+    {}
+
+    template <typename GetIface, typename ...GetIfaces>
+    friend
+    constexpr
+    GetIface * get(interface_ptr<GetIfaces...> const & obj)
+    {
+        return obj.base_type::template get<GetIface>();
+    }
+};
+
+#endif  // INTEFACE_PTR_02028740704872
