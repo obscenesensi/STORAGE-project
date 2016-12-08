@@ -1,0 +1,22 @@
+#include <stdio.h>
+
+struct ts {
+    int a;
+    int b;
+};
+
+typedef struct {
+    int a;
+    int b;
+} ts2;
+
+int main() {
+    ts a;
+    ts2 *pts;
+    int* pa = &(a.a);
+    pts = (ts2*)&a;
+    a.b = 20;
+    pa = pa + 1;
+    printf("%d, %d", *pa, pts->b);
+    return 0;
+}
