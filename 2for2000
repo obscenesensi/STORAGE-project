@@ -1,0 +1,24 @@
+#include <stdio.h>
+ 
+void main() {
+  int arr[603]={0,};
+  int i, j;
+  arr[0]=1;
+ 
+  for(i=0; i<2000; i++) {
+    for(j=0; j<603; j++) {
+      arr[j]*=2;
+    }
+ 
+    for(j=0; j<603; j++) {
+      if(arr[j]>=10) {
+        arr[j+1]+=1;
+        arr[j]-=10;
+      }
+    }
+  }
+ 
+  for(i=602; i>=0; i--) {
+    printf("%d",arr[i]);
+  }
+}
