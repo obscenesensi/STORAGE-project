@@ -1,0 +1,178 @@
+
+    input >> str;
+    x = str;
+    return input;
+}
+
+void MyString::operator=(char theStr[])
+{
+    int size = slen(theStr);
+    if (this->maxLen == -1 || size - 1 < this->maxLen)
+    {
+        this->length = size;
+        this->str = new char[size];
+        for (int i = 0; i < size; i++)
+        {
+            this->str[i] = theStr[i];
+        }
+    }
+    else
+    {
+        cerr << "Error: MyString is longer than the max length of " << this->maxLen << ".";
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+// Functions implementations section ///////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+MyString::MyString(int ml, char theString[])
+{
+    this->commonConstructor(ml, theString);
+}
+
+MyString::MyString(char theString[])
+{
+    this->commonConstructor(-1, theString);
+}
+
+void MyString::commonConstructor(int ml, char theString[])
+{
+    this->maxLen = ml;
+    this->length = slen(theString);
+    if (this->maxLen != -1 && (this->length > this->maxLen))
+        cerr << "Error: MyString is longer than the max length of " << this->maxLen << ".";
+    else
+        this->str = theString;
+}
+
+void MakeStrEmpty(MyString& a)
+{
+    a.str = "";
+    a.length = 0;
+}
+
+int StrLength(MyString a){ return a.length; }
+
+MyString AppendChar(MyString a, char b)
+{
+    int newLength = a.length + 1;
+
+    char* str = new char[newLength];
+    for (int i = 0; i < newLength; i++)
+    {
+        str[i] = a.str[i];
+    }
+    str[newLength-1] = b;
+    if (newLength > a.maxLen)a.maxLen++;
+    a.str = str;
+    for (int i = 0; i < newLength; i++)
+    {
+        a.str[i] = str[i];
+    }
+    a.length++;
+    return a;
+}
+
+void ReadLnStr(MyString &theString)
+{
+    cin >> theString;
+}
+
+MyString ConcatStr(MyString strA, MyString strB)
+{
+    MyString strC = "";
+    char *str = new char[];
+    cout << strA.length << " : " << strB.length << endl;
+    for (int i = 0; i < strA.length; i++)
+    {
+        str[i] = strA.str[i];
+    }
+    for (int i = 0; i < strB.length; i++)
+    {
+        str[i + strA.length] = strB.str[i];
+    }
+    str[strA.length + strB.length] = '\0';
+    strC = str;
+    return strC;
+}
+
+void DeleteStr(MyString &theStr, int s, int e)
+{
+    char* newStr = new char[];
+    for (int i = 0; i < theStr.length; i++)
+    {
+        newStr[i] = theStr.str[i];
+    }
+
+    int min = e - s + 1;
+    for (int i = e+1; i < theStr.length; i++)
+    {    
+        newStr[i - min] = theStr.str[i];
+    }
+    newStr[theStr.length-min] = '\0';
+    theStr = newStr;
+}
+
+void InsertStr(MyString strAdd, MyString &theStr, int s)
+{
+    char* newStr = new char[];
+    for (int i = 0; i < theStr.length; i++)
+    {
+        newStr[i] = theStr.str[i];
+    }
+
+    int newLen = strAdd.length + theStr.length;
+    for (int i = theStr.length-1; i >= s; i--)
+    {
+        newStr[i + strAdd.length] = newStr[i];
+    }
+
+    for (int i = 0; i < strAdd.length; i++)
+    {
+        newStr[s+i] = strAdd.str[i];
+    }
+
+    newStr[newLen] = '\0';
+    theStr = newStr;
+}
+
+
+void CopyStr(MyString strA, int s, int e, MyString& strB)
+{
+    char* newStr = new char[];
+    for (int i = s-1; i < e; i++)
+    {
+        newStr[i-s+1] = strA.str[i];
+    }
+    newStr[e-s+1] = '\0';
+    strB = newStr;
+}
+
+int SearchStr(MyString source, MyString pattern)
+{
+    for (int i = 0; i < source.length; i++)
+    {
+        int o = 0;
+        for (o = 0; o < pattern.length; o++)
+        {
+            if (pattern.str[o] != source.str[i+o]) break;
+        }
+        if (o == pattern.length) return i;
+    }
+    return 0;
+}
+
+int CompareStr(MyString strA, MyString strB)
+{
+    int shorter = (strA.length < strB.length) ? strA.length: strB.length;
+    for (int i = 0; i < shorter; i++)
+    {
+        if (strA.str[i] > strB.str[i]) return 1;
+        else if (strA.str[i] < strB.str[i]) return -1;
+    }
+    if (strA.length > strB.length) return 1;
+    else if (strA.length < strB.length) return -1;
+    else return 0;
+    }
+    
