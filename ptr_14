@@ -1,0 +1,16 @@
+#include <vector>
+#include <memory>
+#include <iostream>
+
+int main()
+{
+    std::vector<std::unique_ptr<int>> v;
+    v.push_back(std::make_unique<int>(3));
+    v.push_back(std::make_unique<int>(4));
+    v.push_back(std::make_unique<int>(5));
+
+    for (auto &ptr: v) {
+        std::cout << *ptr << " ";
+    }
+    std::cout << "\n";
+}
