@@ -1,0 +1,50 @@
+#include <stdio.h>
+
+struct htable 
+{
+       int pos;
+       int count;
+};
+
+int main()
+{
+    struct htable hash[26];
+    struct htable ans;
+    
+    int i = 0;
+    char str[] = "abcdefghbcdef";    
+    int pos = 500000; //some large number
+    
+    for (i=0; i< 26; i++)
+    {
+        memset(&hash[i],0, sizeof(struct htable));
+    }
+    
+    for(i=0; i < sizeof(str); i++)
+    {
+           if (!hash[(int)(str[i] - 'a')].pos)
+           {
+                                  hash[(int)(str[i]-'a')].pos = i;
+                                  hash[(int)(str[i] - 'a')].count++;
+                                  continue;
+           }
+           
+           else hash[(int)(str[i] - 'a')].count++;
+           
+    }  
+    
+    
+    for (i = 0; i<26; i++)
+    {
+          if( hash[i].count == 1) 
+          {  
+               if (ans.pos > hash[i].pos) ans.pos = hash[i].pos;
+          }
+        
+    }
+    
+    printf("%c", str[ans.pos]);
+    
+    
+    getch();
+}
