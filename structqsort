@@ -1,0 +1,28 @@
+typedef struct TEST_STC{
+        char* string_T; 
+        float value;
+} S_TEST_STC;
+
+// float 형 변수를 기준으로한 비교함수. 
+// 문자열일 경우 strcmp를 쓰면된다. 
+int compareVAL( const void *arg1 , const void * arg2){
+        float v1 , v2;
+        v1 = ((S_TEST_STC *)arg1)->value;
+        v2 = ((S_TEST_STC *)arg2)->value;
+
+        if(v1 > v2) return -1;
+        else if(v1 == v2) return 0;
+        else return 1;
+}
+
+int main(void){
+...
+S_TEST_STC* stc_arr = NULL; 
+int MAX_COUNT = 100; 
+...
+stc_arr = (S_TEST_STC *)malloc(MAX_COUNT*sizeof(S_TEST_STC)+1); 
+...
+ qsort( stc_arr , MAX_COUNT , sizeof(S_TSET_STC) , compareVAL);
+...
+...
+}
