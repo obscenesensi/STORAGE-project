@@ -1,0 +1,50 @@
+#include <stdio.h>
+#include <string.h>
+struct student //구조체
+{
+	char name[10];
+	int kor;
+	int eng;
+	int math;
+	double avg;
+	char grade;
+};
+
+struct student ccc(struct student st);
+int main()
+{
+	int i;
+	struct student st;
+	strcpy(st.name, "hong");
+	st.kor=95;
+	st.eng=99;
+	st.math=97;
+	st.avg=(st.kor+st.eng+st.math)/3;
+	st.grade='A';
+	
+	//함수로 넘어가기전 출력
+	printf("함수로 넘어가기 전 : %s %d %d %d %lf %c\n",st.name, st.kor, st.eng, st.math, st.avg, st.grade);
+	
+	st=ccc(st);
+	
+	//함수 호출 후 출력
+	printf("함수 호출 후 : %s %d %d %d %lf %c\n",st.name, st.kor, st.eng, st.math, st.avg, st.grade);
+
+
+	return 0;
+}
+
+struct student ccc(struct student st)
+{
+	strcpy(st.name, "kim");
+	st.kor=80;
+	st.eng=80;
+	st.math=80;
+	st.avg=(st.kor+st.eng+st.math)/3;
+	st.grade='B';
+	//함수 내부에서 출력
+	printf("함수 내부 : %s %d %d %d %lf %c\n",st.name, st.kor, st.eng, st.math, st.avg, st.grade);
+
+
+	return st;
+}
