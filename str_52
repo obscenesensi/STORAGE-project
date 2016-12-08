@@ -1,0 +1,26 @@
+class Solution {
+public:
+    vector<string> restoreIpAddresses(string s) {
+        vector<string>res;
+        string str="";
+        search(res,s,str,0,0);
+        return res;
+    }
+    bool valid(string str){//***********cannot be string &str
+        if(atoi(str.c_str())>255)return false; //***********is atoi(str.c_str())
+        if(str.size()!=1 && str[0]=='0')return false;
+        return true;
+    }
+    void search(vector<string>&res,string &s,string str,int p,int k){
+        if(k==4){
+            if(p==s.size())
+                res.push_back(str.substr(0,str.size()-1));
+        }else{
+            for(int i=1;i<=3;i++){
+                if(p+i-1<s.size() && valid(s.substr(p,i)))
+                    search(res,s,str+s.substr(p,i)+".",p+i,k+1);
+            }
+        }
+    }
+
+};
