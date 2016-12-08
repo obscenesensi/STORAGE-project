@@ -1,0 +1,11 @@
+#include <stdio.h>
+ 
+int main()
+{
+    FILE *rfp = fopen("input.txt", "r");
+    int a, b;
+    char c[100], d[100];
+ 
+    fscanf(rfp, "%d %d %s %s", &a, &b, c, d);
+    printf("%d %d %s %s\n", a, b, c, d);
+}
