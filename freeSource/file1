@@ -1,0 +1,12 @@
+#include <stdio.h>
+ 
+int main()
+{
+    FILE *rfp = fopen("input.txt", "r");
+    FILE *wfp = fopen("output.txt", "w");
+    int a, b;
+    char c[100], d[100];
+ 
+    fscanf(rfp, "%d %d %s %s", &a, &b, c, d);
+    fprintf(wfp, "%d %d %s %s\n", a, b, c, d);
+}
