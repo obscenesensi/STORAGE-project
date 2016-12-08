@@ -1,0 +1,52 @@
+
+#include <stdio.h>
+
+// https://en.wikipedia.org/wiki/C_preprocessor#Token_stringification
+#define xstr(s) str(s)
+#define str(s) #s
+
+#define NLETTERS 256
+#define BUFSIZE (1024 * 1024)
+#define NVALUES_IN_LINE 5
+
+void initializeTable(int* table) {
+    int l;
+    for (l = 0; l < NLETTERS; l++) {
+        table[l] = 0;
+    }
+}
+
+void countLetters(int* table, const char* text, size_t length) {
+    size_t i;
+    for (i = 0; i < length; i++) {
+        unsigned char l = text[i];
+        table[l] += 1;
+    }
+}
+
+void countFile(int* table, FILE* f) {
+    size_t nread;
+    char buffer[BUFSIZE];
+    while (nread = fread(buffer, 1, BUFSIZE, f)) {
+        countLetters(table, buffer, nread);
+    }
+}
+
+void printTable(const int* table, FILE* f, const char* table_name) {
+    fprintf(f, "static const int %s[" xstr(NLETTERS) "] = {\n", table_name);
+    size_t l;
+    for (l = 0; l < NLETTERS; l++) {
+        int count = table[l];
+        char space = ((l + 1) % NVALUES_IN_LINE == 0) ? '\n' : ' ';
+        fprintf(f, "%d,%c", count, space);
+    }
+    fprintf(f, "\n};\n");
+}
+
+int main(int argc, char** argv) {
+    int table[NLETTERS];
+    initializeTable(table);
+    countFile(table, stdin);
+    printTable(table, stdout, "count_letters");
+    return 0;
+}
