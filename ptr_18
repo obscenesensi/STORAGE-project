@@ -1,0 +1,115 @@
+#pragma once
+
+#include <memory>
+#include <type_traits>
+#ifdef ANDROID
+#include <mutex>
+#endif
+
+
+namespace zen { namespace util {
+
+/**
+ * @class shared_ptr_proxy is a way to workaround absence of std::atomic_* specializations for std::shared_ptr in Android ndk
+ *
+ * Please, get rid this util when you find out you the fresh ndk doesn't have this problem any more
+ */
+template <typename T>
+class shared_ptr_proxy
+{
+public:
+  // default constructible
+  shared_ptr_proxy() = default;
+  // copy constructible
+  shared_ptr_proxy(const shared_ptr_proxy&) = default;
+  // move constructible
+  shared_ptr_proxy(shared_ptr_proxy&&) = default;
+  // copy assignable
+  shared_ptr_proxy& operator=(const shared_ptr_proxy&) = default;
+  // move assignable
+  shared_ptr_proxy& operator=(shared_ptr_proxy&&) = default;
+
+  // user defined constuctors
+  shared_ptr_proxy(const std::shared_ptr<T>& ptr) noexcept : m_ptr(ptr)
+#ifdef ANDROID
+    , m_mut(std::make_shared<std::mutex>())
+#endif
+  {}
+  shared_ptr_proxy(std::shared_ptr<T>&& ptr) noexcept : m_ptr(std::move(ptr))
+#ifdef ANDROID
+    , m_mut(std::make_shared<std::mutex>())
+#endif
+  {}
+
+  // overloaded assign operators (not copyable ones)
+  shared_ptr_proxy& operator=(const std::shared_ptr<T>& ptr) noexcept
+  {
+    m_ptr = ptr;
+#ifdef ANDROID
+    m_mut = std::make_shared<std::mutex>();
+#endif
+    return *this;
+  }
+  shared_ptr_proxy& operator=(std::shared_ptr<T>&& ptr) noexcept
+  {
+    m_ptr = std::move(ptr);
+#ifdef ANDROID
+    m_mut = std::make_shared<std::mutex>();
+#endif
+    return *this;
+  }
+
+  T& operator*() noexcept { return *m_ptr; }
+  const T& operator*() const noexcept { return *m_ptr; }
+
+  T* operator->() noexcept { return *m_ptr; }
+  const T* operator->() const noexcept { return *m_ptr; }
+
+  operator std::shared_ptr<T>() noexcept { return m_ptr; }
+
+  /// @todo additional @c std::shared_ptr methods
+
+#if ! defined(ANDROID)
+  friend bool atomic_is_lock_free(const shared_ptr_proxy* p)
+  {
+    return std::atomic_is_lock_free(&p.m_ptr);
+  }
+
+  friend void atomic_store(shared_ptr_proxy* p, shared_ptr_proxy r)
+  {
+    std::atomic_store(&p->m_ptr, r.m_ptr);
+  }
+
+  friend shared_ptr_proxy atomic_load(const shared_ptr_proxy* p)
+  {
+    return atomic_load(&p->m_ptr);
+  }
+#else
+  friend bool atomic_is_lock_free(const shared_ptr_proxy* p)
+  {
+    return false;
+  }
+
+  friend void atomic_store(shared_ptr_proxy* p, shared_ptr_proxy r)
+  {
+    assert(p);
+    std::lock_guard<std::mutex> g(*p->m_mut);
+    *p = r;
+  }
+
+  friend shared_ptr_proxy atomic_load(const shared_ptr_proxy* p)
+  {
+    assert(p);
+    std::lock_guard<std::mutex> g(*p->m_mut);
+    return *p;
+  }
+#endif
+
+private:
+  std::shared_ptr<T> m_ptr;
+#ifdef ANDROID
+  std::shared_ptr<std::mutex> m_mut;
+#endif
+};
+
+}}                  
