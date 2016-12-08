@@ -1,0 +1,43 @@
+#include <iostream>
+#include <math.h>
+//#include <conio.h>
+
+using namespace std;
+
+struct Roots{
+	int x;
+	int z;
+};
+
+ Roots secondDegree(int a, int b, int c){
+	Roots roots;
+	int x;
+	x = sqrt(b*b-4*a*c);
+	roots.z = (-b+x)/(2*a);
+	roots.x = (-b-x)/(2*a);
+	return roots;
+}
+
+void firstDegree(int b, int c){
+	float x;
+	x = -c / b;
+	cout << "the only root = " << x << endl;
+}
+
+void zeroDegree(){
+	cout << "There is no equation at all" << endl;
+}
+
+int main(){
+	int a, b, c;
+	cout << "Enter the coefficients of the equation" << endl;
+	cin >> a >> b >> c;
+	Roots lol = secondDegree(a, b, c);
+	if (!a==0) cout << "root one = " << lol.x << " root two = " << lol.z << endl; ;
+//	else if (!b==0) firstDegree(b, c);
+//	else zeroDegree();
+	
+//	getch();
+	return 0;
+
+}
