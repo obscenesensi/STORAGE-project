@@ -1,0 +1,5 @@
+#include <sys/types.h>
+#include <dirent.h>
+
+int 
+scandir(const char *dirname, struct dirent ***namelist, int select dirent *, int compare void *, const void *);
