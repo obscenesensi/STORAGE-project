@@ -1,0 +1,12 @@
+#include <stdio.h>
+
+#define EXAMPLE_CHAR '1'
+
+int main() {
+  char c = EXAMPLE_CHAR;
+  int i = c-'0';
+  
+  printf("%c is %d\n", c, i);
+  
+  return 0;
+}
