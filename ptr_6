@@ -1,0 +1,59 @@
+#include <iostream>
+#include <vector>
+#include <memory>
+using namespace std;
+
+class Base {
+	public:
+		Base(int x): flag(x) {}
+		int flag;
+		void say() { cout << "I'm " << flag << endl; }
+};
+
+typedef unique_ptr<Base> Unique;
+typedef vector<Unique> UniqueList;
+
+void LSay(UniqueList v) {
+ 	//for (auto g: v) {
+	//	g->say();
+	//}
+}
+
+void LSay2(UniqueList& v) {
+ 	//for (auto g: v) {
+	//	g->say();
+	//}
+}
+
+void LSay3(UniqueList& v) {
+ 	for (auto &g: v) {
+		g->say();
+	}
+}
+
+void USay(Unique u) {
+	u->say();
+	u->flag = 1;
+	u->say();
+}
+
+void BSay(Base &b) {
+	b.say();
+	b.flag = 2;
+	b.say();
+}
+
+int main() {
+	
+	Unique u(new Base(5));
+	//USay(u);
+	BSay(*u);
+	u->say();
+	UniqueList v;
+	v.push_back(std::move(u));
+	//LSay(v);
+	//LSay2(v);
+	LSay3(v);
+	
+	return 0;
+}
