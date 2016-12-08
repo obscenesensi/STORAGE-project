@@ -1,0 +1,58 @@
+#include <stdio.h>
+#include <string.h>
+#include <pthread.h>
+
+pthread_t threads[5];
+int done[5];
+
+void *thread_main(void *);
+
+int main(void)
+{
+	int i;
+	int rc;
+	int status;
+	
+	printf("pid=%d\n", getpid());
+
+	for (i = 0; i < 5; i++)
+	{	
+		done[i] = 0;
+		pthread_create(&threads[i], NULL, &thread_main, (void *)i);
+		printf("%d, %d\n", i, threads[i]);
+	}
+
+	for (i = 4; i >= 0; i--)
+	{
+		done[i] = 1;
+	}
+	
+	/* 쓰레드들이 실행하고 종료할 때 까지 잠시 기다린다.
+	   sleep을 주지 않으면 메인이 종료되므로 자동으로 생성된 쓰레드도 강제종료되므로
+	   올바른 테스트 진행되지 않아서 이다. */
+	sleep(5);
+
+	return 0;
+}
+
+void *thread_main(void *arg)
+{
+	int i;
+	double result=0.0;
+
+	pthread_detach(pthread_self());
+
+	printf("therad: %d, %d\n", (int)arg, getpid());
+
+	while (!done[(int)arg])
+	{
+        	for (i=0; i < 1000000; i++)
+   		{
+     			result = result + (double)random();
+   		}
+   		printf("thread: %d, result = %e\n", (int)arg, result);
+	}
+
+	printf("thread %d terminated....\n", (int)arg);
+	pthread_exit((void *) 0);
+}
