@@ -1,0 +1,5 @@
+for(int i = 0, j; i < str.length(); i = j + 1) {
+    for(j = i; j != ' ' && j < str.length(); ++j) {
+                
+    }
+}
