@@ -1,0 +1,30 @@
+#include <iostream>
+#include <memory>
+
+struct A
+{
+    A() = default;
+    A(int x): x_(x)
+    {
+        std::cout << "A(int)\n";
+    }
+
+    ~A()
+    {
+        std::cout << "~A()\n";
+    }
+
+int x_;
+};
+
+int main()
+{
+    size_t sz = 5;
+    std::unique_ptr<A[]> ptr(new A[sz]{1, 2, 3, 4, 5});
+    for (size_t i = 0; i < sz; ++i) {
+        std::cout << ptr[i].x_ << " ";
+    }
+    std::cout << '\n';
+    ptr.reset();
+    std::cout << "reset done\n";
+}
