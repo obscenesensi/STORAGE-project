@@ -1,0 +1,59 @@
+#include <stdio.h>
+ 
+struct tagData
+{
+    float x;
+    float y;
+    float z;
+ 
+    unsigned char red;
+    unsigned char green;
+    unsigned char blue;
+};
+ 
+int main( )
+{   
+    FILE *pFile = NULL;
+ 
+    pFile = fopen( "d:\\Wisconsin-Madison Capital.ply", "rt+" );
+    if( pFile == NULL )
+    {
+        //에러 처리
+    }
+    else
+    {
+        tagData *Data;
+        int     nVertexCnt=0;
+ 
+        {//헤더 읽기
+            fscanf( pFile, "%*s \n" );
+            fscanf( pFile, "%*s %*s %*s\n" );
+            fscanf( pFile, "%*s %*s %d\n", &nVertexCnt );
+            fscanf( pFile, "%*s %*s %*s\n" );
+            fscanf( pFile, "%*s %*s %*s\n" );
+            fscanf( pFile, "%*s %*s %*s\n" );
+            fscanf( pFile, "%*s %*s %*s\n" );
+            fscanf( pFile, "%*s %*s %*s\n" );
+            fscanf( pFile, "%*s %*s %*s\n" );
+            fscanf( pFile, "%*s \n" );
+        }
+         
+        Data = new tagData[ nVertexCnt ];
+ 
+        {//데이터 읽기
+            for( int i=0 ; i<nVertexCnt ; ++i )
+            {
+                fread( &Data[ i ].x, sizeof( float ), 1, pFile );
+                fread( &Data[ i ].y, sizeof( float ), 1, pFile );
+                fread( &Data[ i ].z, sizeof( float ), 1, pFile );
+ 
+                fread( &Data[ i ].red, sizeof( unsigned char ), 1, pFile );
+                fread( &Data[ i ].green, sizeof( unsigned char ), 1, pFile );
+                fread( &Data[ i ].blue, sizeof( unsigned char ), 1, pFile );
+            }
+        }
+        fclose( pFile );
+    }
+ 
+    return 0;
+}
