@@ -1,0 +1,10 @@
+#include <algorithm>
+#include <string>
+
+std::string str = "Hello World";
+
+// ** To upper case
+std::transform( str.begin(), str.end(), str.begin(), ::toupper );
+
+// ** To lower case
+std::transform( str.begin(), str.end(), str.begin(), ::tolower );
