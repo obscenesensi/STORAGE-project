@@ -1,0 +1,22 @@
+#include <stdio.h>
+ 
+int main( )
+{   
+    FILE *pFile = NULL;
+ 
+    pFile = fopen( "d:\\Text.txt", "w+" );
+    if( pFile != NULL )
+    {
+        for( int i=0 ; i<5 ; ++i )
+        {
+            int nResult = fputs( "라인 단위 파일 쓰기 fputs\n", pFile );
+            printf( "%d번째 라인 쓰기 %s\n", i+1, nResult != -1 ? "성공":"실패" );
+        }
+        fclose( pFile );
+    }
+    else
+    {
+    }
+ 
+    return 0;
+}
