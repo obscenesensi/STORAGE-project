@@ -1,0 +1,11 @@
+string to_string(int x)
+{
+	string str;
+	while (x > 0)
+	{
+		char c = (x % 10) + '0';
+		str = c + str;
+		x /= 10;
+	}
+	return str;
+}
