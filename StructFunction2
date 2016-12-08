@@ -1,0 +1,8 @@
+struct sungjuk{
+    int bunho;
+    char name[7];
+    int kor;
+    int eng;
+    int tot;
+    float avg;
+}stu_1;
