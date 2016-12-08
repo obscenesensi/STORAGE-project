@@ -1,0 +1,27 @@
+#include "stdio.h"
+
+int main(int argc, char *argv[]) {
+	int num;
+	extern char *optarg;
+	extern int optind;
+
+	num = getopt(argc, argv, "au:h");
+
+	switch(num) {
+		case 'a':
+			printf("Welcome to Unix System Programming World!\n");
+			break;
+		case 'u':
+			printf("Nice to meet %s\n", optarg);
+			break;
+		case 'h':
+		default:
+			printf("Option : \n");
+			printf("\t-a : print \"Welcome to Unix System Programming World!\"\n");
+			printf("\t-u [String] : print \"Nice to meet [String]\"\n");
+			printf("\t-h : print Help page\n");
+			break;
+	}
+
+	return 0;
+}
