@@ -1,0 +1,36 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
+#define TRUE 1
+#define FALSE 0
+
+void shuffle(char *two_dimentional[][14])
+{
+    int i;
+
+    for(i = 0; i < 5 * 14; i++)
+        printf("%d,%s ", i, two_dimentional[0][i]);
+    printf("\n");
+}
+
+int main()
+{
+    char *two_dimentional[5][14] = {{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n"},
+        {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n"},
+        {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n"},
+        {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n"},
+        {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n"}
+    };
+
+    int i;
+
+    shuffle(two_dimentional);
+
+    for(i = 0; i < 5 * 14; i++)
+        printf("%d,%s ", i, two_dimentional[0][i]);
+    printf("\n");
+
+    return 0;
+}
