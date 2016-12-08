@@ -1,0 +1,24 @@
+#include <stdio.h>
+#include <limits.h>
+
+int isPalind(char c) {
+	int a[CHAR_BIT];
+	for(int i=0;i<CHAR_BIT;i++) {
+		a[i] = (c >> i) & 1;
+	}
+	for (int i=0;i<5;i++) {
+		if (a[i] != a[7-i]) {
+			return -1;
+		}
+	}
+	return 1;
+}
+
+int main(void) {
+	if (isPalind(0xA5)!=-1) {
+		printf("%s", "YES");
+	} else {
+		printf("%s", "NO");
+	}
+	return 0;
+}
