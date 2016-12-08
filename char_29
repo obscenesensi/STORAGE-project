@@ -1,0 +1,21 @@
+#include <stdio.h>
+
+void redundant(char *str)
+{
+  while(*str != 0)
+  {
+    str++;
+    if (*str == *(str - 1))  // compare current cursor with previous one
+    {
+      *(str - 1) = 8;  // replace with controll char that won't print, didn't actually remove
+    }
+  }
+}
+
+int main()
+{
+  char astring[] = "hellllo woooorrld!";
+  puts(astring);
+  redundant(astring);
+  puts(astring);
+  return 0;
