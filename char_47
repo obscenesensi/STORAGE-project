@@ -1,0 +1,19 @@
+
+#include "stdio.h"
+
+char changeindex(char str[], int index, char newc);
+//gets string from input
+int main(void) {
+    // Disable stdout buffering
+    setvbuf(stdout, NULL, _IONBF, 0);
+    char received[50];
+    printf("say something:");
+    scanf("%s", received);
+    changeindex(received, 2, 't');
+    printf("you said %s", received);
+    return 0;
+}
+//changes a specific character in a string
+char changeindex(char str[], int index, char newc) {
+    str[index] = newc;
+}
