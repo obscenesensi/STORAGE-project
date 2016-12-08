@@ -1,0 +1,33 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+char *chomp(char *str);
+
+char *chomp(char *str) {
+  char *end;
+
+  if (*str == 0)
+    return str;
+
+  // trim trailing space
+  end = str + strlen(str) - 1;
+  while(end > str && isspace(*end)) end--;
+
+  // write new null terminator
+  *(end+1) = 0;
+
+  // finally return the string
+  return str;
+}
+
+/* 
+  EXAMPLE:
+  
+  int main() {
+    char *str = chomp("What's up?\n\n\n Hows it goin'?  \n");
+    printf(str);
+    return 0;
+  }
+*/
