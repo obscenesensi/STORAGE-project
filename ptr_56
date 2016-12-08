@@ -1,0 +1,27 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <memory>
+using namespace std;
+ 
+class Person
+{
+    public :
+ 
+        Person(string name) : pName( new string(name)) {}
+        //Person(Person&&) = default; // if you declare dtor , this will go so make sure it is always generated
+        void display() { cout << *pName << endl;}
+ 
+    private :
+ 
+    unique_ptr<string> pName;
+};
+ 
+int main ()
+{
+    vector<Person> personCollection;
+    Person p("aa");
+    // personCollection.push_back( p ); // Does not compile and unique_ptr copy/assignment stuff is deleted
+    personCollection.push_back( std::move(p) ); // Move it so it is not being copied , but only moved
+    personCollection.front().display();
+}
