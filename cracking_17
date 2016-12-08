@@ -1,0 +1,27 @@
+
+
+import java.util.Arrays;
+
+public class AnagramTest {
+	    public static void main(String[] args) {
+		  String test1 = "I'm an anagram tester";
+		  String test2 = "Transmigrate a Name?";
+		  AnagramTest anag = new AnagramTest();
+		  System.out.print(String.format("Test for anagram equivalence:\n  %s \nand:\n  %s\nResult:\n",
+				  test1,test2));
+		  System.out.println(anag.test(test1,test2));
+	    }
+	 
+	    public boolean test(String s1, String s2) {
+	    	// NB this regex does not capture all possible punctuation 
+	    	char [] c1 = s1.replaceAll("[.,*!?'\" ]", "").toLowerCase().toCharArray();
+	    	char [] c2 = s2.replaceAll("[.,*!?'\" ]", "").toLowerCase().toCharArray();
+	    	Arrays.sort(c1);
+	    	Arrays.sort(c2);
+	    	//System.out.println(c1);
+	    	//System.out.println(c2);
+	    	return Arrays.equals(c1,c2);
+	    }   
+	   
+}
+	
