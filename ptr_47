@@ -1,0 +1,18 @@
+
+template <typename _Ty, void (*_Dx)(_Ty*)>
+    class sdl_unique {
+    private:
+        struct sdl_destroy {
+            void operator()(_Ty* p) const {
+                //cout << "Destroy:" << typeid(_Dx).name() << ": " << p << endl;
+                (*_Dx)(p);
+            }
+        };
+    public:
+        typedef unique_ptr<_Ty, sdl_destroy> ptr;
+    };
+
+typedef sdl_unique<SDL_Window, SDL_DestroyWindow>::ptr window_ptr;
+typedef sdl_unique<SDL_Renderer, SDL_DestroyRenderer>::ptr renderer_ptr;
+typedef sdl_unique<SDL_Texture, SDL_DestroyTexture>::ptr texture_ptr;
+// etc
