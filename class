@@ -1,0 +1,12 @@
+// People 클래스 선언
+class People{
+// 엑세스 지정자
+private:
+        int age;
+        char* name;
+        double height;
+public:
+// 함수도 포함이 가능하다
+        void set_People(int _age , char* _name , double _height);
+        void show_People();
+}; 
