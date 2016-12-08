@@ -1,0 +1,21 @@
+int main(void){
+        char str[] = "apple,banana,cat,dialogue";
+        char *ptr;
+        int tmp;
+
+        printf("함수 호출 전의 스트링 : %s\n" , str) ;
+
+        //ptr = strtok(str, ",");
+        //printf("%s\n" , ptr);
+
+        ptr = strtok(str, ",");
+
+        while(ptr != NULL ){
+
+                printf( "%s\n" , ptr);
+                ptr = strtok(NULL, ",");
+        }
+
+        printf("함수 호출 후의 스트링 : %s\n" , str);
+        return 0;
+}
