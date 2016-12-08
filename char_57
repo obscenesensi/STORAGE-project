@@ -1,0 +1,33 @@
+#include <stdio.h>
+
+int match_type(char *str, char *type)
+{
+    printf("%s\n", str);
+    printf("%s\n", type);
+    int i = 0, j = 0, count = 0;
+    char tmp1[10];
+    char c;
+    while ((c = str[i]) != '\0')
+    {
+    	printf("%c\n", c);
+        if (c == '|')
+        {
+        	tmp1[j] = '\0';
+            return (strcmp(tmp1, type) == 0);
+        }
+        if (count == 1)
+            tmp1[j++] = c;
+        if (c == ':')
+            count++;
+        i++;
+    }
+}
+
+int main(int argc, char *argv[])
+{
+    char s1[50], s2[10];
+
+    sprintf(s1, "type:map1|address:localhost|port:27635");
+    sprintf(s2, "map1");
+    printf("%d\n", match_type(s1, s2));
+}
