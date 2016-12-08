@@ -1,0 +1,17 @@
+#include <cstdio>
+
+int my_strlen(char* str) {
+	if (*str == 0)
+		return 0;
+	else
+		return my_strlen(str + 1) + 1;
+}
+
+int main() {
+	char str[] = "Hello, world!";
+	int len = my_strlen(str);
+
+	printf("len = %d\n", len);
+
+	return 0;
+}
