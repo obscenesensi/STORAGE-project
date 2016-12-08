@@ -1,0 +1,9 @@
+#include <stdio.h>
+ 
+int main()
+{
+ while (1) { // 항상 참
+  printf("무한 루프\n");
+ }
+ return 0;
+}
