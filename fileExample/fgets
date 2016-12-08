@@ -1,0 +1,33 @@
+#include <stdio.h>
+ 
+#define print(n) printf( "%lld\n", n )
+ 
+int main( )
+{   
+    FILE *pFile = NULL;
+ 
+    pFile = fopen( "d:\\Text.txt", "w+" );
+    if( pFile == NULL )
+    {
+        //에러 처리
+    }
+    else
+    {
+        fpos_t pos;
+        print( ftell(pFile) );          //fopen 후 파일 포인터 위치 확인
+ 
+        fputs( "0123456789", pFile );
+        fgetpos( pFile, &pos );
+        print( pos );                   //fputs 후 파일 포인터 위치 확인
+ 
+        pos = 5;
+        fsetpos( pFile, &pos );
+         
+        fgetpos( pFile, &pos );
+        print( pos );                   //fsetpos 후 파일 포인터 위치 확인
+ 
+        fclose( pFile );
+    }
+ 
+    return 0;
+}
