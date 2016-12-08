@@ -1,0 +1,9 @@
+int num1=10, num2=40;
+cout << "before, num1: " << num1 << ", num2: " << num2 << endl;
+Swap<int>(num1, num2);
+cout << "after, num1: " << num1 << ", num2: " << num2 << endl;
+ 
+double num3=15.6, num4=14.44;
+cout << "before, num1: " << num3 << ", num2: " << num4 << endl;
+Swap<double>(num3, num4);
+cout << "after, num1: " << num3 << ", num2: " << num4 << endl;
