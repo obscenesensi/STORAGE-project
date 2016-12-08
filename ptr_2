@@ -1,0 +1,137 @@
+#include <string>
+#include <unordered_set>
+
+#include <boost/intrusive_ptr.hpp>
+#include <boost/noncopyable.hpp>
+
+#include <gperftools/malloc_extension.h>
+
+#include <assert.h>
+#include <string.h>
+
+class Item : boost::noncopyable
+{
+ public:
+  Item(const char* key,
+       uint32_t flags,
+       int valuelen,
+       uint64_t cas)
+    : keylen_(strlen(key)),
+      valuelen_(valuelen),
+      cas_(cas)
+  {
+    char buf[64];
+    flaglen_ = snprintf(buf, sizeof buf, " %u %d\r\n", flags, valuelen);
+    data_ = static_cast<char*>(::malloc(totalLen()));
+    memcpy(data_, key, keylen_);
+    memcpy(data_ + keylen_, buf, flaglen_);
+    data_[totalLen() - 2] = '\r';
+    data_[totalLen() - 1] = '\n';
+  }
+
+  ~Item()
+  {
+    ::free(data_);
+  }
+
+  void assign(const char* value, int valuelen)
+  {
+    assert(valuelen <= valuelen_);
+    memcpy(data_ + keylen_ + flaglen_, value, valuelen);
+  }
+
+  size_t hash() const
+  {
+    return std::_Hash_impl::hash(data_, keylen_);
+  }
+
+  bool equals(const Item& rhs) const
+  {
+    return keylen_ == rhs.keylen_ && memcmp(data_, rhs.data_, keylen_) == 0;
+  }
+
+  int inc_ref() const
+  {
+    return ++refcount_;
+  }
+
+  int dec_ref() const
+  {
+    return --refcount_;
+  }
+
+ private:
+
+  int totalLen() const
+  {
+    return keylen_ + flaglen_ + valuelen_ + 2;
+  }
+
+  const uint8_t keylen_;
+  uint8_t flaglen_ = 0;
+  mutable uint16_t refcount_ = 0;
+  const int valuelen_;
+  const uint64_t cas_;
+  char* data_ = nullptr;
+};
+
+typedef boost::intrusive_ptr<const Item> ConstItemPtr;
+
+void intrusive_ptr_add_ref(const Item* p)
+{
+  if (p->inc_ref() == 0)
+    assert(false && "refcount overflow");
+}
+
+void intrusive_ptr_release(const Item* p)
+{
+  if (p->dec_ref() == 0)
+    delete p;
+}
+
+struct Hash
+{
+  size_t operator()(const ConstItemPtr& x) const
+  {
+    return x->hash();
+  }
+};
+
+struct Equal
+{
+  bool operator()(const ConstItemPtr& x, const ConstItemPtr& y) const
+  {
+    return x->equals(*y);
+  }
+};
+
+typedef std::unordered_set<ConstItemPtr, Hash, Equal> Map;
+
+int main(int argc, char* argv[])
+{
+  MallocExtension::Initialize();
+
+  int items = argc > 1 ? atoi(argv[1]) : 1000 * 1000;
+  int keylen = 10;
+  int valuelen = 100;
+  char key[256] = { 0 };
+  std::string value;
+  Map theMap;
+  for (int i = 0; i < items; ++i)
+  {
+    snprintf(key, sizeof key, "%0*d", keylen, i);
+    value.assign(valuelen, "0123456789"[i % 10]);
+    boost::intrusive_ptr<Item> item(new Item(key, 0, valuelen, 1));
+    item->assign(value.data(), value.size());
+    auto result = theMap.insert(std::move(item));
+    assert(result.second);
+  }
+
+  printf("sizeof Item = %zd\n", sizeof(Item));
+  printf("sizeof intrusive_ptr = %zd\n", sizeof(boost::intrusive_ptr<Item>));
+  printf("items = %zd\n", theMap.size());
+
+  char buf[65536] = "";
+  MallocExtension::instance()->GetStats(buf, sizeof buf);
+  printf("%s\n", buf);
+}
