@@ -1,0 +1,13 @@
+#include <stdio.h>
+
+int main () {
+    char a = 'B';
+    char b = 'A';
+    printf ("%d > %d\n", a,b);
+    if (a > b){
+        printf("True\n");
+    }else {
+        printf("False\n");
+    }
+
+}
