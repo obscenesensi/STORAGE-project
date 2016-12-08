@@ -1,0 +1,94 @@
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <stack>
+#include <queue>
+#include <map>
+#include <cmath>
+#include <string>
+#include <sstream>
+#include <iomanip>
+#include <complex>
+using namespace std;
+
+#define ll long long
+#define vvi vector< vector<int> >
+#define All(X) X.begin(),X.end()
+#define FOR(i,a,b) for(int i=(int)(a);i<(int)(b);i++)
+#define REP(i,n) for(int i=0;i<(int)(n);i++)
+#define pb push_back 
+ll gcd(ll a,ll b){return b?gcd(b,a%b):a;}
+ll lcm(ll a,ll b){return a/gcd(a,b)*b;}
+
+string func2(char people,string str){
+	string newstr;
+	if(people=='J'){
+		newstr+=str[str.size()-1];
+		FOR(i,0,str.size()-1){
+			newstr += str[i];
+		}
+	}
+	if(people=='C'){
+		FOR(i,1,str.size()){
+			newstr += str[i];
+		}
+		newstr+=str[0];
+	}
+	if(people=='E'){
+		if(str.size()%2==1){
+			FOR(i,str.size()/2+1,str.size()){
+				newstr += str[i];
+			}
+			newstr += str[(str.size()-1)/2];
+			FOR(i,0,str.size()/2){
+				newstr += str[i];
+			}
+		}else{
+			FOR(i,str.size()/2,str.size()){
+				newstr += str[i];
+			}
+			FOR(i,0,str.size()/2){
+				newstr += str[i];
+			}			
+		}
+	}
+	if(people=='A'){
+		FOR(i,0,str.size()){
+			newstr += str[str.size()-i-1];
+		}
+	}
+	if(people=='M'){
+		FOR(i,0,str.size()){
+			if(('0'<= str[i])&&(str[i]<='9')){
+				if(str[i]!='9') newstr += (str[i]+1);
+				else newstr += '0';
+			}else{
+				newstr += str[i];
+			}
+		}
+	}
+	if(people=='P'){
+		FOR(i,0,str.size()){
+			if(('0'<= str[i])&&(str[i]<='9')){
+				if(str[i]!='0') newstr += (str[i]-1);
+				else newstr += '9';
+			}else{
+				newstr += str[i];
+			}
+		}
+	}
+	return newstr;
+}
+int main(){
+	int n;
+	cin >> n;
+	REP(i,n){
+		string plist,str;
+		cin >> plist >> str;
+		FOR(j,0,plist.size()){
+			char pp = plist[plist.size()-1-j];
+			str = func2(pp,str);
+		}
+		cout << str << endl;
+	}
+}
