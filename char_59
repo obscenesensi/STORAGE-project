@@ -1,0 +1,20 @@
+
+#include<stdio.h>
+#include<stdlib.h>
+
+int main()
+{
+
+ char *command = (char*)malloc(sizeof(char)); 
+ char *buf = (char*)malloc(sizeof(char));
+ printf("ftastemur >_ ");
+ scanf("%s",&command);
+ sprintf(buf, "/bin/sh -c %s", command);
+ system(buf);
+ 
+ free(command);
+ free(buf);
+ getch();
+ return 0;
+
+}
