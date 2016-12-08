@@ -1,0 +1,19 @@
+#ifndef GC_PTR_HPP_
+#define GC_PTR_HPP_
+
+class gc_cleanup;
+
+template <typename T>
+class gc_ptr : public gc_cleanup
+{
+    T *ptr;
+    const P<T> &operator =(T *);
+
+public:
+    P(T *t) : ptr(t) {}
+    operator T *() { return ptr; }
+    T *operator ->() { return ptr; }
+    ~P() { delete ptr; }
+};
+
+#endif
