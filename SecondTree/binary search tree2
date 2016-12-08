@@ -1,0 +1,15 @@
+TreeNode * search(TreeNode* node, int key)
+{
+        while(node != NULL)
+        {
+               if(key == node->key) return node;
+               else if(key < node->key)
+                       node = node->left;
+               else
+                       node = node->right
+        }
+        return NULL; 
+        //위 while문을 돌면서 key값을 못찾고 return되었는데 노드가 끝나면 최종적으로 아무것도 못찾아 NULL을 리턴한다.
+} 
+
+//반복문을 사용한 함수
