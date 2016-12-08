@@ -1,0 +1,7 @@
+Student(const Student& instance) {
+    name = new char[10];
+    strcpy(name, instance.name);
+    sex = instance.sex;
+    age = instance.age;
+    totalPoint = instance.totalPoint;
+}
