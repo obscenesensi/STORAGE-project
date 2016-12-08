@@ -1,0 +1,48 @@
+var any;
+/*
+  ``` !! ```
+  Casting to Boolean
+  - similar to Boolean(any)
+  - shorter code
+  - a bit faster
+*/
+any = '0';
+console.log( Boolean(any), !!any );
+
+/*
+  ``` ~~ ```
+  Casting to Int
+  - similar to parseInt(any)
+  - returns 0 instead of NaN (for Infinity, undefined, 'string' etc)
+  - parseInt('12d') == 12 but ~~'12d' == 0
+  - gives wrong results for numbers out of 32bit unsigned integer range (parseInt works with 64bit numbers)
+  - shorter code
+  - a bit faster
+*/
+any = '2147483647.5';
+console.log( parseInt(any), ~~any );
+
+/*
+  ``` |0 ```
+  Casting to Int (method II)
+  - similar to parseInt(any)
+  - returns 0 instead of NaN (for Infinity, undefined, 'string' etc)
+  - parseInt('12d') == 12 but '12d'|0 == 0
+  - gives wrong results for numbers out of 32bit unsigned integer range (parseInt works with 64bit numbers)
+  - shorter code
+  - a bit faster
+*/
+any = '2147483647.5';
+console.log( parseInt(any), any|0 );
+
+/*
+  ``` ~ ```
+  Parsing result of functions (String/Array.indexOf), that return -1 for false
+  - gives wrong results for numbers out of 32bit unsigned integer range
+  - shorter code
+*/
+any = 'abc';
+console.log( ~any.indexOf('X'), any.indexOf('X') !== -1 );
+
+// other articles:
+// http://code.google.com/p/jslibs/wiki/JavascriptTips
