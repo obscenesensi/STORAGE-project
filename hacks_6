@@ -1,0 +1,27 @@
+<!-- source: http://news.ycombinator.com/item?id=4876221 -->    
+ <!-- Async Tracking Code - http://code.google.com/intl/en-US/apis/analytics/docs/tracking/asyncTracking.html -->
+   
+	  var _gaq = _gaq || [];
+	  _gaq.push(['_setAccount', 'YOUR ANALYTICS ID GOES HERE']);
+	  _gaq.push(['_trackPageview']);
+
+          //*******************
+          // Trick #1: Track page load time in Google Analytics
+          // (note: only works for HTML5 browsers)
+          //*******************
+	  _gaq.push(['_trackPageLoadTime']);
+
+	  (function() {
+	    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+	    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	  })();
+	  
+          //*******************
+          // Trick #2: Add a Javascript error handler so that it creates an event in Google Analytics
+          // whenever there's a CLIENT-SIDE javascript error
+          //*******************
+	  window.onerror = function(message, file, line) { 
+	     var sFormattedMessage = '[' + file + ' (' + line + ')] ' + message; 
+	     _gaq.push(['_trackEvent', 'Errors', 'Browser', sFormattedMessage, null, true]);
+	  }
