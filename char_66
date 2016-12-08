@@ -1,0 +1,25 @@
+#include <stdio.h>
+
+void method(char* first, char* second, char* third)
+{
+  printf("method arguments - first: %s, second: %s, third: %s\n", first, second, third);
+  return;
+}
+
+void wrapped_method(char* first, char* second, char* third);
+#define method(first, second, third) wrapped_method((second), (third), (first))
+
+void wrapped_method(char* first, char* second, char* third)
+{
+  printf("wrapped_method arguments - first: %s, second: %s, third: %s\n", first, second, third);
+  printf("Calling the *real* method...");
+  (method)(second, third, first); //remove the parens around "method" and the result is very different...
+  return;
+}
+
+int main(int argc, char* argv[])
+{
+  printf("Calling: method(one, two, three)\n");
+  method("one", "two", "three");
+  return 0;
+}
