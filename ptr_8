@@ -1,0 +1,60 @@
+#include <memory>
+#include <vector>
+#include <iostream>
+#include <list>
+
+template <class T>
+class VectorPool
+{
+public:
+	~VectorPool()
+	{
+		std::cout << "free pool left " << freepool_.size() << std::endl;
+		for(auto & p: freepool_)
+			delete p;
+	}
+
+	std::shared_ptr<std::vector<T> > get(int k)
+	{
+		for(auto pi = freepool_.begin(); pi != freepool_.end(); ++pi)
+		{
+			if((*pi)->capacity() >= k)
+			{
+				auto r = std::shared_ptr<std::vector<T> >(*pi, [this] (std::vector<T>* p) { 
+					// LOCK NEEDED
+					std::cout << "putting back " << p << " " << p->size() << std::endl;
+					this->freepool_.push_back(p); 
+				}); 
+				freepool_.erase(pi);
+				return r;
+			}
+		}
+		auto pp = new std::vector<T>(k);
+		std::cout << "allocated " << pp << " k " << k << std::endl;
+		return std::shared_ptr<std::vector<T> >(pp, [this] (std::vector<T>* p) { 
+			// LOCK NEEDED
+			std::cout << "putting back " << p << " " << p->size() << std::endl;
+			this->freepool_.push_back(p); 
+		});
+	}
+
+	std::list<std::vector<uint8_t> *> freepool_;
+};
+
+
+
+int main(int argc, char const *argv[])
+{
+	VectorPool<uint8_t> mypool;
+
+	{
+		auto p1 = mypool.get(10);
+		auto p2 = mypool.get(20);
+	}
+	{
+		auto p3 = mypool.get(20);
+	}
+	std::cout << "before freeing vector pool\n";
+
+	return 0;
+}
