@@ -1,0 +1,30 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+string reverse(string str);
+
+int main ()
+{
+   string str;
+
+   cout << "Please enter a string to be reversed: " << endl;
+   getline(cin, str);
+
+   cout << reverse(str) << endl;
+
+   return 0;
+}
+
+string reverse(string str)
+{
+   if(str.size() == 1)
+   {
+      return str;
+   }
+   else
+   {
+      return (str[str.size()-1]+reverse(str.substr(0,str.size() - 1)));
+   }
+}
