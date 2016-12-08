@@ -1,0 +1,24 @@
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class Ideone
+{
+	public static void main (String[] args) throws java.lang.Exception
+	{
+		Scanner in = new Scanner(System.in);
+		String str = in.nextLine();
+		System.out.println(uniqueCharacters(str));
+	}
+	
+	public static boolean uniqueCharacters(String str) {
+		int count[] = new int[256];
+		
+		for (int i = 0; i < str.length(); i++) {
+			count[(int)str.charAt(i)] += 1;
+			if ((int)count[str.charAt(i)] > 1)
+				return false;
+		}
+		return true;
+	}
+}
