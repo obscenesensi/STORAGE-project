@@ -1,0 +1,25 @@
+preorder(x)
+{
+   if(x != NUL) //노드가 없지 않으면
+      print x->data
+      preorder(x->left);
+      preorder(x->right);
+}
+
+중위순회 알고리즘
+inorder(x)
+{
+   if(x != NULL) //노드가 없지않으면
+      inorder(x->left);
+      print x->data;
+      inorder(x->right);
+}
+
+후위순회 알고리즘
+inorder(x)
+{
+   if(x != NULL) //노드가 없지않으면
+     inorder(x->left);
+     inorder(x->right);
+     print x->data;
+}
