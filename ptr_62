@@ -1,0 +1,160 @@
+#include <iostream>
+#include <memory>
+#include <stack>
+#include <string>
+#include <utility>
+#include <vector>
+
+template <typename T>
+class Node : public std::enable_shared_from_this<Node<T>> {
+    const T data;
+
+    using SharedPtrNode = std::shared_ptr<Node<T>>;
+    using WeakPtrNode = std::weak_ptr<Node<T>>;
+
+    WeakPtrNode parent;
+    std::vector<SharedPtrNode> children;
+
+public:
+    explicit Node(const T& data, WeakPtrNode parent)
+        : data(data)
+        , parent(parent) {
+    }
+
+    explicit Node(const T& data)
+        : Node(data, WeakPtrNode()) {
+    }
+
+    ~Node() {
+        std::cout
+            << "destructing "
+            << data
+            << std::endl;
+    }
+
+    SharedPtrNode addChild(const T& data) {
+        auto child = std::make_shared<Node<T>>(data, this->shared_from_this());
+        children.push_back(child);
+        return child;
+    }
+
+    const T& getData() const {
+        return data;
+    }
+
+    const std::vector<SharedPtrNode>& getChildren() const {
+        return children;
+    }
+
+    void print(const int indentLength) const {
+        printIndent(indentLength);
+
+        std::cout
+            << data
+            << " (parent is ";
+
+        if (parent.expired()) {
+            std::cout << "null";
+        } else {
+            std::cout << parent.lock()->getData();
+        }
+
+        std::cout
+            << ")"
+            << std::endl;
+    }
+
+    void traversePreOrderRecursive(const int depth = 0) const {
+        print(depth);
+        for (auto &node : children) {
+            node->traversePreOrderRecursive(depth + 1);
+        }
+    }
+
+    void traversePreOrder() const {
+        using WeakPtrConstNode = std::weak_ptr<const Node<T>>;
+        using NodeDepthPair = std::pair<WeakPtrConstNode, int>;
+
+        std::stack<NodeDepthPair> nextNodesToVisit;
+        auto weakThis = WeakPtrConstNode(this->shared_from_this());
+        nextNodesToVisit.push(std::make_pair(weakThis, 0));
+
+        while (!nextNodesToVisit.empty()) {
+            auto pair = nextNodesToVisit.top();
+            nextNodesToVisit.pop();
+
+            auto node = pair.first.lock();
+            const int depth = pair.second;
+
+            node->print(depth);
+
+            const std::vector<SharedPtrNode>& children = node->getChildren();
+            for (auto it = children.rbegin(); it != children.rend(); it++) {
+                nextNodesToVisit.push(std::make_pair(*it, depth + 1));
+            }
+        }
+    }
+
+private:
+    void printIndent(const int length) const {
+        for (int i = 0; i < length; i++) {
+            std::cout << "   ";
+        }
+    }
+};
+
+void testIntTree() {
+    auto root = std::make_shared<Node<int>>(1);
+    root->addChild(2);
+
+    auto four = root->addChild(3)->addChild(4);
+    four->addChild(5);
+    four->addChild(6);
+    four->addChild(7);
+
+    root->addChild(8);
+
+    root->traversePreOrder();
+    //root->traversePreOrderRecursive();
+}
+
+void testStringTree() {
+    auto root = std::make_shared<Node<std::string>>("One");
+    root->addChild("Two");
+
+    auto four = root->addChild("Three")->addChild("Four");
+    four->addChild("Five");
+    four->addChild("Six");
+    four->addChild("Seven");
+
+    root->addChild("Eight");
+
+    root->traversePreOrder();
+    //root->traversePreOrderRecursive();
+}
+
+int main() {
+    testIntTree();
+    //testStringTree();
+    return 0;
+}
+
+/*
+output
+1 (parent is null)
+   2 (parent is 1)
+   3 (parent is 1)
+      4 (parent is 3)
+         5 (parent is 4)
+         6 (parent is 4)
+         7 (parent is 4)
+   8 (parent is 1)
+destructing 1
+destructing 2
+destructing 3
+destructing 4
+destructing 5
+destructing 6
+destructing 7
+destructing 8
+*/
