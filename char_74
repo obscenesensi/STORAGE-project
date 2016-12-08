@@ -1,0 +1,6 @@
+unsigned char bananas; 
+unsigned char* aqui_estao_as_bananas;
+
+void main(void){
+	aqui_estao_as_bananas = &bananas;
+}
