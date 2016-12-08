@@ -1,0 +1,21 @@
+#include <stdio.h>
+
+int main(void)
+{
+    int num[16];
+    int i = 0;
+
+    printf("입력: ");
+
+    for (i = 0; i < 16; i++)
+    {
+        scanf("%d", &num[i]);
+        if (i % 4 == 0)
+        {
+            printf("\n");
+        }
+        printf("%2d ", num[i]);
+    }
+
+    return 0;
+}
