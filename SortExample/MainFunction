@@ -1,0 +1,36 @@
+int main()
+{
+int arr[MAX];
+// int index[MAX]; // 간접정렬함수의 인덱스 배열 
+int length=sizeof(arr)/sizeof(int);
+int result=1;
+
+while((result=menu())!=0)
+{
+if(result>5 || result<0)
+break;
+init_arr(arr, length);
+
+puts("\n ** 초기화된 배열 **");
+show(arr, length);
+if(result==1)
+select_sort(arr, length);
+else if(result==2)
+insert_sort(arr, length);
+else if(result==3)
+bubble_sort(arr, length);
+else if(result==4)
+shell_sort(arr, length);
+else if(result==5)
+quick_sort(arr, length);
+else
+break;
+puts(" ** 정렬 후 배열 **");
+show(arr, length); 
+}
+
+// indirect_sort(arr, index, length); // 간접정렬 함수 출력 
+// show(index, length);
+
+return 0;
+}
