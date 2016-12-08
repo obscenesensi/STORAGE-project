@@ -1,0 +1,14 @@
+#include <stdio.h>
+ 
+int main()
+{
+    FILE *rfp = fopen("input.txt", "r");
+    FILE *wfp = fopen("output.txt", "w");
+    char buf[1024];
+ 
+    while(!feof(rfp))
+    {
+        fgets(buf, 1024, rfp);
+        fputs(buf, wfp);
+    }
+}
