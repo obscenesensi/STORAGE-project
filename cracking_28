@@ -1,0 +1,11 @@
+ @Override
+    public void fromApp(Message msg, SessionID sid) throws FieldNotFound, IncorrectDataFormat, IncorrectTagValue, UnsupportedMessageType {
+    	_logger.log(Level.INFO,sid+":From client:"+msg);
+        try {
+            crack(msg1, sid);
+            _logger.log(Level.INFO,"Cracked message successfully");
+        } catch (UnsupportedMessageType ex) {
+            _logger.log(Level.SEVERE, "Unsupported message", ex);
+        }catch(Exception e){
+            _logger.log(Level.SEVERE, "Failure in message cracking", e);
+        }
