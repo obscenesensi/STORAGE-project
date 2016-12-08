@@ -1,0 +1,84 @@
+
+#include <iostream>
+#include <memory>
+
+class Foo
+{
+    public:
+
+    Foo() : x_(0), y_(0)
+    {
+        std::cout << "Default constructor\n";
+    }
+
+    Foo(int x, int y) : x_(x), y_(y)
+    {
+        std::cout << "Constructor with 2 args\n";
+    }
+
+    ~Foo()
+    {
+        std::cout << "Object being destroyed!\n";
+    }
+
+    int get_y() { return y_; }
+
+    int x_;
+    int y_;
+};
+
+typedef std::shared_ptr<Foo> FooPtr;
+
+int main()
+{
+    // Initialized to nullptr
+    FooPtr p;
+
+    // Check pointer for nullptr
+    if (!p)
+        std::cout << "Pointer is nullptr\n";
+
+    // Dynamically allocate object of type Foo
+    // using default constructor of Foo
+    p = std::make_shared<Foo>();
+
+    // Check pointer for valid object
+    if (p)
+        std::cout << "Pointer points to object\n";
+
+    // Allocate another object with 2-arg constructor
+    // Note: Old object is destroyed
+    p = std::make_shared<Foo>(10, 20);
+
+    // Access members and functions of object
+    std::cout << "Member: " << p->x_ << std::endl;
+    std::cout << "Method: " << p->get_y() << std::endl;
+
+    // Dereference object using *
+    std::cout << "Value: " << (*p).y_ << std::endl;
+
+    // Assign pointers to one another
+    // Note: Now reference count for this object will be 2
+    FooPtr q;
+    q = p;
+
+    // Number of pointers pointing to same object
+    std::cout << "Reference count: " << q.use_count() << std::endl;
+
+    return 0;
+}
+
+/*
+The output of this program is:
+$ ./a.out 
+Pointer is nullptr
+Default constructor
+Pointer points to object
+Constructor with 2 args
+Object being destroyed!
+Member: 10
+Method: 20
+Value: 20
+Reference count: 2
+Object being destroyed!
+*/
