@@ -1,0 +1,9 @@
+class Parent {
+public:
+    virtual void func() = 0;
+};
+ 
+class Child : public Parent {
+public:
+    virtual void func() { cout << "자식 클래스의 func 함수 호출!" << endl; }
+};
