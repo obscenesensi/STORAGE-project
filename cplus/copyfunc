@@ -1,0 +1,10 @@
+MyClass(int a, int b)
+    {
+        num1 = a;
+        num2 = b;
+    }
+    MyClass(const MyClass& mc) // 디폴트 복사 생성자의 형태
+    {
+        num1 = mc.num1;
+        num2 = mc.num2;
+    }
