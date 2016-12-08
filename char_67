@@ -1,0 +1,31 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
+
+char * concat(int n, ...)
+{
+	char * str = (char *) malloc(0); //equal to NULL
+	int overall = 0;
+	va_list a;
+	va_start(a, n);
+	for (int i=0; i<n; i++)
+	{
+		const char * temp = va_arg(a,char*);
+		int l=0;
+		while(temp[l]!=0)
+			l++;
+		str = (char *) realloc(str,overall+l);
+		for(int j=0; j<l; j++)
+			str[overall+j]=temp[j];
+		overall+=l;
+	}
+	va_end(a);
+	return str;
+}
+
+
+
+int main(_)
+{
+	printf("%s",concat(3, "ab ", "cdthrhrt-", "ef"));
+	return 0;
