@@ -1,0 +1,8 @@
+#include <stdio.h>
+ 
+int main (void)
+{
+         printf("\a수업시간입니다.\n"); //\a로 비프음 울리고 출력
+ 
+         return 0;
+}
