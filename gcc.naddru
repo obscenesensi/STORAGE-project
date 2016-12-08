@@ -1,0 +1,24 @@
+naddru.h
+#include <stdio.h>
+void fun1();
+void fun2();
+
+main.c
+#include "naddru.h"
+int main( void ){
+    fun1();
+    fun2();
+    return 0;
+}
+
+fun1.c
+#include <stdio.h>
+void fun1(){
+    printf("fun1 !! \n");
+}
+
+fun2.c
+#include <stdio.h>
+void fun2(){
+    printf("fun2 !! \n");
+}
