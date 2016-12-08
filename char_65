@@ -1,0 +1,114 @@
+#include <ctype.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+/*
+ *
+ * N = [0 ; 25]
+ *
+ */
+#define ALPHA_MAX	25
+
+static char get_prev_cahr(char, int);
+static char get_next_char(char, int);
+
+static char *encrypt(const char *, int);
+static char *decrypt(const char *, int);
+static void bruteforce(const char *);
+
+static const char *alpha = "abcdefghijklmnopqrstuvwxyz";
+
+static char get_next_char(char c, int offset) {
+	int pos = tolower(c) - 'a';
+
+	/* Follow circular encoding, z -> a */
+	if ((pos + offset) > ALPHA_MAX) {
+		offset = (pos + offset) - ALPHA_MAX - 1;
+		pos = 0;
+	}
+
+	return alpha[pos + offset];
+}
+
+static char get_prev_char(char c, int offset) {
+	int pos = tolower(c) - 'a';
+
+	/* Follow circular encoding, a -> z */
+	if ((pos - offset) < 0) {
+		offset = -(pos - offset) - 1;
+		pos = ALPHA_MAX;
+	}
+
+	return alpha[pos - offset];
+}
+
+static char *encrypt(const char *src, int offset) {
+	char *dst = NULL;
+	int i = 0;
+
+	dst = malloc(strlen(src) + 1);
+
+	/* Don't encrypt non alpha chars */
+	for (; *src != '\0'; i++, src++)
+		dst[i] = isalpha(*src) ? get_next_char(*src, offset) : *src;
+
+	dst[i] = '\0';
+
+	return dst;
+}
+
+static char *decrypt(const char *src, int offset) {
+	char *dst = NULL;
+	int i = 0;
+
+	dst = malloc(strlen(src) + 1);
+
+	/* Don't encrypt non alpha chars */
+	for (; *src != '\0'; i++, src++)
+		dst[i] = isalpha(*src) ? get_prev_char(*src, offset) : *src;
+
+	dst[i] = '\0';
+
+	return dst;
+}
+
+static void bruteforce(const char *hash) {
+	int offset = 0;
+	char *msg = NULL;
+
+	msg = malloc(strlen(hash) + 1);
+
+	/* Test all encryption cases. */
+	for (; offset <= ALPHA_MAX; offset++) {
+		msg = decrypt(hash, offset);
+		printf("N=%02d %s = %s\n", offset, hash, msg);
+	}
+
+	free(msg);
+	msg = NULL;
+}
+
+int main(void) {
+	const char *msg = "C wizardry is cool.";
+
+	char *str = encrypt(msg, 2);
+
+	printf("%s = %s\n", msg, str);
+
+	char *rstr = decrypt(str, 2);
+
+	printf("%s = %s\n", str, rstr);
+
+	printf("Hash to crack: %s (encrypted with N=2)\n", str);
+	bruteforce(str);
+
+	free(str);
+	str = NULL;
+
+	free(rstr);
+	rstr = NULL;
+
+	return 0;
+}
