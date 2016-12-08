@@ -1,0 +1,69 @@
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <cmath>
+using namespace std;
+struct Vector2D
+{
+    double x, y;
+    Vector2D(double x, double y)
+    {
+        this->x = x;
+        this->y = y;
+    }
+    Vector2D operator + (const Vector2D &other) const
+    {
+        return Vector2D(this->x + other.x, this->y + other.y);
+    }
+    void operator += (const Vector2D &other)
+    {
+        this->x += other.x;
+        this->y += other.y;
+    }
+    void rotate(double &angle)
+    {
+        double rotX = this->x * cos(angle) - this->y * sin(angle);
+        double rotY = this->x * sin(angle) + this->y * cos(angle);
+        this->x = rotX;
+        this->y = rotY;
+    }
+    Vector2D operator - (const Vector2D &other) const
+    {
+        return Vector2D(this->x - other.x, this->y - other.y);
+    }
+    void operator -= (const Vector2D &other)
+    {
+        this->x -= other.x;
+        this->y -= other.y;
+    }
+    static double dotProduct(const Vector2D &first, const Vector2D &second)
+    {
+        return first.x*second.x  + first.y * second.y;
+    }
+    static double crossProduct(const Vector2D &first, const Vector2D &second)
+    {
+        return first.x * second.y - first.y * second.x;
+    }
+    Vector2D operator * (double multiplier) const
+    {
+        return Vector2D(this->x*multiplier, this->y*multiplier);
+    }
+    double length()
+    {
+        return sqrt(this->x*this->x + this->y*this->y);
+    }
+    void normalize()
+    {
+        double length = this->length();
+        this->x /= length;
+        this->y /= length;
+    }
+    void print()
+    {
+        cout<<"("<<this->x<<", "<<this->y<<")\n";
+    }
+};
+int main()
+{
+    return 0;
+}
