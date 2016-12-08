@@ -1,0 +1,12 @@
+int num[10] = {1, 3, 6, -3, 4, -1, 0, -5, -5, 7}
+int i = 0, positive = 0;
+
+for (i = 0; i < 10; i++)
+{
+    if (num[i] > 0)
+    {
+        positive++;
+    }
+}
+
+printf("양수는 %d개입니다.\n", positive);
