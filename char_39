@@ -1,0 +1,20 @@
+void
+StripLeadingAndTrailingSpaces (char* string)
+{
+        assert (string);
+        /* First remove leading spaces */
+        const char* firstNonSpace = string;
+        while (*firstNonSpace != '\0' && isspace (*firstNonSpace))
+        {
+                ++firstNonSpace;
+        }
+        size_t len = strlen (firstNonSpace) + 1;         
+        memmove (string, firstNonSpace, len);
+        /* Now remove trailing spaces */
+        char* endOfString = string + len;
+        while (string < endOfString  && isspace (*endOfString))
+        {
+                --endOfString;
+        }
+        *endOfString = '\0';
+}
