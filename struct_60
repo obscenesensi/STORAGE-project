@@ -1,0 +1,22 @@
+
+struct message {
+  int x; //4B
+  int y; //4B
+  int z; //4B
+  int w; //4B
+};
+
+//16B
+struct pack1 {
+  message m1;
+};
+
+//16 + 8 + 8
+struct pack2 {
+  message m1;
+  message *m2;
+  message &m3;
+};
+
+std::cout << sizeof(pack1) << std::endl; //16
+std::cout << sizeof(pack2) << std::endl; //32
