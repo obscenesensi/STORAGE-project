@@ -1,0 +1,15 @@
+void outchar(char ch) {
+  volatile int* JTAG_UART = (int*) 0x00008840;
+  *JTAG_UART = ch; // Write char to display.
+}
+
+char bin2hex(char hex) {
+  hex &= 0x0F; // Mask last 4 bits.
+  return hex <= 9 ? hex + '0' : hex - 10 + 'A';
+}
+
+void outhex(char n) {
+  char msn = n >> 4; // put first 4 bits into msn (most significant nibble)
+  outchar(bin2hex(msn));
+  outchar(bin2hex(n));
+}
