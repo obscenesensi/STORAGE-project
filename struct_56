@@ -1,0 +1,15 @@
+#include <iostream>
+int main(int /*_argc*/, char ** /*_argv*/)
+{
+    struct Foo {
+        Foo() {
+            std::cout << "foo" << std::endl;
+        }
+    };
+    Foo();
+    Foo::Foo();
+    Foo::Foo::Foo();
+    Foo::Foo::Foo::Foo::Foo::Foo::Foo::Foo::Foo::Foo::Foo();
+    
+    return 0;
+}
