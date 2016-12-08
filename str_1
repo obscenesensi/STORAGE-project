@@ -1,0 +1,16 @@
+#include <sstream>
+
+namespace imp {
+void to_str(std::ostream &os) {
+}
+template <typename T, typename... Args> void to_str(std::ostream &os, T &&t, Args &&... args) {
+  os << t;
+  to_str(os, std::forward<Args>(args)...);
+}
+}
+
+template <typename... Args> std::string to_str(Args &&... args) {
+  std::ostringstream os;
+  imp::to_str(os, std::forward<Args>(args)...);
+  return os.str();
+}
