@@ -1,0 +1,12 @@
+int main(void) {
+	int a = 10;
+	int b = 20;
+	const int* c = &a;
+
+	printf("%d \n" , *c);
+
+	*c = 100;  //에러난다
+	c = &b; //이건 됨
+
+	printf("%d \n" , *c);
+}
