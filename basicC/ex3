@@ -1,0 +1,18 @@
+int main(void)
+{
+    int a, b, c;
+    int max, min;
+
+    printf("정수 3개를 입력하세요: ");
+    scanf("%d %d %d", &a, &b, &c);
+
+    max = (a > b) ? a : b;
+    max = (max > c) ? max : c;
+
+    min = (a < b) ? a : b;
+    min = (min < c) ? min : c;
+
+    printf("%d이 가장 작고 %d이 가장 큽니다.\n", min, max);
+
+    return 0;
+}
