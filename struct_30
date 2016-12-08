@@ -1,0 +1,46 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stddef.h>
+
+struct foo {
+    char c1;
+    int i;
+    char c2;
+    long double ld;
+};
+
+void pr_st_size (struct foo *);
+
+void pr_st_size (struct foo *afoo){
+    printf("char c1               :  %ld ",offsetof(struct foo,c1));
+    printf("c1 : %p\n",&afoo->c1);
+    printf("char c1 --    int   i :  %ld ",offsetof(struct foo,i)
+                                          -offsetof(struct foo,c1)
+                                          -sizeof(afoo->c1));
+    printf("i  : %p\n",&afoo->i);
+    printf("int   i --    char c2 :  %ld ",offsetof(struct foo,c2)
+                                        -offsetof(struct foo,i)
+                                        -sizeof(afoo->i));
+    printf("c2 : %p\n",&afoo->c2);
+    printf("char c2 -- ldouble ld :  %ld ",offsetof(struct foo,ld)
+                                        -offsetof(struct foo,c2)
+                                        -sizeof(afoo->c2));
+    printf("ld : %p\n",&afoo->ld);
+
+    printf("size:%ld\n",sizeof(char));
+    printf("size:%ld\n",sizeof(int));
+    printf("size:%ld\n",sizeof(char));
+    printf("size:%ld\n",sizeof(long double));
+}   
+
+int main(void)
+{
+    struct foo *pa,a;
+    pa = (struct foo *)malloc(sizeof(struct foo)*3);
+    printf("point  :%p size :%ld\n",&pa[0],sizeof(struct foo));
+    pr_st_size(&pa[0]);
+    printf("point  :%p size :%ld\n",&pa[1],sizeof(struct foo));
+    pr_st_size(&pa[1]);
+    printf("point  :%p size :%ld\n",&pa[2],sizeof(struct foo));
+    pr_st_size(&pa[2]);
+}
