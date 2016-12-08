@@ -1,0 +1,17 @@
+#include <stdio.h>
+
+int main(void)
+{
+    int dan = 1;
+    int num = 1;
+
+    for (dan = 1; dan <= 9; dan++)
+    {
+        printf("=== %d단 ===\n", dan);
+
+        for (num = 1; num <= 9; num++)
+        {
+            printf("%d * %d = %d\n", dan, num, dan * num);
+        }
+    }
+}
