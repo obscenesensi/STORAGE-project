@@ -1,0 +1,37 @@
+
+class Permutation {
+	public static boolean isPermuation(String str1, String str2) {
+		if (str1 == str2) return true;
+		if (str1 == null || str2 == null || str1.length() != str2.length()) return false;
+		int buf[] = new int[256];
+		int len = str1.length();
+		for(int i = 0; i< len; i++) {
+			buf[str1.charAt(i)]++;
+		}
+		for(int i = 0; i< len; i++) {
+			if (--buf[str2.charAt(i)]<0) {
+				return false;
+			}
+		}
+		for (int i = 0; i< len; i++) {
+			if (buf[i] != 0) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public static void main(String[] args) {
+		assert isPermuation("","");
+		assert !isPermuation(null, "a");
+		assert isPermuation("a", "a");
+		assert !isPermuation("b", "a");
+		assert !isPermuation("", "a");
+		assert isPermuation("abc", "bca");
+		assert !isPermuation("abcd", "ab");
+		assert isPermuation("  ", "  ");
+
+		System.out.println("Tests Passed");
+	}
+
+}
