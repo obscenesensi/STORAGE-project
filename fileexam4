@@ -1,0 +1,22 @@
+#include <stdio.h>
+ 
+int main()
+{
+    FILE * fp=fopen("OUTPUT.txt", "wt");
+    fputs("123456789", fp);
+    fclose(fp);
+     
+    fp=fopen("OUTPUT.txt", "rt");
+     
+    fseek(fp, -3, SEEK_END);
+    putchar(fgetc(fp));
+     
+    fseek(fp, 3, SEEK_SET);
+    putchar(fgetc(fp));
+     
+    fseek(fp, 3, SEEK_CUR);
+    putchar(fgetc(fp));
+     
+    fclose(fp);
+    return 0;
+}
