@@ -1,0 +1,18 @@
+void reverse(char *str){
+    char *end=str;
+    char tmp;
+    if(str){//Only when str is not empty
+       while{//find the end of the string
+          ++end;
+       }
+       --end;//set one char back, cuz the last char is a null
+       
+       while(str<end){
+         tmp=*str;
+         *str=*end;
+         *end=tmp;
+         ++str;
+         --end;
+       }
+    }
+}
