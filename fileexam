@@ -1,0 +1,20 @@
+#include <stdio.h>
+ 
+int main()
+{
+   FILE *fp_source, *fp_dest;
+   char oneByte;
+   char source[50], dest[50];
+   scanf("%s %s", source, dest);
+   fp_source = fopen(source, "rb");
+   fp_dest   = fopen(dest, "wb");
+   while(!feof(fp_source)) {
+      oneByte = fgetc(fp_source);
+      fputc(oneByte, fp_dest);
+   }
+   printf("성공적으로 복사가 완료되었습니다!\n"); 
+   fclose(fp_source);
+   fclose(fp_dest);
+    
+   return 0;
+}
