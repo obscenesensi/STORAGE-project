@@ -1,0 +1,16 @@
+void insert_sort(int arr[], int n) // 삽입정렬함수
+{
+int i,j,t;
+for(i=1; i<n; i++)
+{
+t=arr[i];
+j=i;
+while(arr[j-1] > t && j>0)
+{
+arr[j]=arr[j-1];
+j--;
+}
+arr[j]=t;
+}
+}
+
