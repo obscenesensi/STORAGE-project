@@ -1,0 +1,34 @@
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <stdlib.h>
+ 
+#define MAX 1024
+ 
+int main (int argc, char ** argv[]) {
+ 
+int fd;
+int readn = 0;
+int writen = 0;
+char buf[MAX];
+int i ;
+ 
+//Open File and Get File Descripter//
+fd = open ("/root/System_Programming/Chapter_01/text.txt" ,O_RDWR, 0644);
+printf ("FD is .... %d \n" , fd);
+ 
+if (fd == -1){
+ printf ("File open failed.....\n");
+ return 1;
+ }
+ 
+memset (buf, 0x00, MAX);
+readn = read(fd, buf, MAX-1);
+ 
+printf ("Buffer Size : %d\n",sizeof(buf));
+printf ("Readn is ..... %d\n", readn);
+printf ("%s\n",buf);
+close (fd);
+ 
+}
