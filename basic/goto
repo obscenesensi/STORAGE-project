@@ -1,0 +1,14 @@
+#include <stdio.h>
+ 
+int main()
+{
+ printf("1\n");
+ printf("2\n");
+ goto five; // five로 점프를 시키는 명령
+ printf("3\n");
+ printf("4\n");
+ five: // five
+ printf("5\n");
+ printf("6\n");
+return 0;
+}
