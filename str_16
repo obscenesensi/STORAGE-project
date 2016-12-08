@@ -1,0 +1,17 @@
+void reverse1(char* str) 
+{
+  int size = 0;
+	char temp;
+	while(str[size] != '\0')
+	{
+		size++;
+	}
+	
+	for(int i = 0; i < size/2; i++)
+	{
+		temp = str[i];
+		str[i] = str[size - i - 1];
+		str[size - i - 1] = temp;
+	}
+	cout << str;
+}
