@@ -1,0 +1,3 @@
+void dump(const std::string& str) {
+    dump(str.c_str());
+}
