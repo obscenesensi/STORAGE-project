@@ -1,0 +1,35 @@
+#include <iostream>
+
+void reverse(std::string &str, int begin, int end) {
+  char temp;
+
+  while (begin < end) {
+    temp = str[begin];
+    str[begin] = str[end];
+    str[end] = temp;
+    begin++;
+    end--;
+  }
+
+  return;
+}
+
+
+void roateString(std::string &str, int number) {
+  if (number >= str.length() || number < 1)
+    return;
+  reverse(str, 0, number-1);
+  reverse(str, number, str.length()-1);
+  reverse(str, 0, str.length()-1);
+  return;
+}
+
+
+int main(void) {
+  std::string input_str = "abcdefg";
+  int number = 2;
+
+  roateString(input_str, number);
+  std::cout << input_str << std::endl;
+  return 0;
+}
