@@ -1,0 +1,12 @@
+ 
+#include <stdio.h>
+ 
+int main (void)
+{
+         char character = 65;
+         printf("아스키코드 65는 글자 %c입니다.\n",character);
+ 
+         printf("코드값 2를 더해 %c로 변형 !!!\n", character + 2);
+ 
+         return 0;
+} 
