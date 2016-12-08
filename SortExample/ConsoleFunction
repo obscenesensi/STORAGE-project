@@ -1,0 +1,9 @@
+void show(int arr[], int n) // 화면에 출력 해주는 함수 
+{
+int i;
+for(i=0; i<n; i++)
+{
+printf(" %4d", arr[i]);
+}
+printf("\n");
+}
