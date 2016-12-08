@@ -1,0 +1,41 @@
+#include <iostream>
+#include <memory>
+
+struct foo
+{
+  foo() { std::cout << "foo()\n"; }
+  ~foo() { std::cout << "~foo()\n"; }
+  int get() const { return 42; }
+};
+
+std::shared_ptr<foo> get_ptr()
+{
+  static std::weak_ptr<foo> ptr;
+
+  auto ret = ptr.lock();
+  if(!ret)
+  {
+    ret = std::make_shared<foo>();
+    ptr = ret;
+  }
+
+  return ret;
+}
+
+void do_stuff()
+{
+  auto ptr = get_ptr();
+  std::cout << "ptr: " << ptr->get() << ", @: " << ptr << "\n";
+}
+
+int main()
+{
+  do_stuff();
+
+  auto ptr = get_ptr();
+  std::cout << "ptr: " << ptr->get() << ", @: " << ptr << "\n";
+  auto ptr2 = get_ptr();
+  std::cout << "ptr2: " << ptr2->get() << ", @: " << ptr2 << "\n";
+  ptr = get_ptr();
+  std::cout << "ptr: " << ptr->get() << ", @: " << ptr << "\n";
+}
