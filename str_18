@@ -1,0 +1,102 @@
+#include <stdio.h>
+#include <string.h>
+#define MAX 256
+
+
+void sortRemove(char remove[]){
+    
+    //************************Sort remove[]**********************
+    int sort=1, aux;
+    
+    int length=strlen(remove);
+    //Here sandy redescovered bubble sort :D wohooo
+    while(sort==1){
+        sort=0;
+        for (int i=0; i<length-1;i++){
+            if ( remove[i]>remove[i+1] ){
+                aux=remove[i];
+                remove[i]=remove[i+1];
+                remove[i+1]=aux;
+                sort=1;
+            }
+        }
+    }
+    
+    //printf("Remove string is: %s\n",remove);
+    
+    
+
+    
+}
+
+int writeChar(char c, char remove[]){
+    
+    //***********Search given char in remove[]******************************
+    //binary search baby!
+    int length, middle, imin=0, imax;
+    
+    length=strlen(remove);
+    imax=length;
+     
+     while(imin<=imax){
+         middle=(imin+imax)/2; //correct for overflow;
+         if (c>remove[middle]){
+            imin=middle+1;
+         }
+      
+         else if(c==remove[middle])
+            return 0;//char found
+     
+         else if(c<remove[middle]){
+            imax=middle-1;
+            }
+     
+     }
+    return 1;//char not found;
+}
+
+
+void removeChars(char str[], char remove[]){
+    
+    int lookup[MAX], length=0, pos=0;
+    
+    sortRemove(remove);
+    //***********************Create new str**********************
+    length=strlen(str);
+    for (int l=0; l<length; l++) {
+        
+        if (writeChar(str[l], remove)) {
+            str[pos]=str[l];
+            pos++;
+        }
+    }
+    str[pos]='\0';
+    
+    printf("%s\n",str);
+
+}
+
+int main(){
+    char str[MAX], remove[MAX];
+    int c;
+    
+    
+    //********Reading the strings old school *******************
+    printf("String: ");
+    int i=0;
+    while ( (c=getchar()) != EOF && c != '\n') {
+        str[i++]=c;
+    }
+    str[i]='\0';
+    
+    
+    printf("Remove: ");
+    i=0;
+    while ( (c=getchar()) != EOF && c != '\n') {
+        remove[i++]=c;
+    }
+    remove[i]='\0';
+    
+    removeChars(str, remove);
+
+}
