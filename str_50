@@ -1,0 +1,33 @@
+
+ 
+#include <iostream>
+
+/* This function takes an iterative approach to problem
+ * using an O(n) speed.
+ */
+void reverse_string(char* str) {
+    char* sameStr = str;
+    char temporary;
+    if (str) {
+        while(*sameStr) {
+            ++sameStr;
+        }
+        --sameStr;
+        while (str < sameStr) {
+            temporary = *str;
+            *str++ = *sameStr;
+            *sameStr-- = temporary;
+        }
+    }
+}
+
+int main() {
+    std::string str = "Berkeley";
+    char* writable = new char[str.size() + 1];
+    std::copy(str.begin(), str.end(), writable);
+    writable[str.size()] = '\0';
+    reverse_string(writable);
+    std::cout << writable << std::endl;
+    delete[] writable;
+    return 0;
+}
