@@ -1,0 +1,44 @@
+#include <iostream>
+#include <queue>
+#include <memory>
+#include "make_unique.h"
+
+class Object {
+public:
+    int data;
+    Object(int _d) : data(_d) {};
+    virtual ~Object() {};
+};
+
+using namespace std;
+
+int main() {
+    queue<unique_ptr<Object> > q;
+
+    q.emplace(make_unique<Object>(10));
+    q.emplace(make_unique<Object>(20));
+    q.emplace(make_unique<Object>(30));
+
+    for(auto i = 0; i < 3; i++) {
+        auto data(move(q.front()));
+        q.pop();
+        cout << data->data;
+    }
+
+    return 0;
+}
+
+/*unique.h
+#ifndef MAKE_UNIQUE_H
+#define MAKE_UNIQUE_H
+
+
+#include <memory>
+
+template<typename T, typename ...Args>
+std::unique_ptr<T> make_unique( Args&& ...args )
+{
+    return std::unique_ptr<T>( new T( std::forward<Args>(args)... ) );
+}*/
+
+#endif
