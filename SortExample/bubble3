@@ -1,0 +1,34 @@
+#include <stdio.h>
+#define DATA 4
+int main()
+{
+    int num[]={3,2,4,1};//초기값
+    int i, j , temp,cnt=0;
+    
+    printf("초기 값 : ");
+    for(i=0;i<DATA;i++)
+        printf("%d ",num[i]);
+        printf("\n");
+      
+    
+    for(i=DATA-1;i>0;i--)//비교횟수는 데이터갯수-1, 자기 자신과는 비교 하지 않음
+    {
+        for(j=0;j<i;j++)
+        {
+            if(num[j] > num[j+1])
+            {
+                temp=num[j];//뒷자리의 수가 더 크면 교체
+                num[j]=num[j+1];
+                num[j+1]=temp;
+            }
+            cnt++;
+        }
+    }
+ 
+    printf("정렬 후 : ");
+    for(i=0;i<DATA;i++)
+        printf("%d ",num[i]);
+        printf("\n");
+    
+        printf("비교횟수 : %d 회\n", cnt);
+}
