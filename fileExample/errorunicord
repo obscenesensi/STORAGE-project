@@ -1,0 +1,27 @@
+#include <stdio.h>
+#include <locale.h>
+ 
+int main( )
+{
+    _wsetlocale( LC_ALL, L"korean" );
+ 
+    FILE *pFile = NULL;
+ 
+    pFile = _wfopen( L"d:\\Text.txt", L"w"  );
+    if( pFile == NULL )
+    {
+        //에러 처리
+    }
+    else
+    {
+        for( int i=0 ; i<3 ; ++i )
+        {
+            fwprintf( pFile, L"%d %f %s \n", i, 0.5+i, L"한글" );
+            fwprintf( pFile, L"%d, %f, %s \n", i, 0.5+i, L"확인" );
+            fwprintf( pFile, L"%d\t%f\t%s \n", i, 0.5+i, L"유니코드" );
+        }
+        fclose( pFile );
+    }
+ 
+    return 0;
+}
