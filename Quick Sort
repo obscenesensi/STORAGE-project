@@ -1,0 +1,51 @@
+#include <stdio.h>
+#include <stdlib.h>
+ 
+void quick_sort(int *arr, int left, int right)
+{
+        int i, j;
+        int temp;
+        int pivot = arr[left];
+        if(left < right)
+        {
+               i = left;
+               j = right+1; //do while문경우 --연산먼저하므로 index를 1초과한값으로 시작
+               while( i <= j)
+               {
+                       do
+                       i++;
+                       while(arr[i] > pivot); //오름차순을 원할경우 >를 <로
+                       do
+                       j--;
+                       while(arr[j] < pivot); //오름차순을 원할경우 <를 >로
+                       if(i<j) // 엇갈리지않으면 두 요소를 스왑
+                       {
+                              temp = arr[i];
+                              arr[i] = arr[j];
+                              arr[j] = temp;
+                       }
+                       else //찾은 두소요가 겹치거나 엇갈리면 한바퀴 끝
+                             break;
+               }
+               // j위치 요소를 기준이 되었던 pivot 과 Swap
+               temp = arr[j];
+               arr[j] = arr[left];
+               arr[left] = temp;
+               //Swap ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+               quick_sort(arr, left, j-1); // 가운데가 된 pivot을 중심으로 왼쪽 영역 재귀
+               quick_sort(arr, j+1, right);// 가운데가 된 pivot을 중심으로 오른쪽 영역 재귀
+        }
+}
+ 
+void main()
+{
+        int arr[10] = {33,12,33,14,45,6,27,8,49,1};
+        int i=0;
+ 
+        quick_sort(arr, 0, 9);
+ 
+        for(i=0; i<10; i++)
+               printf("%d ", arr[i]);
+ 
+ 
+}
