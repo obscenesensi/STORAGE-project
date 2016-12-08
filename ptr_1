@@ -1,0 +1,71 @@
+#include "interfaceptr.hpp"
+#include <cassert>
+
+struct Interface1 {};
+struct Interface2 {};
+struct Interface3 {};
+
+struct Class1 : Interface1, Interface2 {};
+struct Class2 : Interface2, Interface3 {};
+
+void test_empty()
+{
+    interface_ptr<Interface1> ip1;
+    interface_ptr<Interface1, Interface2> ip2;
+}
+
+void test_constructor()
+{
+    // with one interface
+    interface_ptr<Interface1> ip1(new Class1());
+
+    // with two interfaces
+    interface_ptr<Interface1, Interface2> ip2(new Class1());
+
+    // implicit ctor
+    interface_ptr<Interface1, Interface2> ip3 = new Class1();
+
+    // brace-style ctor
+    interface_ptr<Interface1, Interface2> ip4{new Class1()};
+
+    // error: class doesn't implement one of the interfaces
+    // interface_ptr<Interface1, Interface2> iperr(new Class2());
+}
+
+void test_copy_ctor()
+{
+    interface_ptr<Interface1, Interface2> ip1(new Class1());
+    interface_ptr<Interface1, Interface2> ip2(ip1);
+    interface_ptr<Interface1, Interface2> ip3 = ip1;
+}
+
+void test_assignment()
+{
+    interface_ptr<Interface1, Interface2> ip1(new Class1());
+    interface_ptr<Interface1, Interface2> ip2;
+
+    ip2 = ip1;
+}
+
+void test_get()
+{
+    Class1 * cl = new Class1();
+    interface_ptr<Interface1, Interface2> const ip(cl);
+
+    Interface1 * ip1 = get<Interface1>(ip);
+    assert(ip1 == cl);
+
+    Interface2 * ip2 = get<Interface2>(ip);
+    assert(ip2 == cl);
+
+    // error: interface not implemented
+    // Interface3 * ip3 = get<Interface3>(ip);
+}
+
+int main()
+{
+    test_empty();
+    test_constructor();
+    test_copy_ctor();
+    test_assignment();
+}
