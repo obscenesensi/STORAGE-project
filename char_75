@@ -1,0 +1,14 @@
+#include "stdio.h"
+
+
+int main()
+{
+	char sentence[]="t\'e\"s\"\'t";
+	char str [20] = {0};
+	
+	sscanf(sentence, "%s", str);
+	
+	printf("%s\n", str);
+	
+	return 0;
+}
