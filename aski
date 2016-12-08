@@ -1,0 +1,20 @@
+#include <stdio.h>
+ 
+int main(void)
+{
+           char ch; //문자변수
+           int line = 0; //줄바꿈을 위한 변수
+           int count = 0; //총 문자열 개수
+ 
+           printf("간단한 영문 텍스트를 입력하시오(끝내려면 #)\n");
+           while ( (ch = getchar())!= '#' ) {
+                     printf("%c-%d\t",ch,ch); //문자와 아스키코드값 출력
+                     count++; //문자 개수
+                     if(count % 8 == 0) { //줄바꿈
+                                printf("\n");
+                     }
+           }
+           printf("\n문자의 총 개수 %d개이다.\n",count); //결과값 출력
+ 
+           return 0;
+}
