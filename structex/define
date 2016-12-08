@@ -1,0 +1,44 @@
+#include <stdio.h>
+#include <string.h>
+struct student //구조체
+{
+	char name[10];
+	int kor;
+	int eng;
+	int math;
+	double avg;
+	char grade;
+}st[3];
+
+int main()
+{
+	int i;
+	strcpy(st[0].name, "hong");//학생1
+	st[0].kor=95;
+	st[0].eng=99;
+	st[0].math=97;
+	st[0].avg=(st[0].kor+st[0].eng+st[0].math)/3;
+	st[0].grade='A';
+	
+	strcpy(st[1].name, "leee");//학생2
+	st[1].kor=81;
+	st[1].eng=82;
+	st[1].math=85;
+	st[1].avg=(st[1].kor+st[1].eng+st[1].math)/3;
+	st[1].grade='B';
+
+	strcpy(st[2].name, "park");//학생3
+	st[2].kor=70;
+	st[2].eng=71;
+	st[2].math=75;
+	st[2].avg=(st[2].kor+st[2].eng+st[2].math)/3;
+	st[2].grade='C';
+
+
+	for(i=0;i<3;i++)
+		printf("%s %d %d %d %lf %c\n",st[i].name, st[i].kor, st[i].eng, st[i].math, st[i].avg, st[i].grade);
+
+
+
+	return 0;
+}
