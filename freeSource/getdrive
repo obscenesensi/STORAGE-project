@@ -1,0 +1,13 @@
+#include <stdio.h>
+#include <direct.h>    //_getdrive
+ 
+int main( )
+{
+    int nDrive = 0;
+ 
+    nDrive = _getdrive( );
+ 
+    printf( "현재 드라이브는 %c입니다.", char(nDrive)+96 );
+ 
+    return 0;
+}
