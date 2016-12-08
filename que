@@ -1,0 +1,91 @@
+#include <stdio.h>
+#define SIZE 5
+int rear=-1;
+int front=-1;
+int q[SIZE];
+
+void input(int data)
+{
+	if(rear == SIZE-1) printf("가득찬 큐입니다.\n");
+	else{
+		rear++;
+		q[rear] = data;
+		
+		
+	}
+}
+
+
+void output()
+{
+	int i;
+	if(front == rear) printf("빈 큐입니다.\n");
+	else{
+		front++;
+		printf("반환 된 값은 ? %d 입니다.\n",q[front]);
+		
+		for(i=front;i<rear+1;i++)
+		{
+			q[i]=q[1+i];
+			
+		}
+		front--;
+		rear--;
+
+
+
+	}
+
+}
+
+
+void dis()
+{
+	int i;
+	for(i=0;i<SIZE;i++)
+	{
+		printf("%d\t",q[i]);
+	}
+	printf("\n\n");
+}
+
+
+
+void main()
+{
+	int data;
+	int menu=0;
+	
+	while(menu<=3){
+		printf("메뉴 선택 1. 인풋    2. 아웃풋    3. 종료\n");
+		scanf("%d", &menu);
+
+
+		switch(menu)
+		{
+		case 1:
+			printf("값을 입력하세요\t");
+			scanf("%d",&data);
+			input(data);
+			break;
+			
+		case 2:
+			output();
+			break;
+			
+		case 3:
+			menu=5;
+			break;
+
+		default:
+			printf("잘못된 메뉴 입력");
+			scanf("%d", &menu);
+			break;	
+		
+			
+			
+		}
+	dis();		
+
+	}
+}
