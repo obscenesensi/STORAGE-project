@@ -1,0 +1,8 @@
+void chop( std::string& str, const std::string& whitespaces=" \t\f\v\n\r" )
+{
+  size_t found = str.find_last_not_of( whitespaces );
+  if ( found!=std::string::npos )
+    str.erase( found+1 );
+  else
+    str.clear();
+}
