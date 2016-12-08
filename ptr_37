@@ -1,0 +1,24 @@
+#include <boost/shared_ptr.hpp>
+
+typedef boost::shared_ptr<class MyObject> MyObjectPtr;
+
+class MyObject
+{
+  public:
+    static MyObjectPtr CreateInstance();
+    ~MyObject();
+    
+  private:
+    MyObject();
+}
+
+MyObjectPtr MyObject::CreateInstance()
+{
+  return MyObjectPtr(new MyObject()); // note: do not return new MyObject(); otherwise the destructor will never be called
+}
+
+int main(int argc, char* argv[])
+{
+  MyObjectPtr ptr = MyObject::CreateInstance();
+  retrun 0;
+}
