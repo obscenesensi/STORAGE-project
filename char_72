@@ -1,0 +1,39 @@
+
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+char caesar(char c, int shift);
+
+int main(int argc, char *argv[])
+{
+    if(argc != 2)
+    {
+		printf("%s [input]\n", argv[0]);
+		return 1;
+    }
+
+	char temp;
+
+    for(int shift = 0; shift < 25; shift++)
+    {
+        for(int x = 0; x < strlen(argv[1]); x++)
+        {
+            temp = caesar(argv[1][x], shift);
+			printf("%c", temp);
+        }
+
+		printf("\n");
+    }
+}
+
+char caesar(char c, int shift)
+{
+    if(isalpha(c))
+    {
+        c = toupper(c);
+        c = (((c - 65) + shift) % 26) + 65;
+    }
+
+    return c;
+}
