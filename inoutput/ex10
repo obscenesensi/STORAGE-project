@@ -1,0 +1,23 @@
+include <stdio.h> // fgets 함수가 정의된 헤더 파일
+#include <string.h> // strlen 함수가 정의된 헤더 파일
+
+main(){
+        FILE *fp ;
+        int index, data;
+        char* inp;
+        int buf_size = 1024;
+
+        fp = fopen("text.txt", "r");
+
+        inp = malloc(buf_size+5);
+
+        while(fgets(inp,buf_size,fp)){
+                if(strlen(inp) != 1){
+                        printf("------- \n");
+                        printf("입력받은 문장 : %s" , inp);
+                        printf("문자열의 길이 : %d \n" , strlen(inp));
+                        printf("------- \n");
+                }
+        }
+        fclose(fp);
+}
