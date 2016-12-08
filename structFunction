@@ -1,0 +1,8 @@
+struct sungjuk{    //구조체 선언 
+    int bunho;     //구조체를 구성하는 변수선언
+    char name[7];
+    int kor;
+    int eng;
+    int tot;
+    float avg;
+};
