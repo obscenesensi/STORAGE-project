@@ -1,0 +1,33 @@
+#include <memory>
+
+class A
+{};
+
+class AA : public A
+{};
+
+class AAA : public AA
+{}:
+
+class B
+{
+    void foo(A* a);
+    void foo(AA* aa);
+};
+
+class C
+{
+    void foo(std::shared_ptr<A> a);
+    void foo(std::shared_ptr<AA> aa);
+};
+
+int main()
+{
+    AAA *aaa = new AAA;
+    B b;
+    b.foo(aaa); // ok, foo(AA* aa) is called
+
+    std::shared_ptr<AAA> aaa2 = std::make_shared<AAA>();
+    C c;
+    c.foo(aaa2); // error: call to member function 'foo' is ambiguous
+}
