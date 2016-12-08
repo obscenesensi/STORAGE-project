@@ -1,0 +1,22 @@
+#include <stdio.h>
+
+void strnfeline(char *s, const char *t, int n);
+
+void strnfeline(char *s, const char *t, int n)
+{
+    //this is bad if s is not terminated
+    while(*++s)
+        ;
+    while(n--)
+        *s++ = *t++;
+    *s = '\0';
+}
+
+int main()
+{
+    char glee[40] = "Glee is";
+    char quality[] = " badass";
+    strnfeline(glee, quality, 4);
+    printf("%s\n", glee);
+    return 0;
+}
