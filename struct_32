@@ -1,0 +1,33 @@
+#include <iostream>
+#include <string>
+#include <stdlib.h>
+
+using namespace std;
+
+typedef struct _node {
+    string name;
+} node;
+
+node *create_node () {
+    node *created;
+    
+    created = (node *)calloc(1,sizeof(node));
+    if (created) {
+        created->name = string(""); // Segmentation fault
+    }
+    
+    return created;
+}
+
+int main (int narg, char *varg[]) {
+    node non_dynamic, *dynamic;
+    
+    non_dynamic.name = "non_dynamic";
+    cout << non_dynamic.name << endl;
+    
+    dynamic = create_node();
+    dynamic->name = "dynamic";
+    cout << dynamic->name << endl;
+    
+    return 0;
+}
