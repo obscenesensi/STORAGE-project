@@ -1,0 +1,63 @@
+include <stdio.h>
+#include <stdlib.h>
+typedef struct Node
+{
+        int bookNum;
+        struct Node * next;
+        struct Node * pre;
+}Book;
+ 
+Book* CreateNewNode( Book * myBook, int data) //노드생성
+{
+        myBook = (Book*)malloc(sizeof(Book)); myBook->bookNum = 0;
+        myBook->next = NULL;
+        myBook->pre = NULL;
+        myBook->bookNum = data;
+        return myBook;
+}
+ 
+void InsertNode(Book** phead, Book* newNode) //노드 삽입
+{
+        if(*phead == NULL)
+               *phead = newNode;
+        else
+        {
+               newNode->next = *phead;
+               (*phead)->pre = newNode;
+               *phead = newNode;
+        }
+ 
+}
+ 
+void ShowList(Book** phead) //리스트 보여주기
+{
+        Book * tail = NULL;
+        int index = 0;
+        for(tail = *phead ; tail !=NULL; tail = tail->next)
+        {
+               index++;
+               printf("[%d]번째 -> %d \n", index, tail->bookNum);
+        }
+ 
+}
+void main()
+{
+ 
+        Book * phead = NULL;
+        Book * NewNode = NULL;
+ 
+        int data=0;
+        printf("입력하셈 !!!");
+ 
+        scanf("%d", &data);
+        NewNode = CreateNewNode(NewNode, data);
+        InsertNode(&phead, NewNode);
+ 
+        scanf("%d", &data);
+        NewNode = CreateNewNode(NewNode, data);
+        InsertNode(&phead, NewNode);
+ 
+        ShowList(&phead);
+ 
+ 
+}
