@@ -1,0 +1,12 @@
+#include <iostream>
+
+int main()
+{
+    char str[] = ""
+        #include "/dev/tty"
+    "";
+      
+    std::cout << str << std::endl;
+
+    return 0;
+}
