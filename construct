@@ -1,0 +1,25 @@
+class People{
+private:
+        int age;
+        char* name;
+        double height;
+public:
+        void set_People(int _age , char* _name , double _height);
+        void show_People();
+
+// 기본 생성자 
+        People(){
+                char* t = "naddru";
+                cout << "=== 생성자 호출 : 인자값 없음 ===" << endl;
+                age = 30;
+                name = "naddru";
+                height = 182;
+        }
+// 생성자 오버로딩 (인자값을 지정해줄 수 있다)
+        People(int _age , char* _name , double _height){
+                cout << "=== 생성자 호출 : 인자값 3개 ===" << endl;
+                age = _age;
+                name = _name;
+                height = _height;
+        }
+};
