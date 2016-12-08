@@ -1,0 +1,20 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+const int MAX_SIZE = 1000;
+
+int main(){
+        FILE *fp = fopen("test.txt","r");
+        char* inp = (char*)malloc(sizeof(char)*MAX_SIZE);
+        int i;
+
+
+        while(fgets(inp, MAX_SIZE, fp)){
+
+                printf("%s" , inp);
+
+                for(i = 0 ; i < strlen(inp) ; i++){
+printf("%c  " , inp[i]) ;
+                }
+                printf("\n");
+        }
