@@ -1,0 +1,38 @@
+#include<iostream>
+#include<vector>
+#include<string>
+#include<algorithm>
+using namespace std;
+
+
+struct Sample {
+	int id;
+	string str;
+};
+
+int main() {
+	vector<Sample> data = {
+		{ 1,"Hello1" },
+		{ 2,"Hello2" },
+		{ 3,"Hello3" },
+		{ 4,"Hello4" },
+		{ 5,"Hello5" },
+		{ 6,"Hello6" },
+		{ 7,"Hello7" }
+	};
+
+
+
+	auto removeIt = remove_if(data.begin(), data.end(), [&](Sample value) {
+		return (value.id % 2) == 1;
+	}
+	);
+
+	data.erase(removeIt, data.end());
+
+	for (auto&x : data) {
+		cout << x.str << endl;
+	}
+
+	return 0;
+}
