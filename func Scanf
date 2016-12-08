@@ -1,0 +1,11 @@
+#include <stdio.h>
+int main()
+{
+    int i;
+    char msg[20];
+ 
+    gets(msg);
+    
+    printf("입력 받은 문자 : %s\n",msg);
+    return 0;
+}
