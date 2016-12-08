@@ -1,0 +1,78 @@
+#include <iostream>
+#include <stdlib.h>
+#include <string>
+#include <cmath>
+using namespace std;
+
+#include "queue.h"
+
+#define QSIZE 4
+
+int Q_array[QSIZE];
+int in, out;
+
+/*
+empty()
+full()
+push()
+pop()
+*/
+
+void queueInit(queue_t* q, unsigned short size) {
+	q->indexIn = 0;
+	q->indexOut = 0;
+	q->size = size;
+	q->data = malloc(size * sizeof(long));	//These creates an allocated spot of memory, like an array, and points to it
+}
+
+int increment(int index, int size) {
+	if(index < size - 1) {
+		index++;
+	}
+	else {
+		index = 0;
+	}
+	return index;
+}
+
+int queuePush(queue_t* q, int value) {
+	//Always check for full before a push
+	if(!queueFull(q)) {
+		Q_array[in] = value;
+		in = increment(in, QSIZE);
+	}
+	else {
+		printf("queue is full \n\r");
+		//cout << "queue is full " << endl;
+	}
+}
+
+int queuePop(queue_t* q) {
+	//Always check for empty before to pop anything
+	int ret_value;
+	if(!queueEmpty(q)) {
+		ret_value = Q_array[out];
+		out = increment(out, QSIZE);
+		return ret_value;
+	}
+	else {
+		printf("queue is empty \n\r");
+		//cout << "queue is full " << endl;
+	}
+	return -1;
+}
+
+int queueFull(queue_t* q) {
+	//The queue is full if, when you increment the in-index, you are equal to the out-index
+	if(increment(in, QSIZE) == out) {
+		return 1;
+	}
+	return 0;
+	//simpler notation
+	//return(increment(in) == out);
+}
+
+int queueEmpty(queue_t* q) {
+	//Empty if the in and out pointers are equal
+	return(q->indexIn == q->indexOut);
+}
