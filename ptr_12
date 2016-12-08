@@ -1,0 +1,30 @@
+#include <memory>
+#include <iostream>
+
+template <typename T>
+struct Nodes{
+	T data;
+	std::shared_ptr<Nodes<T>> next;
+	Nodes(const T& value):data(value), next(nullptr){}
+};
+
+int main()
+{
+  //array of pointers
+	std::shared_ptr<std::shared_ptr<Nodes<int>>> table;
+
+  //reset the table to fit an array of 10 nodes
+	table.reset(new std::shared_ptr<Nodes<int>>[10],[](std::shared_ptr<Nodes<int>> * p) {delete [] p;});
+	
+	for (int i =0; i<10; i++)
+	{
+		table.get()[i].reset(new Nodes<int>(i), [](Nodes<int> * p) {delete [] p;});
+	}
+
+	for (int i = 0; i<10; i++)
+	{
+		std::cout << table.get()[i]->data << std::endl;
+	}
+	//seg fault here
+	return 0;
+}
