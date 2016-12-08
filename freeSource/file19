@@ -1,0 +1,20 @@
+#include <stdio.h>
+#include <io.h>       //access
+ 
+int main( )
+{
+    char strPath[] = { "C:\\Windows" };
+     
+    int nResult = access( strPath, 0 );
+ 
+    if( nResult == 0 )
+    {
+        printf( "지정한 경로에 파일⁄폴더가 존재 합니다." );
+    }
+    else if( nResult == -1 )
+    {
+        printf( "지정한 경로에 파일⁄폴더가 존재하지 않습니다." );
+    }
+ 
+    return 0;
+}
