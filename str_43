@@ -1,0 +1,120 @@
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include <vector>
+#include <map>
+
+using namespace std;
+
+#define print(_) cout<<_<<endl
+#define input(_) cin>>_
+
+const int SIZE = 2048;
+const int ROOT = 0;
+
+struct _trie {
+    map<char, int> next_mp;
+    int str_p;
+    
+    void init(int);
+    void insert(string in_str);
+    void compress(string in_str, string& c_str);
+    void decompress(string in_str, string& d_str, int p);
+};
+
+struct _trie;
+
+_trie trie[SIZE];
+string _trie_str[SIZE];
+string query[SIZE];
+int idx;
+
+void _trie::init(int x) 
+{
+    next_mp.clear();
+    str_p = x;
+}
+
+void _trie::insert(string in_str)
+{
+    if (_trie_str[str_p].length() == 0) {
+        _trie_str[str_p] = in_str;
+    } else {
+        int p = 0;
+        int len = min(_trie_str[str_p].length(), in_str.length());
+        for (p = 0; p < len; p++) {
+            if (_trie_str[str_p][p] != in_str[p]) {
+                break;
+            }
+        }
+        if (p < (int)_trie_str[str_p].length()) {
+            trie[++idx].insert(_trie_str[str_p].substr(p, _trie_str[str_p].length()));
+            trie[idx].next_mp = next_mp;
+
+            next_mp.clear();
+            next_mp[_trie_str[str_p][p]] = idx;
+            _trie_str[str_p] = _trie_str[str_p].substr(0, p);
+            this->insert(in_str);
+        } else {
+            char next = in_str[p];
+            if (next_mp.find(next) == next_mp.end()) {
+                next_mp[next] = ++idx;
+            }
+            trie[next_mp[next]].insert(in_str.substr(p, in_str.length()));
+        }
+    }
+}
+
+void _trie::compress(string in_str, string& c_str)
+{
+    int len = _trie_str[str_p].length() - 1;
+    c_str += in_str[len+1];
+    int next = next_mp[in_str[len+1]];
+    if (next) {
+        trie[next].compress(in_str.substr(len+1, in_str.length()), c_str);
+    }
+}
+
+void _trie::decompress(string in_str, string& d_str, int p)
+{
+    d_str += _trie_str[str_p];
+    if (p < in_str.length()) {
+        int next = next_mp[in_str[p]];
+        if (next) {
+            trie[next].decompress(in_str, d_str, p+1);
+        }
+    }
+}
+
+
+int main()
+{
+    freopen("input.txt","r",stdin);
+    idx = 0;
+    int n = 0;
+    string in_str;
+    for (int i = 0; i < SIZE; i++) {
+        trie[i].init(i);
+    }
+    while(input(in_str)) {
+        query[n] = in_str;
+        trie[0].insert(in_str);
+        ++n;
+    }
+
+    for (int i = 0; i < n; i++) {
+        string c_str, d_str;
+        trie[0].compress(query[i], c_str);
+        trie[0].decompress(c_str, d_str, 0);
+        if (query[i] == d_str) {
+            print(query[i]<<".......PASS!");
+        } else {
+            print(query[i]<<".......FAILED!");
+        }
+    }
+
+    return 0;
+}
