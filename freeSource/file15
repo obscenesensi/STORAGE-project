@@ -1,0 +1,37 @@
+#include <stdio.h>
+ 
+#define print(n) printf( "%ld\n", n )
+ 
+int main( )
+{   
+    FILE *pFile = NULL;
+ 
+    pFile = fopen( "d:\\Text.txt", "w+" );
+    if( pFile == NULL )
+    {
+        //에러 처리
+    }
+    else
+    {
+        print( ftell(pFile) );          //fopen 후 파일 포인터 위치 확인
+ 
+        fputs( "0123456789", pFile );
+        print( ftell(pFile) );          //fputs 후 파일 포인터 위치 확인
+ 
+        fseek( pFile, 0L, SEEK_SET );    //처음 위치로 설정
+        print( ftell(pFile) );          //fseek 후 파일 포인터 위치 확인
+ 
+        fseek( pFile, 6L, SEEK_SET );    //처음 위치에서 6번 뒤로 설정
+        print( ftell(pFile) );          //fseek 후 파일 포인터 위치 확인
+ 
+        fseek( pFile, -2L, SEEK_CUR );    //현재 위치(6)에서 2번 앞으로 이동
+        print( ftell(pFile) );          //fseek 후 파일 포인터 위치 확인
+ 
+        fseek( pFile, 0L, SEEK_END );    //파일 끝으로 이동
+        print( ftell(pFile) );          //fseek 후 파일 포인터 위치 확인
+ 
+        fclose( pFile );
+    }
+ 
+    return 0;
+}
