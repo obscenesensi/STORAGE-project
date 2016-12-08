@@ -1,0 +1,34 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(int argc, char *argv[])
+{
+char antwort;
+
+ 
+     
+     printf("passwort? :P");
+scanf("%c", &antwort);
+if(antwort == 'j')
+
+
+ {
+	printf("\nsehr guet.\n");
+	
+system(   "\"D:\\Games\\Guild Wars 2\\Gw2.exe\"");
+	
+return 0;
+
+}
+else 
+ {
+	printf("\fuuuu\n");
+
+
+
+
+   
+system("PAUSE");
+return 0;
+}}
