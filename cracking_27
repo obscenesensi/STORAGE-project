@@ -1,0 +1,24 @@
+private void permutacao(ArrayList<String> completo, String hash, int inicio, int fim)
+			throws NoSuchAlgorithmException, ExecutionException {
+
+		QuebraSenhaMD5Multithreads quebra = new QuebraSenhaMD5Multithreads();
+
+		for (int a = inicio; a <= fim; a++) {
+			for (String b : completo) {
+				for (String c : completo) {
+					for (String d : completo) {
+						for (String e : completo) {
+
+							String combinacao = completo.get(a) + b + c + d + e;
+							setQuebrado(quebra.crackingThreads(combinacao, hash));
+
+							if (getQuebrado()) {
+								return;
+							}
+						}
+					}
+				}
+			}
+		}
+
+	}
