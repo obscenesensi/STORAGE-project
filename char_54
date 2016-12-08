@@ -1,0 +1,24 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+char * TekrarliYaz(char *kaynak, int tekrar) {
+	int boy = tekrar * strlen(kaynak) + 1;
+	char *hedef = (char*) calloc(boy,sizeof(char));
+	hedef [boy -1] = '\0';
+	int i=0, j=0, k;
+	while (kaynak[i] != '\0') {
+		k=0;
+		while (k++ < tekrar) 
+			hedef [j++] = kaynak[i];
+		i++;
+	}	
+	return hedef;	
+}
+int main(void) {
+       char *metin = "anan-zaaaaaxdxd";
+       printf("\n%s\n", TekrarliYaz(metin, 2));
+       printf("\n%s\n", TekrarliYaz(metin, 3));
+       getchar();
+       return 0;
+}
