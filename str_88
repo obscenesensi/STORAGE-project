@@ -1,0 +1,11 @@
+void rtrim(std::string& str) {
+  size_t endpos = str.find_last_not_of(" \t\r\n");
+  if(std::string::npos != endpos )
+    str = str.substr(0, endpos+1);
+}
+
+void ltrim(std::string& str) {
+  size_t startpos = str.find_first_not_of(" \t\r\n");
+  if(std::string::npos != startpos )
+    str = str.substr(startpos);
+}
