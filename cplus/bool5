@@ -1,0 +1,17 @@
+#include <iostream>
+#define PI 3.141592
+//#define CU(x) ((x)*(x)*(x))
+ 
+inline int CU(int x)
+{
+    return x*x*x;
+}
+ 
+using namespace std;
+ 
+int main()
+{
+    cout << PI << endl;
+    cout << CU(7) << endl;
+    return 0;
+}
