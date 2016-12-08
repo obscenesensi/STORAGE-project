@@ -1,0 +1,10 @@
+int main(void) {
+    //linkedList pointer define start
+    linkedList *L = (linkedList *)malloc(sizeof(linkedList));
+    L->cur = NULL;
+    L->head = NULL;
+    L->tail = NULL;
+    //linkedList pointer define end
+ 
+    ...
+}
