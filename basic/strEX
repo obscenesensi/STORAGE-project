@@ -1,0 +1,32 @@
+#include <stdio.h>
+#include <stdlib.h>
+#define SIZE 10
+  
+int main(void)
+{
+  int  result;
+  int  index = 3;
+  char buffer1[SIZE] = "abcdefg";
+  char buffer2[SIZE] = "abcfg";
+  void print_result(int, char *, char *);
+  
+  result = strcmp( buffer1, buffer2);
+  printf("각 문자의 비교\n");
+  printf("strcmp: ");
+  print_result(result, buffer1, buffer2);
+  
+  result = strncmp(buffer1, buffer2, index);
+  printf("\n%i 길이 까지의 문자 비교\n", index);
+  printf("strncmp: " );
+  print_result(result, buffer1, buffer2);
+}
+  
+void print_result( int res, char * p_buffer1, char * p_buffer2)
+{
+  if ( res == 0 )
+    printf("\"%s\" 와 \"%s\"는 동일합니다.\n", p_buffer1, p_buffer2);
+  else if ( res < 0 )
+    printf("앞서는 문자열: \"%s\"\n", p_buffer1);
+  else
+    printf("앞서는 문자열: \"%s\"\n", p_buffer2);
+}
