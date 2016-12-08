@@ -1,0 +1,20 @@
+#include <iostream>
+using namespace std;
+struct Person {
+    string name;
+    int age;
+    string sex;
+};
+
+int main() {
+    Person p; // object creation
+    Person *q; // pointer creation
+    p.name = "arun";
+    p.age = 27;
+    p.sex = "male";
+    q = &p; // q is a pointer referencing p(object of Person)
+    cout << q->name << endl;
+    cout << q->age << endl;
+    cout << q->sex << endl;
+    return 0;
+}
