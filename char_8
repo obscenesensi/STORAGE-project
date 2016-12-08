@@ -1,0 +1,31 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define N (3)
+
+const size_t offset = sizeof(char *) * N,
+	length = (sizeof(char *) + sizeof(char) * N) * N;
+
+int main(int argc, char **argv) {
+	char **foo = (char **)malloc(length);
+	int i, j;
+
+	for (i = 0; i < N; ++i) {
+		foo[i] = (char *)(foo + offset + i * N);
+	}
+
+	/* usage */
+
+	for (i = 0; i < N; ++i)
+		for (j = 0; j < N; ++j)
+			foo[i][j] = 'a' + i * j;
+
+	for (i = 0; i < N; ++i) {
+		for (j = 0; j < N; ++j)
+			printf(" %c", foo[i][j]);
+		putchar('\n');
+	}
+		
+
+	return 0;
+}
