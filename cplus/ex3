@@ -1,0 +1,27 @@
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+
+using namespace std;
+
+int main() {
+int a, b, c;
+int d[100] = { 0 }, f[101] = { 0 };
+int t;
+
+srand((unsigned)time(NULL));
+a = rand() % 100;
+for (b = 1; b < a; b++)
+{
+t = rand() % 100 + 1;
+if (f[t] == 1) {
+b--;
+continue;
+}
+f[t] = 1;
+d[b - 1] = t;
+cout << b << "번째의 값: " << d[b - 1] << endl;
+}
+system("pause");
+return 0;
+}
