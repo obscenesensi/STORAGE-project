@@ -1,0 +1,34 @@
+void use_raw_pointer() {
+  Song *pSong = new Song("My heart will go on");
+  
+  // use pSong ...
+  
+  delete pSong;
+}
+
+void use_smart_pointer() {
+  unique_ptr<Song> song1(new Song("My heart will go on"));
+  
+  // use song1 ...
+} // song1 is deleted automatically here
+
+
+// The following demo shows how to create unique_ptr instances and use them in a vector
+void SongVector() {
+  vector<unique_ptr<Song>> songs;
+  // create some new unique_ptr<Song> instances, add them into vector
+  songs.push_back(make_unique<Song>("song title 1"));
+  songs.push_back(make_unique<Song>("song title 2"));
+  
+  // pass by const reference when possible to avoid copying
+  for(const auto& song : songs)
+    cout << song->title << endl;
+}
+
+
+
+
+
+
+
+
