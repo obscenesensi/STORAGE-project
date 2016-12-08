@@ -1,0 +1,5 @@
+ if (packetData.chaddr.address &&
+                packetData.chaddr.address.toLowerCase().indexOf('####INSERT INITIAL MAC BYTES HERE FOR NETEXTREME####') === 0) {
+            logger.info("Sending down undionly.kpxe for Broadcom NetExtreme");
+            return 'monorail.intel.ipxe';
+        }
