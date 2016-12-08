@@ -1,0 +1,19 @@
+std::wstring str_replace(std::wstring search, std::wstring replace, std::wstring subject)
+{
+	std::wstring result = subject;
+	if (subject.length() == 1) {
+		if (subject == search) return replace;
+	}
+	else if (subject.length() > 1) {
+		std::string::size_type start_pos = 0;
+		std::string::size_type search_length = search.length();
+		std::string::size_type replace_length = replace.length();
+		std::string::size_type found_pos = result.find(search, start_pos);
+		while (std::string::npos != found_pos) {
+			result = result.replace(found_pos, search_length, replace);
+			start_pos = found_pos + replace_length;
+			found_pos = result.find(search, start_pos);
+		}
+	}
+	return result;
+}
