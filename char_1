@@ -1,0 +1,59 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+size_t string_split(const char* str, const char* delimiters, char** arr,
+		size_t strarray_size);
+
+size_t string_split(const char* str, const char* delimiters, char** strarray,
+		size_t strarray_size) {
+	char* str_pointer = (char*) str;
+
+	size_t delimiter_pos = 0;
+	size_t result = 0;
+
+	while (result < strarray_size) {
+
+		if (result == strarray_size - 1) {
+			size_t last_token_len = strlen(str_pointer);
+			*strarray = (char*) realloc(*strarray, last_token_len + 1);
+			memset(*strarray, 0, last_token_len + 1);
+			strncpy(*strarray, str_pointer, last_token_len);
+
+		} else {
+			delimiter_pos = strcspn(str_pointer, delimiters);
+
+			*strarray = (char*) realloc(*strarray, delimiter_pos + 1);
+			memset(*strarray, 0, delimiter_pos + 1);
+			strncpy(*strarray, str_pointer, delimiter_pos);
+
+			if (delimiter_pos >= strlen(str_pointer)) {
+				++result;
+				break;
+			}
+
+			str_pointer += delimiter_pos + 1;
+			++(strarray);
+		}
+
+		++result;
+	}
+
+	return result;
+}
+
+int main(int argc, char* argv[]) {
+	char* arr[4] = { 0 };
+	size_t splitted = string_split(",,abc,", ",", arr, 4);
+
+	printf("split to %d part(s)\n", splitted);
+
+	size_t i;
+	for (i = 0; i < 4; ++i) {
+		printf("%d:%s\n", i, arr[i]);
+		free(arr[i]);
+	}
+
+	return EXIT_SUCCESS;
+}
