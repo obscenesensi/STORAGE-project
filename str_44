@@ -1,0 +1,24 @@
+#include <stdio.h>
+#include <string.h>
+
+#define STR_LENGTH 50
+#define SYMB_LENGTH 25
+
+int main() {
+        char str[STR_LENGTH],
+                symb[SYMB_LENGTH];
+        scanf("%s %s", &str, &symb);
+
+        str[STR_LENGTH - 1] = '\0';
+        symb[SYMB_LENGTH - 1] = '\0';
+
+        int i,j;
+        for (i = 0; i < strlen(str); i++) {
+                for (j = 0; j < strlen(symb); j++)
+                        if (str[i] == symb[j])
+                                str[i] = '*';
+        }
+        str[STR_LENGTH - 1] = '\0';
+        printf("%s\n", str);
+        return 0;
+}
