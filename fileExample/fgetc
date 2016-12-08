@@ -1,0 +1,28 @@
+#include <stdio.h>
+ 
+#define print(ch) printf( "%x %c\n", ch, ch )
+ 
+int main( )
+{   
+    FILE *pFile = NULL;
+ 
+    pFile = fopen( "d:\\Text.txt", "r" );
+    if( pFile == NULL )
+    {
+        //에러 처리
+    }
+    else
+    {
+        char chTemp;
+ 
+        while( !feof( pFile ) )
+        {
+            chTemp = fgetc( pFile );
+            print( chTemp );
+        }
+ 
+        fclose( pFile );
+    }
+ 
+    return 0;
+}
