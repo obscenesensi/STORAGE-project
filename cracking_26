@@ -1,0 +1,27 @@
+public class CrackingTheCode1 {
+  public static void main(String[] args) {
+    CrackingTheCode1 app = new CrackingTheCode1();
+    String[] tests = new String[] {
+      "abc123", "abc12a", "abc122", "s3cr3t0", "!#%&/()", "#abc123#"
+    };
+    for (int i = 0; i < tests.length; i++) {
+      String s = tests[i];
+      System.out.printf("%s : %b\n", s, app.isUniqueChars(s));
+    }
+  }
+
+  public boolean isUniqueChars(String s) {
+    long[] checkers = new long[4];
+    int length = s.length();
+    for (int i = 0; i < length; i++) {
+      int val = s.charAt(i);
+      int index = val / 256;
+      long offset = (1L << val);
+
+      if ((checkers[index] & offset) > 0) return false;
+
+      checkers[index] |= offset;
+    }
+    return true;
+  }
+  /]
