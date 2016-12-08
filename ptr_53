@@ -1,0 +1,202 @@
+$ g++ --std=c++11 -o proxy_ptr proxy_ptr.cpp 
+$ ./proxy_ptr 
+entering main()
+creating Skeleton(1)
+  construct Skeleton(1)
+creating BodyNode(1)
+  construct BodyNode(1)
+creating BodyNode(2)
+  construct BodyNode(2)
+BodyNode(2) leaving scope
+Skeleton(1) leaving scope
+BodyNode(1) leaving scope
+  destruct Skeleton(1)
+  destruct BodyNode(1)
+  destruct BodyNode(2)
+everything should have been destructed
+leaving main()
+
+#include <iostream>
+#include <vector>
+#include <memory>
+
+// Forward declarations.
+class Skeleton;
+template <typename T> class StrongPtr;
+template <typename T> class WeakPtr;
+
+// Proxy class.
+class Storage : public std::enable_shared_from_this<Storage>
+{
+public:
+    template <typename T>
+    StrongPtr<T> make_shared(T *obj)
+    {
+        std::shared_ptr<T> obj_ptr(obj);
+        objects_.push_back(static_cast<std::shared_ptr<void>>(obj_ptr));
+        return StrongPtr<T>(obj_ptr, shared_from_this());
+    }
+
+private:
+    std::vector<std::shared_ptr<void>> objects_;
+};
+
+// Pointer definitions.
+template <typename T>
+class StrongPtr
+{
+public:
+    StrongPtr()
+    : obj_(), storage_()
+    {}
+
+    StrongPtr(std::weak_ptr<T> obj, std::shared_ptr<Storage> storage)
+    : obj_(obj), storage_(storage)
+    {}
+
+    T* operator-> () const
+    {   
+        return obj_.lock().get();
+    }
+
+    operator WeakPtr<T>()
+    { 
+        return WeakPtr<T>(obj_, storage_);
+    }
+
+    void reset()
+    {
+        obj_.reset();
+        storage_.reset();
+    }
+
+private:
+    std::shared_ptr<Storage> storage_;
+    std::weak_ptr<T> obj_;
+};
+
+template <typename T>
+class WeakPtr
+{
+public:
+    WeakPtr()
+    : obj_(), storage_()
+    {}
+
+    WeakPtr(std::weak_ptr<T> obj, std::weak_ptr<Storage> storage)
+    : obj_(obj), storage_(storage)
+    {}
+
+    T* operator-> () const
+    {    
+        return obj_.lock().get();
+    }
+
+    StrongPtr<T> lock()
+    { 
+        return StrongPtr<T>(obj_, storage_.lock());
+    }
+
+    void reset()
+    {
+        obj_.reset();
+        storage_.reset();
+    }
+
+private:
+    std::weak_ptr<Storage> storage_;
+    std::weak_ptr<T> obj_;
+};
+
+// Stub classes for testing.
+class BodyNode {
+public:
+    virtual ~BodyNode()
+    {
+        std::cout << "  destruct BodyNode(" << id_ << ")" << std::endl;
+    }
+
+private:
+    int id_;
+    WeakPtr<Skeleton> skeleton_;
+
+    BodyNode(WeakPtr<Skeleton> const &skeleton, int id)
+        : id_(id)
+        , skeleton_(skeleton)
+    {
+        std::cout << "  construct BodyNode(" << id_ << ")" << std::endl;
+    }
+
+    friend class Skeleton;
+};
+
+class Skeleton {
+public:
+    virtual ~Skeleton()
+    {
+        std::cout << "  destruct Skeleton(" << id_ << ")" << std::endl;
+    }
+
+    StrongPtr<BodyNode> make_bodynode(int id)
+    {
+        StrongPtr<BodyNode> p = storage_.lock()->make_shared(new BodyNode(self_, id));
+        nodes_.push_back(p);
+        return p;
+    }
+
+private:
+    int id_;
+    WeakPtr<Skeleton> self_;
+    std::weak_ptr<Storage> storage_;
+    std::vector<WeakPtr<BodyNode> > nodes_;
+
+    Skeleton(int id)
+        : id_(id)
+    {
+        std::cout << "  construct Skeleton(" << id_ << ")" << std::endl;
+    }
+
+    friend StrongPtr<Skeleton> make_skeleton(int id);
+};
+
+StrongPtr<Skeleton> make_skeleton(int id)
+{
+    std::shared_ptr<Storage> st = std::make_shared<Storage>();
+    StrongPtr<Skeleton> p = st->make_shared(new Skeleton(id));
+    p->storage_ = st;
+    p->self_ = p;
+    return p;
+}
+
+// Test code.
+int main(int argc, char **argv)
+{
+    std::cout << "entering main()" << std::endl;
+
+    {
+        std::cout << "creating Skeleton(1)" << std::endl;
+        StrongPtr<Skeleton> s = make_skeleton(1);
+
+        {
+            std::cout << "creating BodyNode(1)" << std::endl;
+            StrongPtr<BodyNode> b1 = s->make_bodynode(1);
+
+            {
+                std::cout << "creating BodyNode(2)" << std::endl;
+                StrongPtr<BodyNode> b2 = s->make_bodynode(2);
+
+                std::cout << "BodyNode(2) leaving scope" << std::endl;
+            }
+
+            std::cout << "Skeleton(1) leaving scope" << std::endl;
+            s.reset();
+
+            std::cout << "BodyNode(1) leaving scope" << std::endl;
+        }
+
+        std::cout << "everything should have been destructed" << std::endl;
+    }
+
+    std::cout << "leaving main()" << std::endl;
+    return 0;
+}
