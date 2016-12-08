@@ -1,0 +1,22 @@
+#include <iostream>
+using namespace std;
+
+void reverseString(char *str) {
+	char *start = str;
+	for (;*str;str++); //loop to '\0' terminal of the string
+	if (*start) str--; //in case string is blank
+	while (start < str) {
+		*start ^= *str;  //swap two elements using XOR
+		*str ^= *start;
+		*start++ ^= *str--;
+	}
+}
+
+
+int main() {
+	char str[] = "";
+	cout << str << endl;
+	reverseString(str);
+	cout << str << endl;
+	return 0;
+}
