@@ -1,0 +1,9 @@
+void init_arr(int arr[], int n) // 배열의 초기화 함수 
+{
+int i;
+srand((int)time(NULL));
+for(i=0; i<n; i++)
+{
+arr[i]=rand()%100;
+}
+}
