@@ -1,0 +1,69 @@
+
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Queue;
+import java.util.LinkedList;
+
+class Node {
+	public int val;
+	public Set<Node> neighbors;
+	Node(int v) {
+		val = v;
+		neighbors = new HashSet<Node>(); 
+	}
+}
+
+class RouteInGraph {
+	public static boolean areConnected(Node src, Node dest) {
+		HashSet<Node> visited = new HashSet<Node>();
+		Queue<Node> q = new LinkedList<Node>();
+
+		q.add(src);
+		while(!q.isEmpty()) {
+			Node tmp = q.poll();
+			if (tmp == dest) {
+				return true;
+			} 
+			visited.add(tmp);
+			for(Node n: tmp.neighbors) {
+				if (!visited.contains(n)) {
+					// hasn't visited
+					q.add(n);
+				}
+			}
+		}
+		return false;
+
+	}
+	public static void main(String[] args) {
+		Node n1 = new Node(0);
+		Node n2 = new Node(1);
+		Node n3 = new Node(2);
+		Node n4 = new Node(3);
+		Node n5 = new Node(5);
+		Node n6 = new Node(6);
+
+		n1.neighbors.add(n2);
+		n1.neighbors.add(n3);
+		n2.neighbors.add(n4);
+		n4.neighbors.add(n5);
+		n4.neighbors.add(n1);
+		n3.neighbors.add(n5);
+		n3.neighbors.add(n3);
+
+		assert !areConnected(n1, n6);
+		assert !areConnected(n6, n1);
+		assert areConnected(n1, n5);
+		assert !areConnected(n5, n1);
+		assert areConnected(n1, n2);
+		assert areConnected(n1, n3);
+		assert areConnected(n1, n4);
+		assert areConnected(n4, n1);
+		assert areConnected(n3, n1);
+		assert !areConnected(n5, n6);
+		assert areConnected(n3, n3);
+
+		System.out.println("Tests Passed");
+	}
+  }
+  
