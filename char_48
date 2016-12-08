@@ -1,0 +1,15 @@
+#include <stdio.h>
+#include <string.h>
+
+int empty_string(char * str) {
+  return(str == NULL || strlen(str) == 0 );
+}
+
+int main(int argc, char **argv) {
+
+  char * ch = NULL;
+
+  printf("empty? %d\n", empty_string(ch));
+
+  return(0);
+}
