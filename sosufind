@@ -1,0 +1,23 @@
+#include <stdio.h>
+ 
+int main(void)
+{
+           int num;
+           int i;
+           int ok = 1;
+ 
+           printf("소수를 검사할 숫자 입력 : ");
+           scanf("%d",&num); //숫자 입력
+ 
+           for(i=2;i<num;i++) { //소수인지 검사하는 부분
+                     if ( num%i == 0 )
+                                ok--;
+           }
+ 
+           if( ok == 1 )
+                     printf("정수 %d는 소수입니다.\n",num); //소수일 경우출력
+           else
+                     printf("정수 %d는 합성수입니다.\n",num); //소수가 아닐경우 출력
+ 
+           return 0;
+}
