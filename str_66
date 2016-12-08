@@ -1,0 +1,19 @@
+bool is_match(char *str, char *pattern) {
+    int i=0, j=0;
+    while(str[i] != '\0' && pattern[j] != '\0') {
+        if(str[i] == pattern[j]) j++;
+        i++;
+    }
+    if(pattern[j] == '\0') return true;
+    return false;
+}
+
+// or more concisely
+bool is_match(char *str, char *pattern) {
+    int i=0, j=0;
+    while(str[i] && pattern[j]) {
+        if(str[i] == pattern[j]) j++;
+        i++;
+    }
+    return pattern[j] == 0;
+}
