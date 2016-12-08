@@ -1,0 +1,50 @@
+#include <iostream>
+#include <memory>
+
+class Base
+{
+public:
+	Base() 
+	{
+		std::cout << "Base Constructor!" << std::endl;
+	}
+
+	~Base() 
+	{
+		std::cout << "Base Destructor!" << std::endl;
+	}
+};
+
+
+class Derived :
+	public Base
+{
+public:
+	Derived()
+	{
+		std::cout << "Derived Constructor!" << std::endl;
+	}
+
+	~Derived()
+	{
+		std::cout << "Derived Destructor!" << std::endl;
+	}
+
+
+	void print()
+	{
+		std::cout << "Derived Print!" << std::endl;
+	}
+};
+
+
+int main()
+{
+	std::shared_ptr<Base> derived(new Derived);
+	std::shared_ptr<Derived> casted(static_cast<Derived*>(derived.get()));
+	casted->print();
+	casted.reset();
+
+	std::cin.get();
+	return 0;
+}
