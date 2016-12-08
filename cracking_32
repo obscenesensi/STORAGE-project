@@ -1,0 +1,54 @@
+
+public class SetToZero {
+	public static void main(String[] args) {
+		new SetToZero().run();
+	}
+	
+	void run() {
+		int[][] matrix = { {1, 2, 3, 9, 5}, {1, 1, 0, 5, 2}};
+		printMatrix(matrix);
+
+		setToZero(matrix);
+		
+		System.out.println();
+		printMatrix(matrix);
+	}
+
+	void setToZero(int[][] matrix) {
+		boolean[] rows = new boolean[matrix.length];
+		boolean[] cols = new boolean[matrix[0].length];
+
+		for(int i=0; i<rows.length; i++) {
+			for(int j=0; j<cols.length; j++) {
+				if(matrix[i][j] == 0) {
+					rows[i] = true;
+					cols[j] = true;
+				}
+			}
+		}
+		
+		//Set rows to 0
+		for(int i=0; i<rows.length; i++) {
+			if(rows[i]) {
+				for(int j=0; j<cols.length; j++)
+					matrix[i][j] = 0;
+			}
+		}
+		
+		//Set columns to 0
+		for(int i=0; i<cols.length; i++) {
+			if(cols[i]) {
+				for(int j=0; j<rows.length; j++)
+					matrix[j][i] = 0; 
+			}
+		}
+	}
+
+	void printMatrix(int[][] matrix) {
+		for(int i=0; i<matrix.length; i++) {
+			for(int j=0; j<matrix[i].length; j++)
+				System.out.print(matrix[i][j] + " ");
+			System.out.println();			
+		}
+	}
+}
