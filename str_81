@@ -1,0 +1,3 @@
+void dump(const std::string& str) {
+    cout << '[' << boost::trim_copy(str).substr(0, 4) << ']' << endl;
+}
