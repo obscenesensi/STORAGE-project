@@ -1,0 +1,12 @@
+size_t replace_all(string &str, const string &from, const string &to) {
+  size_t count = 0;
+  
+  size_t pos = 0;
+  while ((pos = str.find(from, pos)) != string:npos) {
+    str.replace(pos, from.length(), to);
+    pos += to.length();
+    ++count;
+  }
+  
+  return count;
+}
