@@ -1,0 +1,11 @@
+void DictInsert(Node *dict, char *str){
+  if (str == NULL || str[0] == '\0'){
+    dict->complete = true;
+    return;
+  }
+  int next = str[0] - 'a';
+  if (dict->p[next] == NULL){
+    dict->p[next] = new Node();
+  }
+  DictInsert(dict->p[next], str + 1);
+}
