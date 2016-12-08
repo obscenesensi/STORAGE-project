@@ -1,0 +1,38 @@
+bool isPrime(int num);
+
+int main()
+{
+    int i = 0, count = 0, max = 0;
+
+    printf("어디까지 소수를 찾을까요: ");
+    scanf("%d", &max);
+
+    printf("소수: ");
+
+    for (i = 2; i <= max; i++)
+    {
+        if (isPrime(i))
+        {
+            printf("%d ", i);
+            count++;
+        }
+    }
+
+    printf("\n");
+    printf("총 %d개의 소수를 찾았습니다!\n", count);
+
+    return 0;
+}
+
+bool isPrime(int num)
+{
+    int i;
+
+    for (i = 2; i * i <= num; i++)
+    {
+        if (num % i == 0)
+            return false;
+    }
+
+    return true;
+}
