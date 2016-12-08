@@ -1,0 +1,32 @@
+#include <string.h>
+#include <stdio.h>
+
+/*
+	revert buffer C-string without temp
+	abc\0 -> cba\0
+	@str buffer
+	@len size of buffer
+*/
+void revert(char* str, int len ){	
+	for( int i = 0, e = len - 2; i < e; ++i, --e ){		
+		*(str + i) ^= *(str + e);
+		*(str + e) ^= *(str + i);
+		*(str + i) ^= *(str + e);	
+	}
+}
+
+int main(int argc, char const *argv[])
+{
+	char testString[] = "Test string";
+	int len = sizeof(testString)/sizeof(char);
+	
+	char* str = new char[len];
+	strcpy(str, testString);	
+		
+	printf("%s\n", str);
+	revert(str, len);
+	printf("%s\n", str);
+	
+	delete [] str;
+	return 0;
+}
