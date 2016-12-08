@@ -1,0 +1,63 @@
+#include <string>
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+struct stringStruct{
+    string stringMember;
+    bool operator<(stringStruct a){
+        return stringMember < a.stringMember;
+    }
+    bool operator<(stringStruct* a){
+        return stringMember < a->stringMember;
+    }
+};
+
+ostream& operator<<(ostream& out,stringStruct& ss){
+    return out<<ss.stringMember;
+}
+ostream& operator<<(ostream& out,stringStruct* ss){
+    return out<<ss->stringMember;
+}
+
+struct sorter{
+    bool operator()(stringStruct* a, stringStruct* b){
+        return a < b;
+    }
+};
+
+void sort1(stringStruct* sStructArray,int& size,sorter& sortr){
+    sort(sStructArray,sStructArray+size,sortr);
+}
+
+void sort2( stringStruct* sStructArray,int size){
+    std::sort(sStructArray,sStructArray+size,[](stringStruct a,stringStruct b){
+       return a < b;
+    });
+}
+
+template <int size>
+void sort3(stringStruct* stringStructArray){
+    sort(stringStructArray,stringStructArray+size,[](stringStruct a,stringStruct b){
+        return a < b;
+    });
+}
+
+
+int main() {
+
+    sorter sort;
+
+    stringStruct sStructArray[] =
+    {"G","H","D","E","F","I","U","V","W","J","K","L","A","T","X","Y","B","C","P","Q", "M","N","O","R","S","Z"};
+    const int size = sizeof(sStructArray) / sizeof(stringStruct);
+    cout<<"sizeof array "<<sizeof(sStructArray)<<" sizeof struct "<<sizeof(stringStruct)<<" "<<size<<endl;
+    sort3<size>(sStructArray);
+    for(auto ss : sStructArray){
+        cout<<ss<<endl;
+    }
+
+
+    return 0;
+}
