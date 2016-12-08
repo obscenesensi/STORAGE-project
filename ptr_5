@@ -1,0 +1,9 @@
+int _tmain(int argc, _TCHAR* argv[])
+{
+    std::shared_ptr<my_link> li;
+    try {
+        auto_ptr<my_link> ll = my_link_ ("link.xml");
+        li = std::shared_ptr<my_link>(ll.release());
+    }
+    return 0;
+}
