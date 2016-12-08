@@ -1,0 +1,25 @@
+#include <iostream>
+ 
+using namespace std;
+ 
+class ParentOne {
+public:
+    void funcone() { cout << "ParentOne 클래스에서 funcone() 호출!" << endl; }
+};
+class ParentTwo {
+public:
+    void functwo() { cout << "ParentTwo 클래스에서 functwo() 호출!" << endl; }
+};
+ 
+class Child : public ParentOne, public ParentTwo {
+public:
+    void func() { funcone(); functwo(); }
+};
+ 
+int main()
+{
+    Child child;
+ 
+    child.func();
+    return 0;
+}
