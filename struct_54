@@ -1,0 +1,6 @@
+union MyUnion {
+    int a;
+    int b;
+    char c;
+    bool d;
+};
