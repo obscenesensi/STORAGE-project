@@ -1,0 +1,23 @@
+#include <stdio.h>
+ 
+#define print(n) printf( "%x %c\n", n, n )
+ 
+int main( )
+{   
+    FILE *pFile = NULL;
+ 
+    pFile = fopen( "d:\\Text.txt", "w" );
+    if( pFile == NULL )
+    {
+        //에러 처리
+    }
+    else
+    {
+        int nResult = fputc( 'T', pFile );
+        print( nResult );
+ 
+        fclose( pFile );
+    }
+ 
+    return 0;
+}
