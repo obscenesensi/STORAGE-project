@@ -1,0 +1,22 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#ifndef DYNASTRING_H
+#define DYNASTRING_H
+
+#define boom() exit(-1)
+
+typedef struct {
+	char *content;
+	int size;
+	int idx;
+} DynaString;
+
+void dsAddChar(DynaString *str, char c);
+void dsAddNul(DynaString *str);
+void dsClear(DynaString *str);
+void dsEmbiggen(DynaString *str);
+void dsFree(DynaString *str);
+void dsInit(DynaString *str);
+
+#endif
