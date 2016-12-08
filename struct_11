@@ -1,0 +1,22 @@
+struct Track {
+char TrackName[MAXCHARS];
+int Genre;
+int PlayMin;
+int PlaySec;
+};
+
+Track MusicTrack[MAXTRACKS] = { //opening the array
+                                {"Holst_Mars", 1, 15, 10}, //first struct in the array with each item in the struct
+                                {"New_York", 2, 3, 50}, //second
+                                etc...
+                              }; //close the array
+
+
+/*
+==Wrong==
+MusicTrack[MAXTRACKS].TrackName[MAXCHARS] = {"Holst_Mars","New_York","Killer_Queen","Leather_Bottle",
+"Ploures_dames","Buck_Rogers","Surfing_With_The_Alien","I_Dont_Bite"};
+MusicTrack[MAXTRACKS].Genre = {1,2,3,1,1,2,3,2};
+MusicTrack[MAXTRACKS].PlayMin = {15,3,4,6,5,4,9,3};
+MusicTrack[MAXTRACKS].PlaySec = {10,50,25,30,20,50,40,25};
+*/
