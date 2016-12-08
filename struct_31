@@ -1,0 +1,20 @@
+enum enum_FillQBuySell {emQBS_QBuy, emQBS_QSell}; // emQBS_QBuy = 매수체결(매도1호가 체결), emQBS_QSell = 매도체결(매수1호가체결)
+
+typedef struct _MarketDataFill
+{
+	uint64_t TimeDay0_Exchange_NanoSec; // 체결발생시각. 거래소발행시각(정밀도:초)을 당일0 시이후 나노초 단위로 변경한것.시각기준: 한국시.
+	wchar_t strItemCode[20];	    // 종목코드. 크기고정된 배열로 정의. xingAPI인 경우 종목코드 8개이내임. CString으로 정의하지 않은 이유 CString은 memcpy 로 공유메모리 기록할때 비정상처리되어 단순자료형으로 정의함. 
+	double Price;			    // 체결가.
+	int32_t Qty;			    // 체결량. 양수: 매수체결의미,음수 : 매도체결의미. 2016년9월 25일. 기존 uint32_t  를 int32_t 로 변경하고 키움OpenAPI-W 부터 적용함. 과거 xingAPI 의 데이터 수집부도 체결구분 의미에 맞게 수집하게 수정하였음. 
+	enum_FillQBuySell emQBuySell;	    // 체결구분. 매수체결(매도1호가로 체결)/매도체결(매수1호가로 체결). 
+
+	/// 아래 2개는 증권사 API에 따라 제공되는 것도 있고, 아닌 경우도 있다. 예: 제공되는것 xingAPI(이트레이드), 비제공(키움 OpenAPI-W)
+	double QSell0;			   // 매도1호가. 체결정보로 전달되는 매도 1호가. 
+	double QBuy0;			   // 매수1호가. 체결정보로 전달되는 매수 1호가.
+
+	/// 아래 변수들 역시 증권사 API에 따라 제공되는 것도 있고, 아닌 경우도 있다. 예: 제공되는것 xingAPI(이트레이드), 비제공(키움 OpenAPI-W)
+	uint32_t QtyAccum;		   // 누적 체결량.
+	uint32_t QtyAccumQBuy1;		   // 누적 매도 체결량. (매수1호가 체결량의 누적.)
+	uint32_t CntAccumQBuy1;		   // 누적 매도 체결건수.
+	uint32_t QtyAccumQSell1;	   // 누적 매수 체결량. (매도1호가 체결량의 누적.)
+	uint32_t CntAccumQSell1;	   // 누적 매수 체결건수.
