@@ -1,0 +1,31 @@
+#include <stdio.h>
+
+// remove all characters in string[] that occur in remove[]
+void squeeze(char string[], char remove[]) {
+    int i, x;
+
+    for (i = x = 0; string[i] != '\0'; i++) {
+        int removeChar = 0;
+
+        for (int j = 0; remove[j] != '\0'; j++) {
+            if (string[i] == remove[j]) {
+                removeChar = 1;
+                break;
+            }
+        }
+
+        if (!removeChar) {
+            string[x++] = string[i];
+        }
+    }
+
+    string[x] = '\0';
+}
+
+int main() {
+    char string[] = "Something about a fox";
+
+    squeeze(string, "something a");
+
+    printf("%s\n", string);
+}
