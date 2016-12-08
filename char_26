@@ -1,0 +1,12 @@
+#include <stdio.h>
+
+int		main(void)
+{
+	char	c;
+	void	*p;
+
+	c = 'a';
+	p = (void *)(long long int)c;
+	printf("%c\n", (char)p);
+	return (0);
+}
