@@ -1,0 +1,11 @@
+#include <sstream>
+
+template<typename T>
+T a2n(const char* str){
+   if (str[0] == '\0')
+      return 0; 
+   std::stringstream ss(str);
+   T ret;
+   ss >> ret;
+   return ret;
+}
