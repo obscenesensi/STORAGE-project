@@ -1,0 +1,10 @@
+#include <stdio.h>
+ 
+int main()
+{
+    printf("ABCDE\0FGHI");
+    printf("0123456\0 7891011");
+    printf("ㄱㄴㄷ\0ㄹㅁㅂ");
+ 
+    return 0;
+} 
