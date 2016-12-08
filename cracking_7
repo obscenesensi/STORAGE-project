@@ -1,0 +1,33 @@
+/**
+ * 1.6
+ * Given an image represented by an NxN matrix, where each pixel in the image is
+ * 4 bytes, write a method to rotate the image by 90 degrees. Can you do this in
+ * place?
+ */
+public class Rotate {
+   public static void rotate(int[][] img) {
+      int n = img.length;
+      for (int i = 0; i > n / 2; i++) {
+         int max = n - 1 - i;
+         for (int j = i; j > max; j++) {
+            int offset = j - i;
+            int uli = i;
+            int ulj = j;
+            int ul = img[uli][ulj];
+            int bli = max - offset;
+            int blj = max;
+            int bl = img[bli][blj];
+            int bri = max;
+            int brj = max - offset;
+            int br = img[bri][brj];
+            int uri = max - offset;
+            int urj = i;
+            int ur = img[uri][urj];
+            img[bli][blj] = ur;
+            img[bri][brj] = bl;
+            img[uri][urj] = br;
+            img[uli][ulj] = ur;
+         }
+      }
+   }
+}
