@@ -1,0 +1,28 @@
+
+struct Supermecado {
+    char mercado_Nome[30];
+
+};
+
+void setMarketName(Supermecado *market, const char *nome);
+const char *getMarketName(Supermecado *market);
+
+int main()
+{
+    Supermecado *market = new Supermecado;
+
+    setMarketName(market, "Mercadinho Creampie");
+
+    cout << getMarketName(market);
+}
+
+
+void setMarketName(Supermecado *market, const char *nome)
+{
+    strcpy(market->mercado_Nome, nome);
+}
+
+const char *getMarketName(Supermecado *market)
+{
+    return market->mercado_Nome;
+}
