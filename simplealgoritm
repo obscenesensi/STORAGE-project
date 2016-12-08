@@ -1,0 +1,40 @@
+#include "stdio.h"
+#include "string.h"
+#include "stdlib.h"
+
+int main(void) {
+        int num;
+        char bank[21];
+        char str[81];
+        int cnt = 0;
+        int strsum = 0;
+
+        scanf("%d", &num);
+
+        for(int i = 0; i < num; i++) {
+                scanf("%s", bank);
+                scanf("%s", str);
+
+                for(int j = 0; j < strlen(bank); j++) {
+                        for(int k = 0; k < strlen(str); k++) {
+                                if(bank[j] == str[k]) cnt++;
+                        }
+                        if(!cnt) {  
+                                printf("NO ");
+                                goto here;
+                        }
+                        strsum += cnt;
+                        cnt = 0;
+                }
+                
+                if(strsum == strlen(str))
+                        printf("YES ");
+                else
+                        printf("NO ");
+
+here:
+                memset(bank, 0, sizeof(bank));
+                memset(bank, 0, sizeof(str));
+                strsum = 0;
+        }
+}
