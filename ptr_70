@@ -1,0 +1,72 @@
+#include <memory>
+#include <iostream>
+#include <string>
+#include <unordered_map>
+#include <unordered_set>
+
+using namespace std;
+
+class Node {
+public:
+    Node(string name) : name_(name) {
+    }
+
+    const string& name() {
+        return name_;
+    }
+
+private:
+    string name_;
+};
+
+template<typename T>
+struct WeakPtrHash : public unary_function<weak_ptr<T>, size_t> {
+   size_t operator()(const weak_ptr<T>& wp) const {
+       if (shared_ptr<T> sp = wp.lock()) {
+           return std::hash<shared_ptr<T> >()(sp);
+       } else {
+           return 0;
+       }
+   }
+};
+
+template<typename T>
+struct WeakPtrEqual : public unary_function<weak_ptr<T>, bool> {
+    bool operator()(const std::weak_ptr<T>& left, const std::weak_ptr<T>& right) const {
+        return !left.owner_before(right) && !right.owner_before(left);
+    }
+};
+
+typedef unordered_multimap<weak_ptr<Node>,
+                           int,
+                           WeakPtrHash<Node>,
+                           WeakPtrEqual<Node> > ProcessTable;
+// typedef unordered_multimap<shared_ptr<Node>, int> ProcessTable;;
+typedef unordered_set<weak_ptr<Node>, WeakPtrHash<Node>, WeakPtrEqual<Node> > NodeSet;
+
+
+typedef pair<weak_ptr<Node>, int> ProcessEntry;
+
+int main(int argc, char **argv) {
+    shared_ptr<Node> node_1 = make_shared<Node>("node 1");
+    shared_ptr<Node> node_2 = make_shared<Node>("node 2");
+
+    NodeSet node_set;
+    node_set.insert(node_1);
+
+    ProcessTable table;
+    table.insert(make_pair(node_1, 100));
+    table.insert(make_pair(node_1, 101));
+    table.insert(make_pair(node_2, 200));
+    table.insert(make_pair(node_2, 201));
+    table.insert(make_pair(node_2, 202));
+
+    for (ProcessTable::iterator i = table.begin(); i != table.end(); ++i) {
+        shared_ptr<Node> node = i->first.lock();
+        int value = i->second;
+
+        cout << node->name() << " " << value << endl;
+    }
+    
+    return 0;
+}
