@@ -1,0 +1,11 @@
+#include <stdio.h>
+#include <string.h>
+int main()
+{
+    char name[10];
+    strcpy(name,"LZena");
+ 
+    
+    printf("입력된 문자열 : %s ",name);
+    return 0;
+}
