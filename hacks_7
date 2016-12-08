@@ -1,0 +1,35 @@
+(function () {
+    function setVideoEndHandler() {
+        let iframeDocument = window
+            .frames['contentContainer']
+            .contentDocument;
+        let video = iframeDocument.querySelector('video');
+        if (!video) {
+            video = iframeDocument.querySelector('audio');
+        }
+
+        if (video) {
+            video.addEventListener('ended', (e) => {
+                console.log('ended');
+                let nextButton = document.querySelector('#next');
+                //console.log(nextButton);
+                nextButton.click();
+                setTimeout(() => {
+                    setVideoEndHandler();
+                }, 2000);
+            });
+            console.log('Video ended event registered.');
+        } else {
+            console.log('No video on the page. Click next to install handler.');
+//             setTimeout(() => {
+//                 setVideoEndHandler();
+//             }, 10000);
+            let nextButton = document.querySelector('#next');
+            nextButton.addEventListener('click', () => {
+                console.log('Next clicked');
+                setVideoEndHandler();
+            });
+        }
+    }
+    setVideoEndHandler();
+})();
