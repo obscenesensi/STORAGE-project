@@ -1,0 +1,91 @@
+#include <iostream>
+#include <stack>
+#include <list>
+#include <vector>
+#include <unordered_map>
+#include <algorithm>
+#include <unistd.h>
+
+using std::cout;
+using std::endl;
+
+template<class T>
+class shared_ptr
+{
+private:
+    T* ptr;
+    long long* ref;
+    void release()
+    {
+        --*ref;
+        if(*ref==0)
+        {
+            delete ptr;
+        }
+    }
+public:
+    shared_ptr(T* x):ptr(x),ref(new long long(1)){}
+    shared_ptr(const shared_ptr<T>& rhs):ptr(rhs.ptr),ref(rhs.ref)
+    {
+        *ref++;
+    }
+    ~shared_ptr()
+    {
+        release();
+        delete ref;
+    }
+    T* get() const
+    {
+        return ptr;
+    }
+    void reset(T* x)
+    {
+        release();
+        ptr=x;
+        ref=new long long(1);
+    }
+    shared_ptr<T>& operator=(const shared_ptr& rhs)
+    {
+        if(this!=rhs.get())
+        {
+            release();
+            ptr=rhs.ptr;
+            ref=rhs.ref;
+            *ref++;
+        }
+        return *this;
+    }
+    T& operator *() const
+    {
+        return *ptr;
+    }
+    T* operator ->() const
+    {
+        return ptr;
+    }
+};
+
+// class Test
+// {
+// private:
+//     int* x;
+// public:
+//     Test()
+//     {
+//         x=new int[100000];
+//     }
+//     ~Test()
+//     {
+//         delete[] x;
+//     }
+// };
+
+// int main()
+// {
+//     for(int i=0;i<1000000;i++)
+//     {
+//         shared_ptr<Test> p(new Test());
+//         sleep(1);
+//         cout<<i<<".."<<endl;
+//     }
+// }
