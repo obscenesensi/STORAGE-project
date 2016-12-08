@@ -1,0 +1,31 @@
+#include <iostream>
+using namespace std;
+
+typedef struct Something
+{
+   int number;
+} Something, *PSomething;
+
+#define UPDATE_SOMETHING(something, n) (something).number = n;
+
+void modifySomething(PSomething pSomething) {
+  // 1. 
+	pSomething->number = 99;
+	// 2. 
+	(*pSomething).number = 99;
+  /* 3.
+	Something s = *pSomething;
+  UPDATE_SOMETHING(s, 9);
+  cout<<"addr: "<<&s<<endl;
+  cout<<"  .number: "<<s.number<<endl;
+  */
+}
+
+int main(int argc, char *argv[]) {
+  Something s1 = {0};
+  modifySomething(&s1);
+  cout<<"addr: "<<&s1<<endl;
+  cout<<"  .number: "<<s1.number<<endl;
+  char line[80];
+  cin>>line;
+}
