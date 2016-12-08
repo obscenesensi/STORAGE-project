@@ -1,0 +1,21 @@
+char *requesturl(char* message) {
+    int urllength;
+    char *urlstart;
+    char *urlend;
+    char *buffer;
+
+    urlstart = message;
+    while (*urlstart++ != ' ' && *urlstart != '\0');
+    urlend = urlstart;
+    while (*urlend++ != ' ' && *urlend != '\0') {
+        ++urllength;
+    }
+
+    buffer = malloc(sizeof(char*) * (urllength + 1));
+    if (buffer == NULL) {
+        return NULL;
+    }
+    memcpy(buffer, urlstart, urllength);
+    buffer[urllength] = '\0';
+    return buffer;
+}
