@@ -1,0 +1,6 @@
+int fgetc(FILE *stream);
+int fputc(int c, FILE *stream);
+int fputs(const char *string, FILE *stream);
+char *fgets(char *string, int n, FILE *stream);
+int fprintf(FILE *stream, const char *string, ...);
+int fscanf(FILE *stream, const char *string, ...);
