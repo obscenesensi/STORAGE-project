@@ -1,0 +1,30 @@
+#include <stdio.h>
+ 
+#define print(n) printf( "%ld\n", n )
+ 
+int main( )
+{   
+    FILE *pFile = NULL;
+ 
+    pFile = fopen( "d:\\Text.txt", "w" );
+    if( pFile == NULL )
+    {
+        //에러 처리
+    }
+    else
+    {
+        long lp;
+ 
+        lp = ftell( pFile );
+        print( lp );
+ 
+        fputs( "13579", pFile );
+ 
+        lp = ftell( pFile );
+        print( lp );
+ 
+        fclose( pFile );
+    }
+ 
+    return 0;
+}
