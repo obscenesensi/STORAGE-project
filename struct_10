@@ -1,0 +1,22 @@
+
+#include <stdio.h>
+
+class haha
+{
+public:
+int val;
+};
+
+void haha()
+{
+	printf("func haha");
+}
+
+int main()
+{
+//	haha xixi;  //without keyword struct, compiler will take xixi as function;
+	struct haha xixi;
+	xixi.val = 1;
+	printf("%d\n", xixi.val);
+	haha();
+}
