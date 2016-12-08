@@ -1,0 +1,24 @@
+#include <stdio.h>
+ 
+int main( )
+{   
+    FILE *pFile = NULL;
+ 
+    pFile = fopen( "d:\\Text.txt", "w" );
+    if( pFile == NULL )
+    {
+        //에러 처리
+    }
+    else
+    {
+        for( int i=0 ; i<3 ; ++i )
+        {
+            fprintf( pFile, "%d %f %s \n", i, 0.5+i, "String" );    //공백 분리
+            fprintf( pFile, "%d, %f, %s \n", i, 0.5+i, "String" );  //콤마 분리
+            fprintf( pFile, "%d\t%f\t%s \n", i, 0.5+i, "String" );  //탭 분리
+        }
+        fclose( pFile );
+    }
+ 
+    return 0;
+}
