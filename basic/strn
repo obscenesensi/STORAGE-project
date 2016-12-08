@@ -1,0 +1,16 @@
+/*  public.boulder.ibm.com에서 가져온 예제 */
+#include <stdio.h>
+#include <string.h>
+  
+#define SIZE    40
+  
+int main(void)
+{
+  char source[SIZE] = "123456789";
+  char destination[SIZE] = "abcdefg";
+  
+  /* strcpy의 작동 방식 */
+  printf("원래 destination가 가르키는 값 = '%s'\n", destination);
+  strncpy(destination, source, 5);
+  printf("strncpy 후, destination의 값 '%s'\n", destination);
+}
