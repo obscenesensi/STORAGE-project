@@ -1,0 +1,12 @@
+#include <string>
+#include <iostream>
+#include <algorithm>
+
+int main()
+{
+    using namespace std::literals;
+
+    auto str = "bob friggin jones"s;
+    for_each(begin(str), end(str), [](auto& c) { ++c; });
+    std::cout << str << '\n';
+}
