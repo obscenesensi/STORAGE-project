@@ -1,0 +1,38 @@
+#include <stdio.h>
+#include <iostream>
+
+using namespace std;
+
+char appearOnce(const char *s) {
+
+	const char *str = s;
+
+	char hashset[256];
+	memset(hashset, 0, sizeof(hashset));
+
+	// create hashset
+	while(*str){
+		hashset[*str]++;
+		str++;
+	}
+	
+	str = s;
+	while(*str) {
+		if(hashset[*str] == 1)
+			return *str;
+
+		str++;
+	}
+	
+	return NULL;
+}
+
+
+int main()
+{
+	char *str = "google";
+	char c = appearOnce(str);
+	printf("first occuring char is %c \n", c);
+	getchar();
+	return 0;
+}
