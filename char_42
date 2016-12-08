@@ -1,0 +1,26 @@
+include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+
+int main()
+{
+    char data[8];
+    FILE *fp;
+    fp = fopen("test_data","rb");
+
+    while(1){
+        int return1 = fread(data,1,8,fp);
+        if(return1!= 8){
+                printf("Couldn't read 8 bytes");
+                return 1;
+        }
+        int x;
+        uint64_t numb = 0;
+        for(x = 0; x < 8; x++){
+                numb += (uint64_t) data[x];
+        }
+        printf("Number:%d -  %u\n",return1,numb);
+    }
+    exit(0);
+}
