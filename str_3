@@ -1,0 +1,26 @@
+#include <iostream>
+#include <string>
+#include <cstring>
+#define xstr(a) str(a)
+#define str(a) #a
+
+int main()
+{
+    char* name = "madratman";
+    if( xstr(name) == "name"  )
+    {
+        std::cout << "1";
+    }
+    if(!strcmp(xstr(name), "name"))
+     {
+        std::cout << "1";
+    }
+    if("madratman"==name)
+    {
+        std::cout << "1";   
+    }
+    if ("madratman"=="madratman")
+    {
+        std::cout << "1";   
+    }
+}
