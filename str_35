@@ -1,0 +1,24 @@
+void permutation(string str, int p=0)
+{
+	if(p==str.size()) 
+	{
+		cout << str << endl;
+		return;
+	}
+	
+	for(int i=p; i<str.size(); i++)
+	{		
+		swap(str[p], str[i]);
+
+		permutation2(str, p+1);
+
+		swap(str[p], str[i]);				
+	}
+}
+
+void swap(char& ch1, char& ch2)
+{
+	int temp = ch1;
+	ch1 = ch2;
+	ch2 = temp;
+}
