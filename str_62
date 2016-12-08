@@ -1,0 +1,10 @@
+const char white[] = " \t\r";
+
+string trim(string& str)
+{
+    if(str.length() ==0) { return str;}
+    size_t first = str.find_first_not_of(white);
+    if(first == string::npos) return "";
+    size_t last = str.find_last_not_of(white);
+    return str.substr(first, (last-first+1));
+}
