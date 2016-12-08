@@ -1,0 +1,15 @@
+#include <stdio.h>
+#include <string.h>
+int main()
+{
+    char str1[20]="apple";
+    char str2[20]="banana";
+    printf("apple : banana반환 값 : %d\n",strcmp(str1,str2));
+    
+    strcmp(str2,"apple");
+    printf("apple : apple 반환 값 : %d\n",strcmp(str1,str2));
+ 
+    strcmp(str1,"cherry");
+    printf("cherry : apple반환 값 : %d\n",strcmp(str1,str2));
+    return 0;
+}
