@@ -1,0 +1,8 @@
+#include <stdio.h>
+int main()
+{
+	FILE *f;
+	f=fopen("a.txt","a");
+	fprintf(f," LZena");
+	fclose(f);
+}
