@@ -1,0 +1,167 @@
+Python
+
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <stdlib.h>
+
+#define MAX 1024
+
+int main (int argc, char ** argv[]) {
+
+int fd;
+int readn = 0;
+int writen = 0;
+char buf[MAX];
+char * buf2 = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n";
+int i ;
+int ret;
+
+
+memset (buf, 0x00, MAX);
+
+//Open File and Get File Descripter//
+fd = open ("/root/System_Programming/Chaper_01/text.txt" , O_RDWR);
+if (fd == -1){
+        printf ("File open failed.....\n");
+        return 1;
+        }
+
+// ret get the location of lseek //
+ret = lseek (fd, 0, SEEK_CUR);
+printf ("LSEEK Location : %d\n", ret);
+
+//MOVE File Desciptor 11 steps foward //
+ret = lseek (fd, 11, SEEK_CUR);
+if (ret == -1)
+        printf ("LSEEK ERROR\n");
+
+readn = read(fd, buf, MAX-1);
+printf ("SEEK_CUR + 11 is .... \n");
+printf ("%s\n", buf);
+printf ("LSEEK Location : %d\n", ret);
+
+///////////////////////////////////////
+// SEEK_SET to beginning //
+ret = lseek (fd, 0, SEEK_SET);
+readn = read(fd, buf, MAX-1);
+printf ("LSEEK Location : %d\n", ret);
+printf ("%s\n", buf);
+
+
+// Close File Description //
+close (fd);
+
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <stdlib.h>
+ 
+#define MAX 1024
+ 
+int main (int argc, char ** argv[]) {
+ 
+int fd;
+int readn = 0;
+int writen = 0;
+char buf[MAX];
+char * buf2 = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n";
+int i ;
+int ret;
+ 
+ 
+memset (buf, 0x00, MAX);
+ 
+//Open File and Get File Descripter//
+fd = open ("/root/System_Programming/Chaper_01/text.txt" , O_RDWR);
+if (fd == -1){
+        printf ("File open failed.....\n");
+        return 1;
+        }
+ 
+// ret get the location of lseek //
+ret = lseek (fd, 0, SEEK_CUR);
+printf ("LSEEK Location : %d\n", ret);
+ 
+//MOVE File Desciptor 11 steps foward //
+ret = lseek (fd, 11, SEEK_CUR);
+if (ret == -1)
+        printf ("LSEEK ERROR\n");
+ 
+readn = read(fd, buf, MAX-1);
+printf ("SEEK_CUR + 11 is .... \n");
+printf ("%s\n", buf);
+printf ("LSEEK Location : %d\n", ret);
+ 
+///////////////////////////////////////
+// SEEK_SET to beginning //
+ret = lseek (fd, 0, SEEK_SET);
+readn = read(fd, buf, MAX-1);
+printf ("LSEEK Location : %d\n", ret);
+printf ("%s\n", buf);
+ 
+ 
+// Close File Description //
+close (fd);
+ 
+}
