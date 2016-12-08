@@ -1,0 +1,26 @@
+#include <cstdio>
+#include <cstdlib>
+#include <string.h>
+
+void reverse(char *str)
+{
+    char* ptr_start = str;
+    char* ptr_end = str + strlen(str) - 1;
+
+    while (ptr_start < ptr_end)
+    {
+        char tmp = *ptr_start;
+        *ptr_start = *ptr_end;
+        *ptr_end = tmp;
+        ptr_start++;
+        ptr_end--;
+    }
+}
+
+int main() {
+    char str[] = "ABCDEFGH";
+
+    printf("str = %s\n", str);
+    reverse(str);
+    printf("str = %s\n", str);
+}
