@@ -1,0 +1,8 @@
+int menu() // 사용자로부터 원하는 정렬을 입력받는 함수 
+{
+int input;
+puts("\n 원하는 정렬 방식을 결정하세요 ?(종료시 : 0) ");
+puts(" 1번) 선택정렬 \n 2번) 삽입정렬 \n 3번) 버블정렬 \n 4번) 쉘정렬 \n 5번) 퀵정렬");
+fputs(" 입력 ", stdout), scanf("%d", &input);
+return input;
+}
