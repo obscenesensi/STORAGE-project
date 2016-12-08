@@ -1,0 +1,19 @@
+#include <iostream>
+#include <memory>
+
+auto main(void) -> int
+{
+    // unique_ptr
+    // exclusively owns object to which it points
+    // can't be copied
+    // make unique
+    auto hen = std::make_unique<Hen>(1, 5.6f);
+
+
+    // auto Hen2 = hen;
+    // copy constructor is implicitly  deleted because unique_ptr<Hen>
+    // has a user-declared move(object) constructor
+
+    auto Hen2 = move(hen);
+    }
+    
