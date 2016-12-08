@@ -1,0 +1,27 @@
+#include <stdio.h>
+ 
+int main( )
+{
+    FILE *pFile = NULL;
+ 
+    pFile = fopen( "d:\\Text.txt", "r" );
+    if( pFile != NULL )
+    {
+        char strTemp[255];
+        char *pStr;
+ 
+        while( !feof( pFile ) )
+        {
+            pStr = fgets( strTemp, sizeof(strTemp), pFile );
+            printf( "%s", strTemp );
+            printf( "%s", pStr );
+        }
+        fclose( pFile );
+    }
+    else
+    {
+        //에러 처리
+    }
+ 
+    return 0;
+}
