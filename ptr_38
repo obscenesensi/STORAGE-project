@@ -1,0 +1,19 @@
+
+void someFunction1(){
+  std::unique_ptr<std::string> myStringPtr = 
+              std::make_unique<std::string>("this string is dynamically allocated string. when this pointer\
+                                                                    gets out of scope it deallocate the variable ");
+}
+
+std::shared_ptr<std::string> someFunction2(){
+  std::shared_ptr<std::string> myStringPtr = 
+        std::make_shread<std::string>("I can pass this pointer and forget about it, no Memory leaks!");
+} 
+
+std::weak_ptr<std::string> someFunction3(const std::shared_ptr<std::string>& sharedString){
+  std::weak_ptr<std::string> myWeakPtr = sharedString;
+  auto tempSharedPtr = myWeakPtr.lock();
+  *tempSharedPtr = "when all shared pointers get out of scope, the weak_ptrs will get out of scope automatically\
+                  deallocating the pointed variable. no memory leaks!";
+  return myWeakPtr;
+}
