@@ -1,0 +1,21 @@
+#include <memory>
+#include <cstdio>
+
+using namespace std;
+
+int myfclose(FILE* stream)
+{
+        printf("%s\n", __func__);
+        return fclose(stream);
+}
+
+int main(void)
+{
+        //shared_ptr<FILE> fp(fopen("out.out.out", "w"), myfclose);
+
+        //unique_ptr<FILE, int(*)(FILE*)> fp(fopen("out.out.out", "w"), myfclose);
+        unique_ptr<FILE, decltype(&fclose)> fp(fopen("out.out.out", "w"), myfclose);
+
+        fprintf(fp.get(), "test\n");
+        return 0;
+}
