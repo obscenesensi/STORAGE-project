@@ -1,0 +1,32 @@
+struct InstanceHolder {
+	InstanceHolder() = default;
+
+	template <typename T>
+	explicit InstanceHolder(std::shared_ptr<T> ptr) : _ptr{ptr} {}
+	InstanceHolder(InstanceHolder &&other) noexcept : _ptr{std::move(other._ptr)} {}
+	InstanceHolder(const InstanceHolder &) = delete;
+	InstanceHolder& operator =(const InstanceHolder &) = delete;
+
+	InstanceHolder& operator =(InstanceHolder &&rhs) noexcept {
+		if (&rhs != this) {
+			_ptr = std::move(rhs._ptr);
+		}
+
+		return *this;
+	}
+
+	template <typename T>
+	InstanceHolder& operator =(std::shared_ptr<T> &&rhs) {
+		_ptr = std::move(rhs);
+
+		return *this;
+	}
+
+	template <typename T>
+	std::shared_ptr<T> get() const {
+		return std::static_pointer_cast<T>(_ptr);
+	}
+	
+private:
+	std::shared_ptr<void> _ptr;
+};
