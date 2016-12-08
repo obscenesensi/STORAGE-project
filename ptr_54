@@ -1,0 +1,15 @@
+
+#include <iostream>
+#include <string>
+#include <memory>
+using namespace std;
+ 
+struct Custom
+{
+   ~Custom() { cout << "Custom dtor" << endl;}
+};
+ 
+int main()
+{
+    unique_ptr<Custom> p ( new Custom);
+}
