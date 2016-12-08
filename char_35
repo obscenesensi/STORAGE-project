@@ -1,0 +1,42 @@
+#include <stdio.h>
+
+int main() {
+    char str1[] = "ABCD";
+    char str2[] = "ABCD";
+    char *strp1 = "ABCD";
+    char *strp2 = "ABCD";
+
+    printf("Looking at variable: %s\n", "str1[]");
+    printf("  &%s: ->  %p    (address)\n", "str1[]", &str1);
+    printf("   %s: ->  %p    (value)\n", "str1[]", str1);
+    printf("  *%s: ->  %p    (dereference)\n", "str1[]", *str1);
+
+    printf("Looking at variable: %s\n", "str2[]");
+    printf("  &%s: ->  %p    (address)\n", "str2[]", &str2);
+    printf("   %s: ->  %p    (value)\n", "str2[]", str2);
+    printf("  *%s: ->  %p    (dereference)\n", "str2[]", *str2);
+
+    printf("Looking at variable: %s\n", "strp1");
+    printf("  &%s: ->  %p    (address)\n", "strp1", &strp1);
+    printf("   %s: ->  %p    (value)\n", "strp1", strp1);
+    printf("  *%s: ->  %p    (dereference)\n", "strp1", *strp1);
+
+    printf("Looking at variable: %s\n", "strp2");
+    printf("  &%s: ->  %p    (address)\n", "strp2", &strp2);
+    printf("   %s: ->  %p    (value)\n", "strp2", strp2);
+    printf("  *%s: ->  %p    (dereference)\n", "strp2", *strp2);
+
+    printf("looking at char *:  strp1 == strp2\n");
+    if (strp1 == strp2) {
+        printf("equal p\n");
+    } else {
+        printf("not equal p\n");
+    }
+
+    printf("looking at char []: str1 == str2\n");
+    if (str1 == str2) {
+        printf("equal\n");
+    } else {
+        printf("not equal\n");
+    }
+} 
