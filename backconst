@@ -1,0 +1,12 @@
+int main(void) {
+	int a = 10;
+	int b = 20;
+	int* const c = &a;
+
+	printf("%d \n" , *c);
+
+	*c = 100;  //이건 정상
+	c = &b; // 이건 에러
+
+	printf("%d \n" , *c);
+}
