@@ -1,0 +1,7 @@
+std::unique_ptr<SomeObject> CreateObject()
+{
+	return std::unique_ptr<SomeObject>(new SomeObject);
+}
+
+//	Useage
+auto MySomeObject = CreateObject();
