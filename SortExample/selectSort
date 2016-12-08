@@ -1,0 +1,23 @@
+void select_sort(int arr[], int n) // 선택정렬함수
+{
+int min;
+int minindex;
+int i,j;
+for(i=0; i<n-1; i++)
+{
+minindex=i; // 최소값 저장
+min=arr[i];
+for(j=i+1; j<n; j++)
+{
+if(min>arr[j])
+{
+min=arr[j];
+minindex=j;
+}
+}
+arr[minindex]=arr[i]; // 최소값이 있던 배열에 최초 배열의 값 저장
+arr[i]=min; // 최소 인텍스에 최소값 저장
+}
+}
+
+
