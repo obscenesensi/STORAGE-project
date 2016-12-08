@@ -1,0 +1,62 @@
+
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+const float G = 6.6738410E-11; // N·m2/kg2
+
+struct TTime {
+    int year, month, day, hour, min, sec;
+};
+
+struct TAstro {
+    string name;
+    float mass;
+    float pos[3];
+    float radius;
+    TTime t;
+};
+
+float gravForce(TAstro a, TAstro b);
+void printAstro(TAstro a);
+
+int main()
+{
+    TAstro earth = {"Earth", 5.9721986E24, {0, 0, 0}, 6378E3, {2012,11,26,15,00,00}};
+    TAstro mars  = {"Mars",  6.491E23,     {0, 3.1924E11, 0}, 3397E3, {2012,11,26,15,00,00}};
+
+
+    printAstro(earth);
+    printAstro(mars);
+
+    float force = gravForce(earth, mars);
+
+    cout << "The force between " << earth.name << " and " << mars.name << " es: " <<
+         force << " Newtons" << " = " << force/9.8 << " Kg" << endl;
+
+// gravitational force | 3.956×10^15 N  (newtons)
+
+
+    return 0;
+}
+
+float gravForce(TAstro a, TAstro b)
+{
+    float d2 =  pow(a.pos[0] - b.pos[0], 2) +
+                pow(a.pos[1] - b.pos[1], 2) +
+                pow(a.pos[2] - b.pos[2], 2);
+    return (G*a.mass*b.mass)/d2;
+}
+
+void printAstro(TAstro a)
+{
+    cout << "Name:   " << a.name << endl;
+    cout << "Mass:   " << a.mass << endl;
+    cout << "Pos:   [" << a.pos[0] << ", " <<
+                        a.pos[1] << ", " <<
+                        a.pos[2] << "]" << endl;
+    cout << "Radius: " << a.radius << endl;
+    cout << "Time:   " <<
+    a.t.year << "-" << a.t.month << "-" << a.t.day << "." <<
+    a.t.hour << "." << a.t.min << "." << a.t.sec << endl;
+}
