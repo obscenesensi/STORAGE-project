@@ -1,0 +1,33 @@
+#include <iostream>
+#include <string>
+
+void det_str(std::string &);
+void str_lower(std::string &);
+
+int main()
+{
+    std::string str = "HELLO";
+    std::cout << str << std::endl;
+
+    det_str(str);
+
+    std::cout << str << std::endl;
+
+    return 0;
+}
+
+void det_str(std::string& str)
+{
+    for (auto c : str) {
+        if (isupper(c))
+            str_lower(str);
+        else
+            continue;
+    }
+}
+
+void str_lower(std::string& str)
+{
+    for (auto &c : str)
+        c = tolower(c);
+}
