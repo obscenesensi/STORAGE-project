@@ -1,0 +1,32 @@
+
+
+public class Unique_String{
+
+    public static boolean unique(String s){  //to judge if the string only has unique letters
+        if( s == null ||s.isEmpty() || s.length()>256) // to judge if the string is null or empty or its length is longer than 256. if the length is longer than 256, then it must have duplicate letters.
+            return false;
+        boolean asc [] = new boolean[256]; //initialize the asc array and the default value is false.
+        for (int i=0;i<s.length();i++)
+        {
+            if(asc[s.charAt(i)])
+                return false;
+            else
+                asc[s.charAt(i)] = true;
+        }
+        return true;
+
+    }
+    
+    public static void main(String[] args){
+        
+        String s1 = "Cracking the code interview";
+        String s2 = "Care";
+        String s3 = null;
+        String s4 = "";
+        System.out.println(unique(s1));
+        System.out.println(unique(s2));
+        System.out.println(unique(s3));
+        System.out.println(unique(s4));
+
+    }
+}
