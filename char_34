@@ -1,0 +1,38 @@
+#include <stdio.h>
+/*
+ * two ways of converting float to string or char
+ *
+ * */
+typedef union {
+    float f;
+    char c[4];
+} my_union_t;
+
+// 1.
+// using union to define new data type
+//
+// advantage here is the data will be exactly same between in original format, no need transition
+//
+void fun1() {
+    my_union_t u1;
+    u1.f = 3.9;
+    printf("float: %f\n char: %s \n", u1.f, u1.c);
+}
+
+// 2.
+// using sprintf
+//
+// Advantage here is it will looked clearly for human
+//
+void fun2() {
+    float v_f = 4.8;
+    char c[20];
+    sprintf(c, "%f", v_f);
+    printf("float: %f\n char: %s \n", v_f, c);
+}
+
+int main() {
+    fun1();
+    fun2();
+    return 0;
+}
