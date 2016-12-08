@@ -1,0 +1,27 @@
+package ctci.chapter1;
+
+/**
+ * @author brianhamlin
+ *
+ */
+class Rotation {
+
+	/**
+	 * Checks if a string is a rotation of another string. Checks if the second
+	 * string is contained in the first string concatenated with itself, which
+	 * will determine if any rotation exists.
+	 * 
+	 * @param s1
+	 * @param s2
+	 * @return True if the strings are a rotation.
+	 */
+	public static boolean isRotation(String s1, String s2) {
+		return s1.length() == s2.length() && (s1 + s1).contains(s2);
+	}
+
+	public static void main(String[] args) {
+		System.out.println(isRotation("waterbottle", "erbottlewat"));
+		System.out.println(isRotation("waterbottle", "noterbottlewat"));
+	}
+
+}
