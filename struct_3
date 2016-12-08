@@ -1,0 +1,63 @@
+
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+using namespace std;
+
+enum plec {
+	M,
+	K
+};
+enum odp {
+	NIE,
+	TAK
+};
+
+struct osoba {
+	char imie[50];
+	char nazwisko[50];
+	short wiek;
+	plec p;
+	odp tab_odp[10];
+};
+
+void ocena(int);
+
+int main() {
+	srand(time(NULL));
+	odp egz[10] = { TAK, TAK, NIE, NIE, TAK, TAK, NIE, NIE, TAK, TAK };
+	osoba s1 = { "Adam", "Nowak", 20, M };
+
+	int wynik = 0;
+	for (int a = 0; a < 10; a += 1) {
+		int r = rand() % 2;
+		s1.tab_odp[a] = (r == 1 ? TAK : NIE);
+		if (s1.tab_odp[a] == egz[a]) {
+			wynik += 1;
+		}
+	};
+
+	//cout << s1.imie << s1.nazwisko << s1.wiek << s1.p;
+	//for (int a = 0; a < 10; a += 1) {
+	//	cout << s1.tab_odp[a] << '\t' << egz[a] << endl;
+	//};
+
+	ocena(wynik);
+	getchar();
+}
+
+void ocena(int n) {
+	if (n <= 4) {
+		cout << "ndst";
+	}
+	else if (n <= 6) {
+		cout << "dst";
+	}
+	else if (n <= 8) {
+		cout << "db";
+	}
+	else {
+		cout << "bdb";
+	};
+	cout << " pkt: " << n;
+}
