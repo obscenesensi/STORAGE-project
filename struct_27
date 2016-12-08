@@ -1,0 +1,39 @@
+#include <iostream>
+
+using namespace std;
+
+struct X
+{
+    int a,b,c;
+};
+
+struct Y
+{
+    X x{};
+    X xs[10]{};
+    int as[10]{};
+};
+
+int main()
+{
+   X xs[10]{};
+   for (X x : xs)
+   {
+       cout << "{" << x.a << "," << x.b << "," << x.c << "} ";
+   }
+   cout << "\n";
+   
+   Y y;
+   cout << "{" << y.x.a << "," << y.x.b << "," << y.x.c << "}\n";
+   for (X x : y.xs)
+   {
+       cout << "{" << x.a << "," << x.b << "," << x.c << "} ";
+   }
+   cout << "\n";
+   
+   for (int a : y.as)
+   {
+       cout << a << " ";
+   }
+   cout << "\n";
+}
