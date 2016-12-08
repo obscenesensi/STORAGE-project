@@ -1,0 +1,23 @@
+#include <stdio.h>
+#include <stdlib.h>
+  
+int main()
+{
+    int StudentNum, TotalScore=0;
+    int *StudentScore;
+    int i;
+     
+    printf("학생 수를 입력하세요: "); 
+    scanf("%d", &StudentNum);
+    StudentScore=(int *)malloc(sizeof(int)*StudentNum);
+     
+    for(i=0; i<StudentNum; i++) {
+     printf("%d번 학생의 점수: ", i+1);
+     scanf("%d", &StudentScore[i]);
+     TotalScore+=StudentScore[i];
+    }
+     
+    printf("모든 학생의 평균: %d\n", TotalScore/StudentNum);
+    free(StudentScore);
+    return 0;
+}
