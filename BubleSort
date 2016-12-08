@@ -1,0 +1,53 @@
+#include<iostream>
+#define SIZE 50 //배열 크기 매크로 상수
+#include <time.h>
+using namespace std;
+ 
+void swap(int*a, int*b)//temp 임시 변수가 필요없는 swap함수
+{
+    *a = *b-*a;
+    *b = *b - *a;
+    *a =*a + *b;
+}
+ 
+void bubblesort(int* arr,int N) //오름차순 버블정렬
+{
+    for (int i = N;i > 0;i--) //N-1번원소부터 0번원소까지 정렬
+    {
+        for (int j = 1;j < i;j++)
+        {
+             
+            if (arr[j] < arr[j - 1]) //뒤의원소가 앞의 원소보다 작으면
+                swap(&arr[j], &arr[j - 1]); //둘을 바꾼다
+             
+        //반복해서 원소를 교환하여 i-1번에 해당하는 원소를 위치시킴
+ 
+        }
+        //i-1번째 원소 정렬됨
+ 
+    }
+     
+}
+void main()
+{
+ 
+    srand(time(NULL));
+    int arr[SIZE];
+    //랜덤배열 생성
+    for (int j = 0;j < SIZE;j++)
+        arr[j] = rand() % 999 + 1;
+     
+ 
+    //버블소트 실행 전 배열 출력
+    for (int i = 0;i < SIZE;i++)
+        cout << arr[i] << " ";
+ 
+    bubblesort(arr, SIZE);
+    cout << endl << endl;
+ 
+    //버블소트 실행 수 배열 출력
+    bubblesort(arr, SIZE);
+    for (int i = 0;i < SIZE;i++)
+        cout << arr[i] << " ";
+ 
+}
