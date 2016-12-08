@@ -1,0 +1,28 @@
+#include <memory>
+
+int open() { return 1; }
+void close(int) {}
+
+template<typename T, typename Deleter, Deleter d, T null_value = T{}>
+struct value_deleter
+{
+    struct wrapper
+    {
+        T value;
+        wrapper() : value{null_value} {}
+        wrapper(T t) : value{t} {}
+        wrapper(std::nullptr_t) : value{null_value} {}
+        bool operator==(std::nullptr_t) { return value == null_value; }
+        bool operator!=(std::nullptr_t) { return value != null_value; }
+        T operator*() { return value; }
+    };
+    using pointer = wrapper;
+    void operator()(wrapper w) {
+        if (w.value != null_value)
+            d(w.value);
+    }
+};
+
+int main() {
+    std::unique_ptr<int, value_deleter<int, decltype(&close), &close>> ptr(open());
+}
