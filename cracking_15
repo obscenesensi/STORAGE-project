@@ -1,0 +1,52 @@
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+
+public class Solution {
+    
+    private static List<Character> openChars = new ArrayList<Character>(Arrays.asList('{', '(', '['));
+    private static List<Character> closeChars = new ArrayList<Character>(Arrays.asList('}', ')', ']'));
+    
+    public static boolean isBalanced(String expression) {
+      if (expression == null) return true;
+        
+      Stack<Character> stack = new Stack<Character>();
+         
+      for (char c : expression.toCharArray()) {
+        if (openChars.contains(c)) stack.push(c);
+        
+        if (closeChars.contains(c)) {
+            if (stack.empty()) return false;
+            char openChar = stack.pop();
+            if (!matches(openChar, c)) return false;
+        }
+      }
+         
+      return stack.empty();
+   }
+                                                    
+   private static boolean matches(char c1, char c2) {
+     if (c1 == '(' && c2 == ')')
+       return true;
+     else if (c1 == '{' && c2 == '}')
+       return true;
+     else if (c1 == '[' && c2 == ']')
+       return true;
+     else
+       return false;
+   }
+  
+   public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        int t = in.nextInt();
+        for(int a0 = 0; a0 < t; a0++) {
+            String expression = in.next();
+             boolean answer = isBalanced(expression);
+             if(answer)
+              System.out.println("YES");
+             else System.out.println("NO");
+        }
+    }
+}
