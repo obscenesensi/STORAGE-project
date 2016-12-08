@@ -1,0 +1,11 @@
+#include <iostream>
+
+struct strcont {
+	char str[4];
+};
+
+int main() {
+    strcont f = {"foo"};
+    std::cout << f.str << std::endl;
+    return 0;
+}
