@@ -1,0 +1,379 @@
+
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/fs.h>
+#include <linux/cdev.h>
+#include <asm/uaccess.h>
+#include <linux/device.h>
+#include <linux/sysfs.h>
+#include <linux/slab.h>
+
+
+#define MODULE_NAME "cdev04"
+#define DEVICE_NAME "cdev04"
+#define CLASS_NAME "gko_buffer"
+#define DBG(msg, args...) do {                                          \
+                printk(KERN_DEBUG MODULE_NAME " %s " msg, __func__, ##args); \
+        } while (0);
+
+
+/*
+ * Prototypes 
+ */
+int init_module(void);
+void cleanup_module(void);
+static int dev_open(struct inode *inode, struct file *);
+static int dev_release(struct inode *inode, struct file *);
+static ssize_t dev_read(struct file *fp, char *buf, size_t len, loff_t *off);
+static ssize_t dev_write(struct file *, const char *buf, size_t len, 
+                         loff_t *off);
+
+/*
+ * variables
+ */
+struct gko_buffer_s {
+        struct gko_buffer_page_s {
+                char *data;
+                struct list_head head;
+                int used;
+        }              *pages;
+        struct list_head head;
+        int            size;
+        struct cdev   *cdev;    
+        struct device *device;
+        struct class  *class;
+        dev_t          dev;
+        struct semaphore sem;
+};
+
+static struct gko_buffer_s gko_buffer;
+static struct file_operations fops = {
+        .owner = THIS_MODULE,
+        .read = dev_read,
+        .write = dev_write,
+        .open = dev_open,
+        .release = dev_release
+};
+
+
+static void gko_buffer_init(struct gko_buffer_s *buf)
+{
+        buf->pages = NULL;
+        buf->size = 0;
+        INIT_LIST_HEAD(&gko_buffer.head);
+        sema_init(&buf->sem, 1);
+}
+
+static struct gko_buffer_page_s *gko_buffer_page_alloc(void)
+{
+        struct gko_buffer_page_s *page = kmalloc(
+                sizeof(struct gko_buffer_page_s), GFP_KERNEL);
+        
+        if (!page)
+                return NULL;
+
+        page->used = 0;
+        page->data = (char *)get_zeroed_page(GFP_KERNEL);
+        INIT_LIST_HEAD(&page->head);
+        if (!page->data) {
+                DBG("gko_buffe_add(): get_zeroed_page() fails\n");
+                kfree(page);
+                return NULL;
+        }
+        
+        return page;
+}
+
+static void gko_buffer_destroy(struct gko_buffer_s *buf)
+{
+        struct list_head *ptr;
+        struct list_head *next;
+
+	if (!buf->pages) {
+                DBG("gko_buffer_destroy() called, but the buffer is"
+                    " already empty");
+                return;
+	}
+
+        down(&buf->sem);
+        list_for_each_safe(ptr, next, &buf->head) {
+                struct gko_buffer_page_s *tmp = 
+                        list_entry(ptr, struct gko_buffer_page_s,
+                                   head);
+                free_page((unsigned long)tmp->data);
+                list_del(ptr);
+                kfree(tmp);
+        }
+        up(&buf->sem);
+}
+
+
+/*
+ * Called when device is opened
+ */
+static int dev_open(struct inode *inode, struct file *fp)
+{
+        return 0;
+}
+
+/* 
+ * Called when device is released. The device is
+ * released when there is no process using it.
+ */
+static int dev_release(struct inode *inode, struct file *fp)
+{
+        return 0;
+}
+
+
+/*
+ * when device is read
+ * TODO: stop using gko_buffer global here and
+ *       create a new function wich receives the gko_buffer_s
+ *       This will permit me use one buffer for each device node.
+ */
+static ssize_t dev_read(struct file *fp, char *buf, size_t len, loff_t *off)
+{
+        struct gko_buffer_page_s *selected = NULL;
+        int index;
+        int pgoff;
+        int nbytes;
+        int copied;
+
+        DBG("len = %d, *off = %d\n", (int)len, (int)*off);
+
+        if (down_interruptible(&gko_buffer.sem))
+                return -ERESTARTSYS;
+
+
+        if (list_empty(&gko_buffer.head)) {
+                up(&gko_buffer.sem);
+                return 0;
+        }
+
+        index = *off / PAGE_SIZE;
+
+        list_for_each_entry(selected, &gko_buffer.head, head) { /* here index is gt 0 */
+                DBG("inside list_for_each index = %d", index);
+                if (index-- == 0) {
+                        DBG("selected selected!");
+                        break;
+                }
+        }
+
+        if (!selected) {
+                DBG("houston we got a problem, selected is NULL, ..."
+                    "this should never happen\n");
+                up(&gko_buffer.sem);
+                return -EIO;
+        }
+
+        pgoff = *off % PAGE_SIZE;
+        if (pgoff >= selected->used) {
+                up(&gko_buffer.sem);
+                return 0;
+        }
+                
+        if (len > selected->used)
+                len = selected->used;
+
+
+        nbytes = copy_to_user(buf,
+                              selected->data + pgoff,
+                              len);
+
+        copied = len - nbytes;
+        *off += copied;
+        DBG("returning %d, off = %u\n", copied, (int) *off);
+        up(&gko_buffer.sem);
+        return copied;
+}
+
+/*
+ * start writing from gko_buffer_start
+ */
+static ssize_t dev_write(struct file *fp, const char *buf, size_t len, 
+                         loff_t *off)
+{
+        int nbytes;
+        int copied;
+        struct gko_buffer_page_s *last = NULL;
+        struct list_head *ptr;
+
+        DBG("len = %d, off = %d\n", (int)len, (int)*off);
+        DBG("len = %d, off = %d\n", (int)len, (int)*off);
+
+        if (down_interruptible(&gko_buffer.sem))
+                return -ERESTARTSYS;
+
+        if (list_empty(&gko_buffer.head)) {
+                struct gko_buffer_page_s *n = 
+                        gko_buffer_page_alloc();
+
+                DBG("allocating first page\n");
+
+                if (!n) {
+                        up(&gko_buffer.sem);
+                        return -ENOMEM;
+                }
+
+                list_add_tail(&n->head, &gko_buffer.head);
+                gko_buffer.size = PAGE_SIZE;
+        }
+
+        /* take last one */
+        list_for_each_prev(ptr, &gko_buffer.head) {
+                last = list_entry(ptr, struct gko_buffer_page_s,
+                                  head);
+                break;
+        }
+
+
+
+        if (!last) {
+                DBG("problem, can't get last page");
+                up(&gko_buffer.sem);
+                return -EIO;
+        }
+
+        if (last->used >= PAGE_SIZE) {
+                struct gko_buffer_page_s *tmp = gko_buffer_page_alloc();
+
+                DBG("allocating a new page\n");
+                if (!tmp) {
+                        up(&gko_buffer.sem);
+                        return -ENOMEM;
+                }
+
+                gko_buffer.size += PAGE_SIZE;
+                list_add_tail(&tmp->head, &gko_buffer.head);
+                up(&gko_buffer.sem);
+                last = tmp;     /* tmp was allocated with kmalloc */
+        }
+
+        if (len > PAGE_SIZE - last->used) /* len > free? then len = free */
+                len = PAGE_SIZE - last->used;
+
+        /* concatenate on buffer */
+        nbytes = copy_from_user(last->data + last->used,
+                                buf,
+                                len);
+
+
+        copied = len - nbytes;
+        last->used += copied;
+        *off += copied;
+
+        up(&gko_buffer.sem);
+        return copied;
+}
+
+/*
+ * Attributes
+ * @size: RO, lenght of buffer
+ * @truncate: WO, truncate the buffer
+ */
+
+static ssize_t show_size(struct device *dev,
+                         struct device_attribute *attr,
+                         char *buf)
+{
+        return snprintf(buf, PAGE_SIZE, "%d\n", gko_buffer.size);
+}
+
+static ssize_t store_truncate(struct device *dev,
+                              struct device_attribute *attr,
+                              const char *buf,
+                              size_t count)
+{
+        down(&gko_buffer.sem);
+        gko_buffer_destroy(&gko_buffer);
+        gko_buffer_init(&gko_buffer);
+        return PAGE_SIZE;
+}
+
+static DEVICE_ATTR(size, S_IRUSR, show_size, NULL);
+static DEVICE_ATTR(truncate, 0222, NULL, store_truncate);
+
+
+/*
+ * Called when module is load
+ */
+int init_module(void)
+{
+        int rval;
+
+        DBG("");
+
+        /* list_head, sem, pointers.. init that stuff */
+        gko_buffer_init(&gko_buffer);
+
+        /* Alloc a device region */
+        rval = alloc_chrdev_region(&gko_buffer.dev, 1, 1, DEVICE_NAME);
+        if (rval != 0)          /* error */
+                goto cdev_alloc_err;
+
+        /* Registring */
+        gko_buffer.cdev = cdev_alloc();
+        if (!gko_buffer.cdev) 
+                goto cdev_alloc_err;
+
+        /* Init it! */
+        cdev_init(gko_buffer.cdev, &fops); 
+
+        /* Tell the kernel "hey, I'm exist" */
+        rval = cdev_add(gko_buffer.cdev, gko_buffer.dev, 1);
+        if (rval < 0) 
+                goto cdev_add_out;
+
+        /* class */
+        gko_buffer.class = class_create(THIS_MODULE, CLASS_NAME);
+        if (IS_ERR(gko_buffer.class)) {
+                printk(KERN_ERR DEVICE_NAME " cant create class %s\n", CLASS_NAME);
+                goto class_err;
+        }
+
+        /* device */
+        gko_buffer.device = device_create(gko_buffer.class, NULL, gko_buffer.dev, NULL, DEVICE_NAME);
+        if (IS_ERR(gko_buffer.device)) {
+                printk(KERN_ERR DEVICE_NAME " cant create device %s\n", DEVICE_NAME);
+                goto device_err;
+        }
+
+        rval = device_create_file(gko_buffer.device, &dev_attr_size);
+        if (rval < 0)
+                DBG("can't create attribute %s",
+                    dev_attr_size.attr.name);
+
+        
+        rval = device_create_file(gko_buffer.device, &dev_attr_truncate);
+        if (rval < 0)
+                DBG("can't create attribute %s",
+                    dev_attr_truncate.attr.name);                
+
+        return 0;
+
+
+device_err:
+        device_destroy(gko_buffer.class, gko_buffer.dev);
+class_err:
+        class_unregister(gko_buffer.class);
+        class_destroy(gko_buffer.class);
+cdev_add_out:
+        cdev_del(gko_buffer.cdev);
+cdev_alloc_err:
+        gko_buffer_destroy(&gko_buffer);
+        return -EFAULT;
+}
+
+void cleanup_module(void)
+{
+        DBG("");
+        device_destroy(gko_buffer.class, gko_buffer.dev);
+        class_unregister(gko_buffer.class);
+        class_destroy(gko_buffer.class);
+        cdev_del(gko_buffer.cdev);
+        gko_buffer_destroy(&gko_buffer);
+}
+
+MODULE_LICENSE("GPL");
