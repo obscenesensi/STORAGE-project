@@ -1,0 +1,33 @@
+import java.util.Stack;
+
+class MinStack {
+	private Stack<Integer> s;
+	private Stack<Integer> minValues;
+
+	public MinStack() {
+		s = new Stack<Integer>();
+		minValues = new Stack<Integer>();
+	}
+
+	public void push(Integer element) {
+		s.push(element);
+		if (minValues.empty() || element <= minValues.peek()) {
+			minValues.push(element);
+			
+		} 
+		s.push(element);
+	}
+
+	public Integer pop() {
+		if (minValues.peek() < s.peek()) {
+			return s.pop();
+		} else {
+			minValues.pop();
+			return s.pop();
+		}
+	} 
+	public Integer min() {
+		return minValues.peek();
+	}
+
+}
