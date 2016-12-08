@@ -1,0 +1,35 @@
+
+#include <iostream>
+using namespace std;
+
+void reverse(char* str){
+  if(str == NULL) return;
+  char* cp = str;
+  int i = 0;
+  int j = 0;
+  //scan till end
+  while(*cp != '\0'){
+    cp++;
+    j++;
+  }
+  --j;
+  //swap in place
+  while(i < j){
+    char tmp = str[i];
+    str[i++] = str[j];
+    str[j--] = tmp;
+  }
+}
+
+int main(){
+  while(1){
+    string s;
+    cin >> s;
+    char* cp = (char*)s.c_str();
+    reverse(cp);
+    int i = 0;
+    while(cp[i] != '\0')
+      cout << cp[i++];
+    cout << endl;
+  }
+}
