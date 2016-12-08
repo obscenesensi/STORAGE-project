@@ -1,0 +1,10 @@
+void printNodes(linkedList *L) {
+    node *p = L->head;    
+    putchar('[');
+    while(p != NULL) {
+        printf("%d, ", p->data);
+        p = p->next;
+    }
+    putchar(']');
+    putchar('\n');
+}
