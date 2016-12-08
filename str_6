@@ -1,0 +1,74 @@
+
+#include <algorithm>
+#include <cassert>
+#include <cstdint>
+#include <cstring>
+#include <fstream>
+#include <iostream>
+#include <memory>
+
+// Don't change any of these constants, they are for my internal greymap representation.
+constexpr size_t rows = 1 << 12;
+constexpr size_t cols = 1 << 12;
+constexpr size_t white = (1 << 8) - 1;
+
+constexpr size_t storage_per_row = cols;
+constexpr size_t storage = rows * storage_per_row;
+
+#pragma pack(push,1)
+struct PointShape {
+	std::uint_fast16_t x:12;
+	std::uint_fast16_t y:12;
+	std::uint_fast8_t d:8;
+} __attribute__((__packed__));
+#pragma pack(pop)
+
+int
+main(int argc, char *argv[])
+{
+	assert(argc == 3);
+
+	std::cout << "Preparing internal greymap storage... (" << storage << " bytes)\n";
+
+	auto greymap = std::unique_ptr<uint8_t[]>(new std::uint8_t[storage]);
+
+	for (size_t c = 0; c < storage; ++c)
+		greymap[c] = white;
+
+	std::cout << "Reading " << argv[1] << "...\n";
+
+	std::ifstream str(argv[1]);
+	str.seekg(0x14); // Header data that I'm choosing to ignore.
+
+	// The entire remainder of the file is point shapes.
+	while (true) {
+		PointShape c;
+
+		str.read((char *)&c, sizeof(c));
+
+		if (! str)
+			break;
+
+		auto x = c.x;
+		auto y = c.y;
+		auto d = c.d;
+
+		// Darken the location (x,y) in the greymap by the dwell amount, clamping to black.
+		auto &pixel = greymap[y * storage_per_row + x];
+		if (pixel >= d)
+			pixel -= d;
+		else
+			pixel = 0;
+	};
+
+	std::cout << "Writing " << argv[2] << "...\n";
+
+	std::ofstream out(argv[2]);
+
+	out << "P5\n " << cols << " " << rows << "\n" << white << "\n";
+	out.write((const char *)greymap.get(), storage);
+
+	std::cout << "Done.\n";
+
+	return 0;
+}
