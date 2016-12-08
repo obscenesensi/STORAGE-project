@@ -1,0 +1,15 @@
+#include <stdio.h>
+ 
+int main(void)
+{
+           int num; //임의의 수
+ 
+           printf("임의의 수 입력 : ");
+           scanf("%d",&num); //임의의 수 입력
+ 
+           printf("입력한 수 %d은(는) ",num);
+ 
+           ( num % 2 ) ? printf("훌수 입니다.\n") : printf("짝수 입니다.\n"); //조건연산자로 홀짝 판단
+ 
+           return 0;
+} 
