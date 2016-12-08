@@ -1,0 +1,18 @@
+#include <stdio.h>
+ 
+int main()
+{
+    int num=50;
+    FILE * fp=fopen("OUTPUT.txt", "wt");
+     
+    if(fp==NULL) {
+     printf("파일을 열 수 없습니다!\n");
+     return -1;
+    }
+     
+    fputs("ABCDEFG\n", fp);
+    fprintf(fp, "%d", num);
+     
+    fclose(fp);
+    return 0;
+}
