@@ -1,0 +1,36 @@
+#include <iostream>
+
+const int m_NameLength = 32;
+
+struct Vector2
+{
+	float x;
+	float y;
+};
+
+struct Player
+{
+	char name[m_NameLength];
+	int health;
+	int score;
+	Vector2 position;
+	Vector2 velocity;
+};
+
+void main()
+{
+	char inputName[m_NameLength];
+	int inputScore;
+	Player player1;
+
+	std::cout << "Please input player name (max 32 chars): ";
+	std::cin.getline(inputName, m_NameLength);
+	std::cout << "Please input player score: ";
+	std::cin >> inputScore;
+
+	player1 = { "Init", 100, inputScore, { 0.0, 0.0 }, { 0.0, 0.0 } };
+	strcpy(player1.name, inputName);
+	std::cout << "Player Name: " << player1.name << ". Player Score: " << player1.score << "." << std::endl;
+
+	system("pause");
+}
