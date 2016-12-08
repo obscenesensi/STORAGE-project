@@ -1,0 +1,170 @@
+#include <memory>
+#include <iostream>
+#include <map>
+#include <vector>
+#include <conio.h>
+
+using namespace std;
+
+#define SharedTableMapType(T) map<size_t, shared_ptr<T> *>
+#define SharedTableMapIterator(T) SharedTableMapType(T)::iterator
+#define SharedTableMap(T) class T; SharedTableMapType(T) Table##T
+#define CREATE_FUNC(T)													\
+static shared_ptr<T> create()											\
+{																		\
+	shared_ptr<T> pointer(new T);										\
+																		\
+	Table##T[pointer->getObjectId()] = &pointer;						\
+																		\
+	return pointer;													\
+}																		\
+~T()																	\
+{																		\
+	SharedTableMapIterator(T) itr = Table##T.find(m_ObjectId);			\
+	if(itr != Table##T.end())											\
+	{																	\
+		destruct();														\
+																		\
+		Table##T.erase(itr);											\
+	}																	\
+}
+
+template<typename T> class sptr
+{
+protected:
+	shared_ptr<T> m_Ptr;
+
+public:
+	sptr()
+	{
+		m_Ptr = T::create();
+	}
+	
+	shared_ptr<T> operator->() { return m_Ptr; }
+};
+
+class SmartSize_t
+{
+private:
+	size_t m_Value;
+
+public:
+	SmartSize_t() : m_Value(0)
+	{
+	}
+
+	~SmartSize_t()
+	{
+		cout << "~SmartSize_t" << endl;
+	}
+
+	size_t get() const { return m_Value; }
+	void set(int v) { m_Value = abs(v); }
+	void set(size_t v) { m_Value = v; }
+	size_t inc() { m_Value++; return get(); }
+	void decr() { if(m_Value > 0)m_Value--; }
+};
+
+class SmartObjectsControl
+{
+protected:
+	SmartSize_t m_MaxObjectId;
+
+	SmartObjectsControl()
+	{
+	}
+
+	static SmartObjectsControl *instance()
+	{
+		static SmartObjectsControl control;
+
+		return &control;
+	}
+
+public:
+	static size_t generateId()
+	{
+		return instance()->m_MaxObjectId.inc();
+	}
+};
+
+class SmartObject
+{
+protected:
+	size_t m_ObjectId;
+
+	SmartObject()
+	{
+		m_ObjectId = SmartObjectsControl::generateId();
+	}
+
+	virtual void destruct() = 0;
+
+public:
+	size_t getObjectId() const
+	{
+		return m_ObjectId;
+	}
+};
+
+//############################################################################
+
+SharedTableMap(GameObject);
+
+class GameObject : public SmartObject
+{
+protected:
+	GameObject()
+	{
+		cout << "GameObject created! ObjectId: " << m_ObjectId << endl;
+	}
+
+	void destruct()
+	{
+		cout << "GameObject removed!" << endl;
+		cout << "Q: " << getQ() << endl;
+	}
+
+public:
+	int Mq;
+	void setQ(int q)
+	{
+		Mq = q;
+	}
+	int getQ() const
+	{
+		return Mq;
+	}
+
+	CREATE_FUNC(GameObject);
+};
+
+void main()
+{
+	int res;
+	cout << "Unload object at once or wait (0 / 1)?" << endl;
+	cin >> res;
+
+	vector<sptr<GameObject>> list;
+	if(res == 1)
+	{
+		{
+			sptr<GameObject> pObject;
+			pObject->setQ(777);
+			list.push_back(pObject);
+		}
+		_getch();
+	}
+	else
+	{
+		{
+			sptr<GameObject> pObject;
+			pObject->setQ(555);
+		}
+		_getch();
+	}
+	list.clear();
+
+	if(res == 1)
+		_getch();
+}
