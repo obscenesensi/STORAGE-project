@@ -1,0 +1,19 @@
+#include <stdio.h>
+ 
+int main( )
+{
+    FILE *pFile = NULL;
+ 
+    pFile = fopen( "d:\\text.txt", "w+t" );
+    if( pFile != NULL )
+    {
+        fputs( "테스트 입니다.", pFile );
+        fclose( pFile );
+    }
+    else
+    {
+        //에러 처리
+    }
+ 
+    return 0;
+}
