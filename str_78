@@ -1,0 +1,31 @@
+void dec2bin()
+{
+    unsigned __int64 dec = 0;
+    string bin_str = "";
+    cout << "Dezmal/Binaer - converter" << endl << "Dezimalwert eingeben: ";
+    cin >> dec;
+    int n = 0, pos = 0;
+    while (dec != 0)
+    {	
+		bin_str = (dec % 2 == 0 ? "0" : "1") + bin_str; 
+		dec /= 2;
+		pos ++;
+		if ((pos-n) % 8 == 0)
+		{
+			bin_str = " " + bin_str;
+			pos ++;
+			n ++;
+		};
+    };
+    int rest = bin_str.length() - n;
+    while ((rest - 8) > 0) // elim. komplette bytes
+    { 
+        rest -= 8; 
+    };
+    while ((8 - rest) > 0) // restliche bits mit "0" auffüllen
+    { 
+        bin_str = "0" + bin_str; 
+        rest++;
+    };
+    cout << bin_str << endl;
+};
