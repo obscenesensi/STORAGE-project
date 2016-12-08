@@ -1,0 +1,12 @@
+#include <stdio.h>
+#include <string.h>
+ 
+int main()
+{
+    char str1[]="프로그래밍";
+    char str2[]="Programming";
+    char str3[]="123456789";
+    printf("str1의 길이는 %i 입니다.\n", strlen(str1));
+    printf("str2의 길이는 %i 입니다.\n", strlen(str2));
+    printf("str3의 길이는 %i 입니다.\n", strlen(str3));
+}
