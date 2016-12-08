@@ -1,0 +1,40 @@
+class Solution {
+public:
+    void dfs(string low, string high, string str, int left, int right, int& count){
+        if(str.length()!=1&&str[0]=='0')
+                return;
+
+        if(left > right){
+            if((str.length()==low.length()&&str.compare(low)<0) ||
+               (str.length()==high.length()&&str.compare(high)>0))
+               return;
+            count++;
+            return;
+        }
+
+        str[left] = '0', str[right] = '0';
+        dfs(low, high, str, left+1, right-1, count);
+        str[left] = '1', str[right] = '1';
+        dfs(low, high, str, left+1, right-1, count);
+        str[left] = '8', str[right] = '8';
+        dfs(low, high, str, left+1, right-1, count);
+        if(left<right){
+            str[left] = '9', str[right] = '6';
+            dfs(low, high, str, left+1, right-1, count);
+            str[left] = '6', str[right] = '9';
+            dfs(low, high, str, left+1, right-1, count);
+        }
+
+    }
+
+    int strobogrammaticInRange(string low, string high) {
+        int count=0;
+        for(int len = low.length(); len<=high.length(); len++){
+            string str;
+            for(int i=0; i<len; i++) 
+                str=str+string("9");
+            dfs(low, high, str, 0, len-1, count);
+        }
+        return count;
+    }
+};
