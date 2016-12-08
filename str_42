@@ -1,0 +1,124 @@
+class Str
+{
+public:
+   Str();
+   Str(const char* src);
+   ~Str();
+
+   Str(const Str& that);
+   Str& operator= (const Str& that);
+
+   void print();
+   int size();
+
+   Str& operator+= (char c);
+   char& operator[] (size_t pos);
+
+private:
+   char* str {nullptr};
+   int len {0};
+   int cap {sizeof(int) * 4};
+};
+
+Str::Str()
+{
+   str = new (nothrow) char[cap];
+}
+
+Str::Str(const char* src)
+{
+   if (!src)
+   {
+      return;
+   }
+
+   while (src[len] != '\0')
+   {
+      ++len;
+   }
+
+   cap = len * 2;
+
+   str = new (nothrow) char[cap];
+
+   for (int i = 0; i < len + 1; ++i)
+   {
+      str[i] = src[i];
+   }
+}
+
+Str::~Str()
+{
+   delete[] str;
+   str = nullptr;
+}
+
+Str::Str(const Str& that)
+{
+   len = that.len;
+   cap = that.cap;
+   str = new (nothrow) char[cap];
+
+   for (int i = 0; i < len + 1; ++i)
+   {
+      str[i] = that.str[i];
+   }
+}
+
+Str& Str::operator= (const Str& that)
+{
+   if (this != &that)
+   {
+      delete[] str;
+      str = nullptr;
+
+      len = that.len;
+      cap = that.cap;
+
+      str = new (nothrow) char[cap];
+
+      for (int i = 0; i < len + 1; ++i)
+      {
+         str[i] = that.str[i];
+      }
+   }
+
+   return *this;
+}
+
+void Str::print()
+{
+   cout << str << endl;
+}
+
+int Str::size()
+{
+   return len;
+}
+
+Str& Str::operator+= (char c)
+{
+   if (len + 1 >= cap)
+   {
+      cap = len * 2;
+      char* new_str = new (nothrow) char[cap];
+
+      for (int i = 0; i < len + 1; ++i)
+      {
+         new_str[i] = str[i];
+      }
+
+      delete[] str;
+      str = new_str;
+   }
+
+   str[len] = c;
+   str[++len] = '\0';
+
+   return *this;
+}
+
+char& Str::operator[] (size_t pos)
+{
+   return str[pos];
+}
