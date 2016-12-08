@@ -1,0 +1,27 @@
+#include <cstdio>
+
+struct objeto{ // declaro a struct objeto
+	
+	int a, b; // declaro que um objeto tem dois inteiros: a e b
+	
+	// função que retorna um objeto em que o valor de a é x e o de b é y
+	objeto(int x, int y){ a=x; b=y; }
+	
+	// função que retorna a soma de a e b
+	int soma(){ return a+b; }
+};
+
+int main(){
+	
+	int n, m;
+	
+	scanf("%d %d", &n, &m);
+	
+	// faço var receber um objeto em que a=n e b=m
+	objeto var=objeto(n, m);
+	
+	//imprimo o valor da função soma, que é um mebro de var
+	printf("%d\n", var.soma());
+	
+	return 0;
+}
