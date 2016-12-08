@@ -1,0 +1,22 @@
+void indirect_sort(int a[], int index[], int n)
+{
+int i, j;
+int t;
+for(i=0; i<n; i++) // 인덱스 배열의 초기화 
+{
+index[i]=i;
+}
+for(i=1; i<n; i++) // 삽입정렬 
+{
+t=index[i];
+j=i;
+while(a[index[j-1]]>a[t] && j>0) // 삽입될 곳을 찾음
+{
+index[j]=index[j-1]; // 인덱스의 배열을 조정
+j--;
+}
+index[j]=t; // 삽입함
+}
+}
+
+
