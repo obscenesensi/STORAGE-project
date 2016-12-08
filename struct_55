@@ -1,0 +1,5 @@
+struct struct_name {
+    data_type1 data_name1;// khai báo thành viên dữ liệu thứ 1
+    data_type2 data_name2;// khai báo thành viên dữ liệu thứ 2
+    data_type3 data_name3;// khai báo thành viên dữ liệu thứ 3
+};
