@@ -1,0 +1,5 @@
+char* strlow(char* _str)
+{
+	for(unsigned int c = 0; _str[c]; _str[c++] = tolower(_str[c]));
+	return _str;
+}
