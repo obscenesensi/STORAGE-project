@@ -1,0 +1,11 @@
+void createNode(linkedList *L, int tdata) {
+    node *newNode = (node *)malloc(sizeof(node));
+    newNode->data = tdata;
+    newNode->next = NULL;
+    if(L->head == NULL && L->tail == NULL)
+        L->head = L->tail = newNode;    
+    else {
+        L->tail->next = newNode;
+        L->tail = newNode;
+    }
+}
