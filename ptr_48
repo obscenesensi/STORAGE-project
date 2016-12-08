@@ -1,0 +1,56 @@
+#include <iostream>
+#include <memory>
+#include <algorithm>
+
+using namespace std;
+
+struct Human {
+	int age = 0;
+	Human(const int& newAge) { age = newAge; }
+};
+
+int main() {
+	
+	constexpr size_t tam = 2;
+	unique_ptr<int[]> u1(new int[tam]);
+	unique_ptr<int[]> u2;
+	
+	u1[0] = 10;
+	u1[1] = 20;
+
+	cout << u1[0] << ' ' << u1[1] << endl;
+	
+	u2 = move(u1);
+	
+	constexpr size_t tam2 = 4;
+	
+	u1 = make_unique<int[]>(tam2); // or: unique_ptr<int[]>(new int[tam2]);
+	
+	for (size_t idx = 0; idx < tam; ++idx) {
+		u1[idx] = u2[idx];
+	}
+	
+	u1[2] = 30;
+	u1[3] = 40;
+	
+	for (size_t idx = 0; idx < tam2; ++idx) {
+		cout << u1[idx] << ' ';
+	}
+	cout << endl;
+	
+	// Sort
+	
+	int * vect = new int[2] {5,1};
+	sort(vect, vect + 2);
+	cout << vect[0] << endl;
+	delete[] vect;
+	
+	unique_ptr<int[]> vect2(new int[2] {5,1});
+	sort(vect2.get(), vect2.get() + 2);
+	cout << vect2[0] << endl;
+	
+	// Human
+	cout << make_unique<Human>(90)->age << endl; // JAVA -> System.out.println(new Human(90).age);
+	
+	return 0;
+}
