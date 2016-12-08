@@ -1,0 +1,28 @@
+#include <cstdarg.h>
+
+void writeValues(int count, ...)
+{
+
+  /* Declare variadic args */
+  va_list ap;
+  va_start(ap, count);
+  
+  Serial.print("#S|SAVEDATA|[");
+
+  /* For each value, print to Serial */
+  for (int i = 0; i < count; i++)
+  {
+    Serial.print(va_arg(ap, float));
+    Serial.print(';');
+  }
+
+  Serial.print("]#");
+  va_end(ap);
+  
+}
+
+writeValues
+( 3
+, humidity
+, sensors.getTempC(fanThermometer)
+, sensors.getTempC(airThermometer) );
