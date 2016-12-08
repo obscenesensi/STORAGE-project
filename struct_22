@@ -1,0 +1,21 @@
+#include <cstdio>
+
+struct new_int{ // declaro a struct new_int
+	
+	int n; // ela tem um int n como membro
+	
+	new_int(int x){ n=x; } // um construtor simples
+	
+	new_int operator +(new_int x){ return new_int(n + x.n); } // e um operador +
+};
+
+int main(){
+	
+	new_int var1=new_int(4), var2=new_int(5); // declaro os new_ints var1 e var2
+	
+	new_int var3=var1+var2; // declaro o new_int var3, que recebe o valor de var1+var2
+	
+	printf("%d\n", var3.n); // imprimo o valor do membro n de var3
+	
+	return 0;
+}
