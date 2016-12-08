@@ -1,0 +1,46 @@
+package ctci.chapter1;
+
+import java.util.HashMap;
+
+/**
+ * @author brianhamlin
+ *
+ */
+public class AllUnique {
+
+	/**
+	 * Checks if a string contains all unique characters (assuming ASCII). Adds
+	 * characters to a hashmap, and if an entry already exists the string is not
+	 * unique.
+	 * 
+	 * @param s
+	 *           The string to check.
+	 * @return True if all characters are unique.
+	 */
+	public static boolean isAllUnique(String s) {
+		if (s.length() > 256) {
+			return false;
+		}
+
+		HashMap<Character, Integer> map = new HashMap<Character, Integer>();
+		for (char c : s.toCharArray()) {
+			Integer f = map.get(c);
+			if (f == null) {
+			map.put(c, 1);
+			}
+			else {
+			return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		System.out.println(isAllUnique("abcdefg"));
+		System.out.println(isAllUnique("not unique"));
+	}
+
+}
