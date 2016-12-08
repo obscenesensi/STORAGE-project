@@ -1,0 +1,15 @@
+String compressString(String input) {
+	StringBuilder compressed = new StringBuilder(); 
+	int count = 1; 
+	String[] arr = input.split(""); 
+	for(int i = 0; i < arr.length; i++) {
+		++count; 
+		if(i + 1 >= arr.length || !arr[i + 1].equals(arr[i])) {
+			compressed.append(arr[i]); 
+			compressed.append(Integer.toString(count));
+			count = 0; 
+		} 
+	}
+
+	return compressed.toString().length() < input.length() ? compressed.toString() : input; 
+}
