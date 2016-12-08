@@ -1,0 +1,70 @@
+#include <set>
+#include <memory>
+#include <vector>
+
+template <typename T>
+class IObservable;
+
+template <typename T>
+class IObserver
+{
+public:
+    virtual ~IObserver() = default;
+
+    virtual void update(const IObservable<T>& subject, const T&) = 0;
+};
+
+template <typename T>
+using IObserver_wptr = std::weak_ptr<IObserver<T> >;
+
+template <typename T>
+using IObservers = std::set<IObserver_wptr<T>,
+        std::owner_less<IObserver_wptr<T> > >;
+
+template <typename T>
+class Observable
+{
+public:
+    Observable()
+            : m_observers({})
+    {
+
+    }
+
+    virtual ~Observable() = default;
+
+    void attach(const IObserver_wptr<T> observer)
+    {
+        m_observers.insert(observer);
+    }
+
+    void detach(const IObserver_wptr<T> observer)
+    {
+        m_observers.erase(observer);
+    }
+
+protected:
+    virtual void notify(const T& value)
+    {
+        std::vector<IObserver_wptr<T> >  toRemove;
+
+        for(auto& observer : m_observers)
+        {
+            auto lockedObserver = observer.lock();
+            if (lockedObserver)
+            {
+                lockedObserver->update(*this, value);
+            } else {
+                toRemove.push_back(observer);
+            }
+        }
+
+        for(auto& observer : toRemove)
+        {
+            detach(observer);
+        }
+    }
+    
+    IObservers<T> m_observers;
+
+};
