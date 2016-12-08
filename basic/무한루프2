@@ -1,0 +1,14 @@
+#include <stdio.h>
+ 
+int main()
+{
+ int a, sum=0;
+  
+ do {
+  printf("값을 입력하세요: ");
+  scanf("%d", &a);
+  sum+=a;
+} while (a!=0);
+printf("합: %d\n", sum);
+ return 0;
+}
