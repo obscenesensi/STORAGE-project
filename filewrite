@@ -1,0 +1,113 @@
+Python
+
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <stdlib.h>
+
+#define MAX 1024
+
+int main (int argc, char ** argv[]) {
+
+int fd;
+int readn = 0;
+int writen = 0;
+char buf[MAX];
+char * buf2 = "XXXXXXXXXX\n";
+int i ;
+
+//Open File and Get File Descripter//
+fd = open ("/root/System_Programming/Chapter_01/text.txt" , O_RDWR);
+if (fd == -1){
+ printf ("File open failed.....\n");
+ return 1;
+ }
+
+// Write buf2 into fd
+writen = write(fd, buf2, strlen(buf2));
+
+memset (buf, 0x00, MAX);
+readn = read(fd, buf, MAX-1s);
+printf ("Readn is ..... %d\n", readn);
+printf ("%s\n",buf);
+
+
+close (fd);
+
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <stdlib.h>
+ 
+#define MAX 1024
+ 
+int main (int argc, char ** argv[]) {
+ 
+int fd;
+int readn = 0;
+int writen = 0;
+char buf[MAX];
+char * buf2 = "XXXXXXXXXX\n";
+int i ;
+ 
+//Open File and Get File Descripter//
+fd = open ("/root/System_Programming/Chapter_01/text.txt" , O_RDWR);
+if (fd == -1){
+ printf ("File open failed.....\n");
+ return 1;
+ }
+ 
+// Write buf2 into fd
+writen = write(fd, buf2, strlen(buf2));
+ 
+memset (buf, 0x00, MAX);
+readn = read(fd, buf, MAX-1s);
+printf ("Readn is ..... %d\n", readn);
+printf ("%s\n",buf);
+ 
+ 
+close (fd);
+ 
+}
