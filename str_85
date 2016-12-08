@@ -1,0 +1,49 @@
+class Solution {
+public:
+    int myAtoi(string str) {
+        if(str==""){
+            return 0;
+        }
+        if((str.at(0)-48>9||str.at(0)-48<0)){
+            if(str.at(0)!='+'&&str.at(0)!='-'&&str.at(0)!=' ')
+                return 0;
+        }
+        else if(str.length()==1){
+            return str.at(0)-48;
+        }
+        
+        int res=0;
+        bool hasSign=false;
+        bool fu=false;
+        for(int i=0;i<str.length();i++){
+            int bit=str.at(i)-48;
+            if(bit>9||bit<0){
+                if(str.at(i)=='+'||str.at(i)=='-'){
+                    if(!hasSign){
+                        hasSign=true;
+                        if(str.at(i)=='-'){
+                            fu=true;
+                        }
+                        continue;
+                    }
+                    else{
+                        return 0;
+                    }
+                }
+                if(i==0||str.at(i)==' ')
+                    continue;
+                else
+                    break;
+            }
+            else{
+                res*=10;
+                res+=bit;
+            }
+        }
+      
+        if(fu)
+            return -res;
+        else
+            return res;
+    }
+};
