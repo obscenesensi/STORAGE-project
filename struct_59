@@ -1,0 +1,45 @@
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+typedef unsigned char byte;
+
+struct data {
+    byte length;
+    byte data[16];
+};
+
+void data_print(data* data) {
+    cout << "Data[length: " << hex << (int)data->length << ", data: 0x";
+    for (int i = 0; i < data->length; i++) {
+        cout << hex << (int)data->data[i];
+    }
+    cout << "]" << endl;
+}
+
+int main() {
+    cout << "Initial data:" << endl;
+
+    data packet = {
+        6,
+        { 0x1, 0x2, 0x3, 0x4, 0x5, 0x6 }
+    };
+
+    data_print(&packet);
+
+    char buffer[sizeof(data)];
+    memcpy(buffer, &packet, sizeof(data));
+
+    // ... send somehow ...
+
+    cout << "Read from buffer:" << endl;
+    data receive;
+    memcpy(&receive, buffer, sizeof(data));
+    data_print(&receive);
+
+    // need to take care that the byte order of the data from the network matches the endian-ness
+    // of the architecture regenerating the struct
+
+    return 0;
+}
