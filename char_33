@@ -1,0 +1,21 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MIN_CHARS 10
+
+int main(char *argv, int argc){
+  int i, m = 10, f[3] = {0,1};
+
+  for(i = MIN_CHARS; i > 2; i--){
+    m *= 10;
+  }
+
+  for(i = 0; f[0] < m; i++) {
+    f[2] = f[0] + f[1]; 
+    memcpy(f, f + 1, sizeof(int) * 2);
+  }
+
+  printf("%i -> %i\n", i, f[0]);
+
+  return 0;
+}
