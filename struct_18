@@ -1,0 +1,27 @@
+
+#include <stdio.h>
+
+struct test_tag {
+    int x;
+    int y;
+};
+int point_eq(struct test_tag *,struct test_tag *);
+
+int point_eq(struct test_tag *aptest,struct test_tag *bptest)
+{
+    return ((aptest->x == bptest->x)&&(aptest->y == bptest->y));
+}
+int main(void)
+{
+    struct test_tag aptest,bptest;
+    aptest.x = 30;
+    bptest.x = 30;
+
+    aptest.y = 30;
+    bptest.y = 30;
+    if (!point_eq(&aptest,&bptest)){
+        printf("NG!!\n");
+    }
+    printf("OK!!\n");
+    
+}
