@@ -1,0 +1,11 @@
+#include <stdio.h>
+#include <string.h>
+ 
+int main()
+{
+    char src[20]="GRAMMING";
+    char dest[20]="PRO";
+     
+    strcat(dest, src);
+    printf("dest의 문자열은 %s\n", dest);
+} 
