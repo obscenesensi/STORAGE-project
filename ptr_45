@@ -1,0 +1,9 @@
+
+#include <memory>
+
+typedef std::shared_ptr<void *> SharedTest;
+
+int main (void) {
+  SharedTest test = std::make_shared<void *>(NULL);
+  return 0;
+}
