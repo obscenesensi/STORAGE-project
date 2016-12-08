@@ -1,0 +1,12 @@
+#define ADD_TYPED(type, name) type name
+#define ADD_DWORD(name) ADD_TYPED(name)
+
+#define STRUCT(fields) \
+  struct { \
+     fields \
+     string Print() { \
+         string result; \
+         fields \
+         return result; \
+     } \
+  }
