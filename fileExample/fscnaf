@@ -1,0 +1,41 @@
+#include <stdio.h>
+ 
+int main( )
+{   
+    FILE *pFile = NULL;
+ 
+    pFile = fopen( "d:\\Text.txt", "r" );
+    if( pFile == NULL )
+    {
+        //에러 처리
+    }
+    else
+    {
+        int nCount;
+        float fRatio;
+        char strDesc[255];
+ 
+        while( !feof( pFile ) )
+        {
+            //공백으로 분리된 파일 읽기
+            fscanf( pFile, "%d %f %s\n", &nCount, &fRatio, strDesc );
+            printf( "공백으로 분리 : %d %f %s\n", nCount, fRatio, strDesc );
+             
+            //,로 분리된 파일 읽기
+            fscanf( pFile, "%d, %f, %s\n", &nCount, &fRatio, strDesc );
+            printf( ",로 분리 : %d, %f, %s\n", nCount, fRatio, strDesc );
+ 
+            //탭으로 분리된 파일 읽기
+            fscanf( pFile, "%d\t%f\t%s\n", &nCount, &fRatio, strDesc );
+            printf( "탭으로 분리 : %d\t%f\t%s\n", nCount, fRatio, strDesc );
+ 
+            //선별적으로 읽기 - [%*]을 사용하면 값을 읽지 않는다.
+            fscanf( pFile, "%*d %*f %s\n", strDesc );
+            printf( "선별적으로 읽기 : %s\n", strDesc );
+        }
+ 
+        fclose( pFile );
+    }
+ 
+    return 0;
+}
