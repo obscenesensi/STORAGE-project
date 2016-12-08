@@ -1,0 +1,13 @@
+#include <stdio.h>
+int uzunluk (char *p) {
+int i;
+	for (i=0;p[i]!=NULL;i++) {
+	
+	}
+return i;
+}
+int main () {
+char *str="Erdinc";
+printf("%d\n",uzunluk(str));
+return 0;
+}
